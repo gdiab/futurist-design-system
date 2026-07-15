@@ -1,0 +1,6 @@
+{
+  "files": ["index.html", "guidelines/**/*.html", "ui_kits/**/*.html", "components/**/*.card.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

@@ -1,0 +1,5 @@
+/* Futurist — Webfonts
+   Atkinson Hyperlegible Next (display/UI/body), IBM Plex Mono (data/code).
+   Loaded from Google Fonts. To ship fully offline, replace with local @font-face
+   rules pointing at copied .woff2 binaries. */
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');

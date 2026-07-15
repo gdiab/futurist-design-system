@@ -1,0 +1,38 @@
+/* Futurist — Spacing
+   4px base grid, tuned for compact/information-dense layouts. */
+
+:root {
+  --space-0:  0px;
+  --space-px: 1px;
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-7:  28px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Semantic spacing */
+  --gutter:        var(--space-6);   /* page gutter          */
+  --stack-tight:   var(--space-2);
+  --stack:         var(--space-4);
+  --inline-gap:    var(--space-2);
+  --control-pad-x: var(--space-3);
+  --control-pad-y: var(--space-2);
+  --card-pad:      var(--space-5);
+
+  /* Layout constants */
+  --max-content:   1200px;
+  --max-prose:     680px;
+  --sidebar-w:     240px;
+  --control-h-sm:  26px;
+  --control-h:     32px;
+  --control-h-lg:  40px;
+}

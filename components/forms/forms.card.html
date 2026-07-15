@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" viewport="700x260" name="Form controls" subtitle="Input, select, checkbox, switch" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}</style>
+</head><body><div id="root"></div>
+<script type="text/plain" id="app-src">
+const NS = window.Futurist || window.DS || {};
+const { Input, Select, Checkbox, Switch } = NS;
+function Demo(){const[a,setA]=React.useState(true);return (
+  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,width:'100%',maxWidth:560}}>
+    <Input label="API endpoint" placeholder="https://api…" hint="HTTPS only" />
+    <Input label="Rate limit" suffix="req/s" defaultValue="120" />
+    <Select label="Region" options={['us-east-1','eu-west-1','ap-south-1']} />
+    <Input label="Token" error="Required field" />
+    <div style={{display:'flex',flexDirection:'column',gap:10,justifyContent:'flex-end'}}>
+      <Checkbox label="Enable telemetry" defaultChecked />
+      <Checkbox label="Verbose logging" />
+    </div>
+    <div style={{display:'flex',flexDirection:'column',gap:10,justifyContent:'flex-end'}}>
+      <Switch label="Dark mode" checked={a} onChange={e=>setA(e.target.checked)} />
+      <Switch label="Maintenance" />
+    </div>
+  </div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+<script>(function(){var s=document.getElementById("app-src").textContent;var o=Babel.transform(s,{presets:[["react",{runtime:"classic"}]]}).code;new Function("React","ReactDOM",o)(window.React,window.ReactDOM);})();</script>
+</body></html>

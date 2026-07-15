@@ -1,0 +1,146 @@
+<!-- @dsCard group="Deck" viewport="1280x760" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Deck</title>
+<link rel="stylesheet" href="../../styles.css">
+<script defer src="deck-stage.js"></script>
+<style>
+  html,body{height:100%;margin:0;background:#0b0d12;}
+  section[data-label]{ box-sizing:border-box; }
+  .eyebrow{font-family:var(--font-mono);font-size:20px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);}
+  .kicker{font-family:var(--font-mono);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);}
+  h1.title{font-family:var(--font-display);font-weight:700;letter-spacing:-.03em;line-height:1.02;color:var(--fg-1);}
+  .lead{font-size:32px;line-height:1.5;color:var(--fg-2);}
+</style>
+</head>
+<body>
+<deck-stage>
+
+  <!-- 1 · TITLE -->
+  <section data-label="Title" data-speaker-notes="Set the thesis: telemetry that keeps up. 30 seconds, then advance." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;padding:0 160px;position:relative;">
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:48px;">
+      <div style="width:44px;height:44px;border:3px solid var(--fg-1);border-radius:7px;position:relative;"><div style="position:absolute;inset:8px;background:var(--accent);border-radius:3px;"></div></div>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:34px;letter-spacing:-.02em;color:var(--fg-1);">Futurist</span>
+    </div>
+    <div class="eyebrow" style="margin-bottom:28px;">// Q3 Platform Review</div>
+    <h1 class="title" style="font-size:132px;max-width:1400px;">Telemetry that keeps up with you.</h1>
+    <p class="lead" style="margin-top:40px;max-width:1100px;">A precise, low-overhead observability layer for teams that measure everything.</p>
+    <div style="position:absolute;bottom:80px;left:160px;font-family:var(--font-mono);font-size:20px;color:var(--fg-4);letter-spacing:.05em;">GEORGE DIAB · JULY 2026</div>
+  </section>
+
+  <!-- 2 · SECTION DIVIDER -->
+  <section data-label="Section" data-speaker-notes="Transition slide. Pause. This frames the next three slides." style="width:1920px;height:1080px;background:var(--accent);display:flex;flex-direction:column;justify-content:center;padding:0 160px;">
+    <div style="font-family:var(--font-mono);font-size:26px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-fg);opacity:.6;margin-bottom:24px;">01</div>
+    <h1 class="title" style="font-size:112px;color:var(--accent-fg);max-width:1300px;">Where the time goes</h1>
+  </section>
+
+  <!-- 3 · BIG NUMBER -->
+  <section data-label="Big number" data-speaker-notes="The headline metric. Let it land before explaining." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 160px;">
+    <div class="kicker" style="margin-bottom:40px;">Median write latency</div>
+    <div style="font-family:var(--font-display);font-weight:700;font-size:340px;line-height:.9;letter-spacing:-.04em;color:var(--fg-1);">0.7<span style="font-size:120px;color:var(--fg-3);letter-spacing:0;">ms</span></div>
+    <p class="lead" style="margin-top:48px;max-width:1000px;">Down from 4ms — a <span style="color:var(--accent);font-weight:600;">5.7× improvement</span> after moving the ingest path off the GC.</p>
+  </section>
+
+  <!-- 4 · TWO COLUMN -->
+  <section data-label="Two column" data-speaker-notes="Before/after. Walk the left, then the right." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;padding:0 160px;">
+    <div class="eyebrow" style="margin-bottom:20px;">// The rewrite</div>
+    <h1 class="title" style="font-size:76px;margin-bottom:72px;">Two years of pain, deleted</h1>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;">
+      <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:16px;padding:52px;">
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--danger);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;">Before</div>
+        <ul style="font-size:32px;line-height:1.9;color:var(--fg-2);padding-left:28px;margin:0;">
+          <li>18% time in GC pauses</li>
+          <li>4ms median write</li>
+          <li>Dropped samples under load</li>
+        </ul>
+      </div>
+      <div style="background:var(--bg-1);border:1px solid var(--accent);border-radius:16px;padding:52px;">
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:24px;">After</div>
+        <ul style="font-size:32px;line-height:1.9;color:var(--fg-1);padding-left:28px;margin:0;">
+          <li>Zero GC on hot path</li>
+          <li>0.7ms median write</li>
+          <li>Never drops a sample</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · METRICS ROW -->
+  <section data-label="Metrics" data-speaker-notes="Four proof points. Don't read them all — highlight uptime." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;padding:0 160px;">
+    <div class="eyebrow" style="margin-bottom:20px;">// By the numbers</div>
+    <h1 class="title" style="font-size:76px;margin-bottom:80px;">Where we stand</h1>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:32px;">
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:96px;letter-spacing:-.03em;color:var(--fg-1);">4.2M</div>
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--fg-3);letter-spacing:.05em;text-transform:uppercase;margin-top:12px;">spans / sec</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:96px;letter-spacing:-.03em;color:var(--accent);">99.98%</div>
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--fg-3);letter-spacing:.05em;text-transform:uppercase;margin-top:12px;">uptime</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:96px;letter-spacing:-.03em;color:var(--fg-1);">142<span style="font-size:44px;color:var(--fg-3);">ms</span></div>
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--fg-3);letter-spacing:.05em;text-transform:uppercase;margin-top:12px;">p99 latency</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:96px;letter-spacing:-.03em;color:var(--fg-1);">3</div>
+        <div style="font-family:var(--font-mono);font-size:22px;color:var(--fg-3);letter-spacing:.05em;text-transform:uppercase;margin-top:12px;">regions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · QUOTE -->
+  <section data-label="Quote" data-speaker-notes="Borrowed authority. Read it slowly." style="width:1920px;height:1080px;background:var(--bg-1);display:flex;flex-direction:column;justify-content:center;padding:0 200px;">
+    <div style="font-family:var(--font-display);font-size:180px;line-height:.6;color:var(--accent);height:90px;">“</div>
+    <blockquote style="font-family:var(--font-display);font-weight:600;font-size:68px;line-height:1.3;letter-spacing:-.02em;color:var(--fg-1);margin:0;max-width:1400px;">You cannot schedule your way out of an allocation problem. At some point you have to stop allocating.</blockquote>
+    <div style="margin-top:56px;display:flex;align-items:center;gap:20px;">
+      <div style="width:64px;height:64px;border-radius:999px;background:var(--accent);color:var(--accent-fg);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:24px;font-weight:600;">KV</div>
+      <div>
+        <div style="font-size:28px;font-weight:600;color:var(--fg-1);">kira_v</div>
+        <div style="font-family:var(--font-mono);font-size:20px;color:var(--fg-3);">Lead, ingest team</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 · AGENDA / LIST -->
+  <section data-label="Roadmap" data-speaker-notes="Close on what's next. Time-box to one line each." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;padding:0 160px;">
+    <div class="eyebrow" style="margin-bottom:20px;">// What's next</div>
+    <h1 class="title" style="font-size:76px;margin-bottom:72px;">Roadmap · H2</h1>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="display:flex;align-items:center;gap:36px;padding:36px 0;border-top:1px solid var(--border-1);">
+        <span style="font-family:var(--font-mono);font-size:26px;color:var(--accent);width:80px;">Q3</span>
+        <span style="font-size:38px;color:var(--fg-1);flex:1;">Edge deploys in 12 regions</span>
+        <span style="font-family:var(--font-mono);font-size:22px;padding:8px 16px;border-radius:6px;background:var(--success-subtle);color:var(--success-subtle-fg);">shipping</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:36px;padding:36px 0;border-top:1px solid var(--border-1);">
+        <span style="font-family:var(--font-mono);font-size:26px;color:var(--accent);width:80px;">Q4</span>
+        <span style="font-size:38px;color:var(--fg-1);flex:1;">Trace-to-log correlation</span>
+        <span style="font-family:var(--font-mono);font-size:22px;padding:8px 16px;border-radius:6px;background:var(--warning-subtle);color:var(--warning-subtle-fg);">in progress</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:36px;padding:36px 0;border-top:1px solid var(--border-1);border-bottom:1px solid var(--border-1);">
+        <span style="font-family:var(--font-mono);font-size:26px;color:var(--accent);width:80px;">Q1</span>
+        <span style="font-size:38px;color:var(--fg-1);flex:1;">On-prem / BYOK GA</span>
+        <span style="font-family:var(--font-mono);font-size:22px;padding:8px 16px;border-radius:6px;background:var(--bg-3);color:var(--fg-3);">planned</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 · CLOSING -->
+  <section data-label="Closing" data-speaker-notes="Thank you + where to find more. Open for questions." style="width:1920px;height:1080px;background:var(--accent);display:flex;flex-direction:column;justify-content:center;padding:0 160px;">
+    <h1 class="title" style="font-size:128px;color:var(--accent-fg);">Questions?</h1>
+    <div style="margin-top:56px;font-family:var(--font-mono);font-size:26px;color:var(--accent-fg);opacity:.75;letter-spacing:.05em;line-height:2;">
+      <div>futurist.dev/platform</div>
+      <div>george@futurist.dev</div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<script type="application/json" id="speaker-notes">
+{}
+</script>
+</body>
+</html>

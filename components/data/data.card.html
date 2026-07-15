@@ -1,0 +1,40 @@
+<!-- @dsCard group="Components" viewport="700x320" name="Cards, stats, badges, tags" subtitle="Data-display primitives" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}</style>
+</head><body><div id="root"></div>
+<script type="text/plain" id="app-src">
+const NS = window.Futurist || window.DS || {};
+const { Card, Stat, Badge, Tag } = NS;
+function Demo(){return (
+  <div style={{display:'flex',flexDirection:'column',gap:14,width:'100%',maxWidth:600}}>
+    <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+      <Badge tone="success" dot>Healthy</Badge>
+      <Badge tone="warning">Degraded</Badge>
+      <Badge tone="danger" dot>Down</Badge>
+      <Badge tone="accent">Beta</Badge>
+      <Badge tone="info">v2.4.1</Badge>
+      <Badge>Neutral</Badge>
+    </div>
+    <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+      <Tag>region:us-east-1</Tag>
+      <Tag onRemove={()=>{}}>status:active</Tag>
+      <Tag onRemove={()=>{}}>tier:pro</Tag>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+      <Card eyebrow="Requests" title="Throughput" action={<Badge tone="success" dot>Live</Badge>}>
+        <Stat label="Requests / min" value="18.4" unit="K" delta="8.1% wk" trend="up" />
+      </Card>
+      <Card eyebrow="Latency" title="Response" interactive>
+        <Stat label="P99" value="142" unit="ms" delta="12% wk" trend="down" />
+      </Card>
+    </div>
+  </div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+<script>(function(){var s=document.getElementById("app-src").textContent;var o=Babel.transform(s,{presets:[["react",{runtime:"classic"}]]}).code;new Function("React","ReactDOM",o)(window.React,window.ReactDOM);})();</script>
+</body></html>

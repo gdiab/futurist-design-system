@@ -1,0 +1,180 @@
+<!-- @dsCard group="Settings" viewport="1280x860" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Settings</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>#root{min-height:100vh;}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState } = React;
+const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  user:<><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></>, bell:<path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>,
+  shield:<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/>, key:<><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14 9l2 2"/></>,
+  card:<><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></>, sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2"/></>, moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>, copy:<><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+
+function Btn({variant='secondary',size='md',children,onClick,style}) {
+  const [h,setH]=useState(false);
+  const S={sm:{height:28,px:11,fs:12},md:{height:32,px:14,fs:13}}[size];
+  const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'},danger:{background:h?'var(--danger)':'transparent',color:h?'var(--danger-fg)':'var(--danger)',border:'1px solid var(--danger)'}}[variant];
+  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,height:S.height,padding:`0 ${S.px}px`,fontSize:S.fs,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}}>{children}</button>;
+}
+function Field({label,hint,value,prefix,suffix,error,type,area}) {
+  const [f,setF]=useState(false);
+  const border=error?'var(--danger)':f?'var(--accent)':'var(--border-3)';
+  return <div style={{display:'flex',flexDirection:'column',gap:6}}>
+    {label?<label style={{fontSize:12,fontWeight:500,color:'var(--fg-2)'}}>{label}</label>:null}
+    {area?<textarea defaultValue={value} rows={3} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{padding:'8px 10px',background:'var(--bg-1)',border:'1px solid '+border,borderRadius:'var(--radius-md)',outline:'none',boxShadow:f?'var(--focus-ring)':'none',color:'var(--fg-1)',fontFamily:'var(--font-sans)',fontSize:13,resize:'vertical',lineHeight:1.5,transition:'all var(--dur-fast)'}}/>:
+    <div style={{display:'flex',alignItems:'center',gap:7,height:34,padding:'0 10px',background:'var(--bg-1)',border:'1px solid '+border,borderRadius:'var(--radius-md)',boxShadow:f?(error?'0 0 0 3px var(--danger-subtle)':'var(--focus-ring)'):'none',transition:'all var(--dur-fast)'}}>
+      {prefix?<span style={{color:'var(--fg-3)',fontSize:13}}>{prefix}</span>:null}
+      <input type={type||'text'} defaultValue={value} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{flex:1,minWidth:0,border:'none',outline:'none',background:'transparent',color:'var(--fg-1)',fontFamily:type==='password'?'var(--font-mono)':'var(--font-sans)',fontSize:13}}/>
+      {suffix?<span style={{color:'var(--fg-3)',fontFamily:'var(--font-mono)',fontSize:12}}>{suffix}</span>:null}
+    </div>}
+    {error?<span style={{fontSize:12,color:'var(--danger)'}}>{error}</span>:hint?<span style={{fontSize:12,color:'var(--fg-3)'}}>{hint}</span>:null}
+  </div>;
+}
+function Select({label,options,value}) {
+  const [f,setF]=useState(false);
+  return <div style={{display:'flex',flexDirection:'column',gap:6}}>
+    {label?<label style={{fontSize:12,fontWeight:500,color:'var(--fg-2)'}}>{label}</label>:null}
+    <div style={{position:'relative',display:'flex',alignItems:'center',height:34,background:'var(--bg-1)',border:'1px solid '+(f?'var(--accent)':'var(--border-3)'),borderRadius:'var(--radius-md)',boxShadow:f?'var(--focus-ring)':'none'}}>
+      <select defaultValue={value} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{appearance:'none',WebkitAppearance:'none',flex:1,height:'100%',border:'none',outline:'none',background:'transparent',padding:'0 30px 0 10px',color:'var(--fg-1)',fontFamily:'var(--font-sans)',fontSize:13,cursor:'pointer'}}>{options.map(o=><option key={o}>{o}</option>)}</select>
+      <svg width="10" height="10" viewBox="0 0 10 10" style={{position:'absolute',right:10,pointerEvents:'none',color:'var(--fg-3)'}}><path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    </div>
+  </div>;
+}
+function Sw({on:init}) { const [on,setOn]=useState(init); return <button onClick={()=>setOn(!on)} aria-label="toggle" style={{width:30,height:18,borderRadius:999,position:'relative',cursor:'pointer',background:on?'var(--accent)':'var(--bg-3)',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),transition:'background var(--dur-base)',flexShrink:0}}><span style={{position:'absolute',top:2,left:on?13:2,width:13,height:13,borderRadius:999,background:'#fff',boxShadow:'0 1px 2px rgba(0,0,0,.25)',transition:'left var(--dur-base) var(--ease-standard)'}}/></button>; }
+
+function Row({title,desc,children}) {
+  return <div style={{display:'flex',alignItems:'center',gap:16,padding:'14px 0',borderTop:'1px solid var(--border-1)'}}>
+    <div style={{flex:1}}><div style={{fontSize:13,fontWeight:500,color:'var(--fg-1)'}}>{title}</div>{desc?<div style={{fontSize:12,color:'var(--fg-3)',marginTop:2,lineHeight:1.4}}>{desc}</div>:null}</div>
+    <div style={{flexShrink:0}}>{children}</div>
+  </div>;
+}
+function Section({title,desc,children,footer}) {
+  return <section style={{background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-1)',overflow:'hidden',marginBottom:20}}>
+    <div style={{padding:'18px 20px'}}>
+      <h3 style={{fontSize:15,fontWeight:600,color:'var(--fg-1)'}}>{title}</h3>
+      {desc?<p style={{fontSize:13,color:'var(--fg-3)',marginTop:3,lineHeight:1.5}}>{desc}</p>:null}
+      <div style={{marginTop:16}}>{children}</div>
+    </div>
+    {footer?<div style={{display:'flex',justifyContent:'flex-end',gap:8,padding:'12px 20px',borderTop:'1px solid var(--border-1)',background:'var(--bg-2)'}}>{footer}</div>:null}
+  </section>;
+}
+
+const nav=[['user','Profile'],['bell','Notifications'],['shield','Security'],['key','API keys'],['card','Billing']];
+function App() {
+  const [dark,setDark]=useState(false);
+  const [route,setRoute]=useState('Profile');
+  const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
+    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:12,height:56,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+      <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+      <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// settings</span>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+    </header>
+    <div style={{maxWidth:920,margin:'0 auto',padding:'28px',display:'grid',gridTemplateColumns:'190px 1fr',gap:32,alignItems:'start'}}>
+      <aside style={{position:'sticky',top:80,display:'flex',flexDirection:'column',gap:2}}>
+        <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-4)',padding:'0 8px 8px'}}>Settings</div>
+        {nav.map(([ic,l])=>{const on=route===l;return <button key={l} onClick={()=>setRoute(l)} style={{display:'flex',alignItems:'center',gap:10,height:34,padding:'0 10px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',textAlign:'left'}}><Icon name={ic} size={16}/>{l}</button>;})}
+      </aside>
+      <main style={{minWidth:0}}>
+        <h1 style={{fontSize:24,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)',marginBottom:20}}>{route}</h1>
+
+        {route==='Profile' && <>
+          <Section title="Public profile" desc="This information appears on your comments and activity." footer={<><Btn>Cancel</Btn><Btn variant="primary">Save changes</Btn></>}>
+            <div style={{display:'flex',gap:16,alignItems:'center',marginBottom:18}}>
+              <div style={{width:56,height:56,borderRadius:'var(--radius-full)',background:'var(--accent)',color:'var(--accent-fg)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:20,fontWeight:600,flexShrink:0}}>GD</div>
+              <div style={{display:'flex',gap:8}}><Btn size="sm">Upload</Btn><Btn size="sm" variant="danger">Remove</Btn></div>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+              <Field label="Display name" value="George Diab"/>
+              <Field label="Username" prefix="@" value="georgediab"/>
+              <Field label="Email" value="george@futurist.dev" hint="Used for account notifications."/>
+              <Select label="Timezone" value="America/New_York" options={['America/New_York','Europe/London','Asia/Tokyo','UTC']}/>
+            </div>
+            <div style={{marginTop:14}}><Field label="Bio" area value="Building observability tooling. Ex-infra. Occasional writer at Asterisk."/></div>
+          </Section>
+        </>}
+
+        {route==='Notifications' && <>
+          <Section title="Email notifications" desc="Choose what lands in your inbox.">
+            <Row title="Incident alerts" desc="When a service you own goes down."><Sw on={true}/></Row>
+            <Row title="Weekly digest" desc="Top stories and metrics every Monday."><Sw on={true}/></Row>
+            <Row title="Comment replies" desc="When someone replies to your comment."><Sw on={false}/></Row>
+            <Row title="Product updates" desc="New features and changelog highlights."><Sw on={false}/></Row>
+          </Section>
+          <Section title="Delivery" desc="How and when alerts reach you." footer={<Btn variant="primary">Save preferences</Btn>}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+              <Select label="Alert channel" value="Email + Slack" options={['Email only','Email + Slack','Slack only','PagerDuty']}/>
+              <Select label="Quiet hours" value="22:00 – 07:00" options={['Off','22:00 – 07:00','23:00 – 06:00']}/>
+            </div>
+          </Section>
+        </>}
+
+        {route==='Security' && <>
+          <Section title="Password" desc="Use a strong, unique password." footer={<Btn variant="primary">Update password</Btn>}>
+            <div style={{display:'flex',flexDirection:'column',gap:14,maxWidth:360}}>
+              <Field label="Current password" type="password" value="••••••••••"/>
+              <Field label="New password" type="password" value="" hint="At least 12 characters."/>
+              <Field label="Confirm new password" type="password" value="" error="Passwords don’t match"/>
+            </div>
+          </Section>
+          <Section title="Two-factor authentication">
+            <Row title="Authenticator app" desc="Time-based one-time codes (TOTP)."><Btn size="sm" variant="primary">Enabled</Btn></Row>
+            <Row title="Recovery codes" desc="10 single-use backup codes."><Btn size="sm">Regenerate</Btn></Row>
+          </Section>
+        </>}
+
+        {route==='API keys' && <>
+          <Section title="API keys" desc="Keys grant full programmatic access. Treat them like passwords." footer={<Btn variant="primary">Generate new key</Btn>}>
+            {[['Production','ftr_live_8f2c…a41d','2 days ago'],['CI pipeline','ftr_live_31bc…9e07','3 weeks ago'],['Local dev','ftr_test_a90f…2c11','never']].map((k,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 0',borderTop:'1px solid var(--border-1)'}}>
+              <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:500,color:'var(--fg-1)'}}>{k[0]}</div><div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',marginTop:2}}>{k[1]}</div></div>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>used {k[2]}</span>
+              <Btn size="sm"><Icon name="copy" size={13}/></Btn>
+              <Btn size="sm" variant="danger">Revoke</Btn>
+            </div>)}
+          </Section>
+        </>}
+
+        {route==='Billing' && <>
+          <Section title="Plan" desc="You're on the Team plan, billed annually." footer={<><Btn>Cancel plan</Btn><Btn variant="primary">Upgrade</Btn></>}>
+            <div style={{display:'flex',alignItems:'center',gap:14,padding:'14px 16px',background:'var(--accent-subtle)',border:'1px solid var(--accent)',borderRadius:'var(--radius-md)'}}>
+              <div style={{flex:1}}><div style={{fontSize:14,fontWeight:600,color:'var(--fg-1)'}}>Team — $40 / seat / mo</div><div style={{fontSize:12,color:'var(--fg-2)',marginTop:2}}>8 seats · renews Jan 1, 2027</div></div>
+              <div style={{fontFamily:'var(--font-display)',fontSize:24,fontWeight:600,color:'var(--fg-1)'}}>$320<span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>/mo</span></div>
+            </div>
+          </Section>
+          <Section title="Payment method" footer={<Btn variant="primary">Save card</Btn>}>
+            <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr',gap:14}}>
+              <Field label="Card number" prefix={<Icon name="card" size={15}/>} value="4242 4242 4242 4242"/>
+              <Field label="Expiry" value="09 / 28"/>
+              <Field label="CVC" value="•••"/>
+            </div>
+          </Section>
+        </>}
+      </main>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

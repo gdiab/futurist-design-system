@@ -1,0 +1,210 @@
+<!-- @dsCard group="News" viewport="1280x860" -->
+<!-- @startingPoint section="News" subtitle="Tech news aggregator / ranked feed" viewport="1280x900" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Dispatch</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  #root{min-height:100vh;}
+  a{text-decoration:none;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;border:3px solid var(--bg-0);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState } = React;
+
+const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  up:<path d="M12 19V5M6 11l6-6 6 6"/>,
+  chat:<path d="M21 12a8 8 0 01-11.5 7.2L3 21l1.8-6.5A8 8 0 1121 12z"/>,
+  ext:<><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></>,
+  bolt:<path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/>,
+  search:<><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></>,
+  moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>,
+  sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></>,
+  bookmark:<path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"/>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+
+function Badge({tone='neutral',children}) {
+  const T={neutral:['var(--bg-3)','var(--fg-2)'],accent:['var(--accent-subtle)','var(--accent-subtle-fg)'],warning:['var(--warning-subtle)','var(--warning-subtle-fg)'],info:['var(--info-subtle)','var(--info-subtle-fg)']}[tone];
+  return <span style={{display:'inline-flex',alignItems:'center',height:17,padding:'0 6px',borderRadius:'var(--radius-sm)',fontFamily:'var(--font-mono)',fontSize:10,fontWeight:500,letterSpacing:'.04em',textTransform:'uppercase',background:T[0],color:T[1],whiteSpace:'nowrap'}}>{children}</span>;
+}
+
+const stories = [
+  {t:"Show HN: A sub-millisecond time-series engine written in Zig",src:"github.com/futurist",author:"kira_v",pts:842,cm:214,tag:"Show HN",time:"2h",topic:"Systems",read:"6 min",
+   dek:"After two years fighting GC pauses in our Go collector, we rewrote the ingest path in Zig. Median write latency dropped from 4ms to 0.7ms at 4M points/sec. Here's the architecture, the benchmarks, and everything that broke."},
+  {t:"The hidden cost of observability at scale — and how we cut it 40%",src:"futurist.dev/blog",author:"George Diab",pts:611,cm:158,tag:null,time:"4h",topic:"Infra",read:"9 min",
+   dek:"Cardinality is the silent budget killer. We audited 1.2B active series, killed the labels nobody queried, and moved cold data to columnar storage — trimming spend without losing a single alert."},
+  {t:"WebGPU is quietly becoming the default for browser compute",src:"chromium.org",author:"lin.dev",pts:497,cm:302,tag:null,time:"5h",topic:"Web",read:"7 min",
+   dek:"Shipping in every major engine, WebGPU is no longer just for graphics. From in-browser inference to real-time data viz, compute shaders are eating the workloads we used to send to servers."},
+  {t:"Postgres 18 ships asynchronous I/O — early benchmarks inside",src:"postgresql.org",author:"pg_hackers",pts:1204,cm:389,tag:"Hot",time:"6h",topic:"Databases",read:"11 min",
+   dek:"The long-awaited AIO subsystem lands in 18. On NVMe, sequential scans see up to 2.7× throughput and vacuum finishes in half the time. We reproduced the numbers on commodity hardware."},
+  {t:"Why we rewrote our scheduler and deleted 30k lines of code",src:"asterisk.mag",author:"m. okafor",pts:388,cm:97,tag:null,time:"7h",topic:"Eng",read:"8 min",
+   dek:"Complexity accretes. Our task scheduler had grown six special-cased paths nobody fully understood. The rewrite is smaller, faster, and — crucially — explainable to a new hire in an afternoon."},
+  {t:"A field guide to reading flame graphs without losing your mind",src:"wired.com",author:"b. tanaka",pts:266,cm:54,tag:null,time:"9h",topic:"Perf",read:"5 min",
+   dek:"Wide bars, not tall ones. A practical, opinionated walkthrough of spotting the three most common performance sins in a flame graph — and the fixes that actually move p99."},
+  {t:"Rust in the Linux kernel: one year later, a status report",src:"lwn.net",author:"corbet",pts:733,cm:271,tag:null,time:"11h",topic:"Systems",read:"10 min",
+   dek:"Drivers are landing, the tooling matured, and the culture clash cooled. A candid look at what shipped, what stalled, and whether the memory-safety promise is holding up in production kernels."},
+  {t:"The economics of edge deploys, measured across 12 regions",src:"futurist.dev",author:"data team",pts:429,cm:88,tag:"Data",time:"13h",topic:"Infra",read:"7 min",
+   dek:"We deployed the same workload to 12 regions and measured cost-per-request against latency saved. The break-even is sharper than the marketing suggests — full dataset and methodology attached."},
+];
+
+function StoryRow({s,i}) {
+  const [pts,setPts]=useState(s.pts);
+  const [voted,setVoted]=useState(false);
+  const [hover,setHover]=useState(false);
+  const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
+  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'grid',gridTemplateColumns:'28px 44px 1fr',gap:12,alignItems:'start',padding:'14px 16px',borderBottom:'1px solid var(--border-1)',background:hover?'var(--bg-1)':'transparent',transition:'background var(--dur-fast)'}}>
+    <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-4)',textAlign:'right',paddingTop:3}}>{String(i+1).padStart(2,'0')}</span>
+    <button onClick={vote} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1,border:'none',background:'transparent',cursor:'pointer',padding:'2px 0',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)'}}>
+      <Icon name="up" size={16} sw={voted?2.4:1.8}/>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:600}}>{pts}</span>
+    </button>
+    <div style={{display:'flex',flexDirection:'column',gap:5,minWidth:0}}>
+      <div style={{display:'flex',alignItems:'baseline',gap:8,flexWrap:'wrap'}}>
+        <a href="#" style={{fontSize:15,fontWeight:600,color:'var(--fg-1)',lineHeight:1.35}}>{s.t}</a>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)',display:'inline-flex',alignItems:'center',gap:3}}>{s.src}<Icon name="ext" size={11}/></span>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
+        {s.tag?<Badge tone={s.tag==='Hot'?'warning':s.tag==='Data'?'info':'accent'}>{s.tag}</Badge>:null}
+        <span>{s.topic}</span><span style={{opacity:.5}}>·</span>
+        <span style={{display:'inline-flex',alignItems:'center',gap:4}}><Icon name="chat" size={12}/>{s.cm}</span>
+        <span style={{opacity:.5}}>·</span><span>{s.time} ago</span>
+      </div>
+    </div>
+  </article>;
+}
+
+function Thumb({topic}) {
+  return <div style={{position:'relative',height:120,borderRadius:'var(--radius-md)',overflow:'hidden',flexShrink:0,background:'repeating-linear-gradient(135deg,var(--bg-2),var(--bg-2) 9px,var(--bg-3) 9px,var(--bg-3) 18px)',border:'1px solid var(--border-1)',display:'flex',alignItems:'center',justifyContent:'center'}}>
+    <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--fg-4)'}}>thumbnail · {topic}</span>
+  </div>;
+}
+
+function RichCard({s}) {
+  const [pts,setPts]=useState(s.pts);
+  const [voted,setVoted]=useState(false);
+  const [saved,setSaved]=useState(false);
+  const [hover,setHover]=useState(false);
+  const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
+  const foot={display:'inline-flex',alignItems:'center',gap:5,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'};
+  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',flexDirection:'column',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:14,gap:11,boxShadow:hover?'var(--shadow-2)':'var(--shadow-1)',borderColor:hover?'var(--border-2)':'var(--border-1)',transition:'box-shadow var(--dur-base),border-color var(--dur-base)'}}>
+    <Thumb topic={s.topic}/>
+    <div style={{display:'flex',alignItems:'center',gap:7}}>
+      {s.tag?<Badge tone={s.tag==='Hot'?'warning':s.tag==='Data'?'info':'accent'}>{s.tag}</Badge>:null}
+      <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--fg-3)'}}>{s.topic}</span>
+      <span style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:10,color:'var(--fg-4)'}}>{s.read} read</span>
+    </div>
+    <a href="#" style={{fontSize:16,fontWeight:600,color:'var(--fg-1)',lineHeight:1.3,letterSpacing:'-.01em'}}>{s.t}</a>
+    <p style={{fontSize:13,color:'var(--fg-2)',lineHeight:1.55,margin:0,display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{s.dek}</p>
+    <div style={{display:'flex',alignItems:'center',gap:8,paddingTop:2}}>
+      <div style={{width:20,height:20,borderRadius:'var(--radius-full)',background:'var(--accent)',color:'var(--accent-fg)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:9,fontWeight:600}}>{s.author.slice(0,1).toUpperCase()}</div>
+      <span style={{fontSize:12,color:'var(--fg-2)',fontWeight:500}}>{s.author}</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>{s.src}</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)',marginLeft:'auto'}}>{s.time} ago</span>
+    </div>
+    <div style={{display:'flex',alignItems:'center',gap:14,paddingTop:11,borderTop:'1px solid var(--border-1)'}}>
+      <button onClick={vote} style={{...foot,border:'none',background:'transparent',cursor:'pointer',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',fontWeight:600}}><Icon name="up" size={14} sw={voted?2.4:1.8}/>{pts}</button>
+      <span style={foot}><Icon name="chat" size={13}/>{s.cm}</span>
+      <button onClick={()=>setSaved(!saved)} aria-label="save" style={{...foot,marginLeft:'auto',border:'none',background:'transparent',cursor:'pointer',color:saved?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name="bookmark" size={13} sw={saved?2.2:1.7}/></button>
+    </div>
+  </article>;
+}
+
+const trending=[["WebGPU",38],["Postgres 18",31],["Zig",24],["flame graphs",19],["edge deploy",17],["scheduler",12]];
+const topics=[["Top",null],["Systems",412],["Infra",288],["Web",176],["Databases",134],["Perf",96],["Show HN",61]];
+
+function App() {
+  const [dark,setDark]=useState(false);
+  const [tab,setTab]=useState("Top");
+  const [topic,setTopic]=useState("Top");
+  const [view,setView]=useState("rich");
+  const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  const tabs=["Top","New","Best","Ask","Show"];
+  return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
+    {/* nav */}
+    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:20,height:54,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+      <div style={{display:'flex',alignItems:'center',gap:9}}>
+        <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+        <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Dispatch</span>
+      </div>
+      <nav style={{display:'flex',gap:2,marginLeft:8}}>
+        {tabs.map(t=>{const on=tab===t;return <button key={t} onClick={()=>setTab(t)} style={{height:30,padding:'0 11px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}</button>;})}
+      </nav>
+      <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:10}}>
+        <div style={{display:'flex',gap:2,padding:2,background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)'}}>
+          {[["compact","List"],["rich","Cards"]].map(([v,l])=>{const on=view===v;return <button key={v} onClick={()=>setView(v)} style={{height:24,padding:'0 9px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--bg-1)':'transparent',boxShadow:on?'var(--shadow-1)':'none',color:on?'var(--fg-1)':'var(--fg-3)',fontSize:12,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{l}</button>;})}
+        </div>
+        <div style={{display:'flex',alignItems:'center',gap:7,width:200,height:30,padding:'0 10px',background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',color:'var(--fg-3)'}}><Icon name="search" size={13}/><span style={{fontSize:12}}>Search</span></div>
+        <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{width:30,height:30,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-3)',cursor:'pointer'}}><Icon name={dark?'sun':'moon'} size={15}/></button>
+      </div>
+    </header>
+
+    <div style={{maxWidth:1080,margin:'0 auto',padding:'24px 28px',display:'grid',gridTemplateColumns:'1fr 260px',gap:28,alignItems:'start'}}>
+      {/* feed */}
+      <main>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+          <div style={{display:'flex',flexDirection:'column',gap:3}}>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>// {tab} stories · {topic}</span>
+            <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Today on Dispatch</h1>
+          </div>
+          <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>updated 30s ago</span>
+        </div>
+        <div style={view==="rich"
+          ? {display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}
+          : {border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}>
+          {stories.map((s,i)=> view==="rich" ? <RichCard key={i} s={s}/> : <StoryRow key={i} s={s} i={i}/>)}
+        </div>
+        <div style={{display:'flex',justifyContent:'center',padding:'18px 0'}}>
+          <button style={{height:34,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Load more</button>
+        </div>
+      </main>
+
+      {/* sidebar */}
+      <aside style={{display:'flex',flexDirection:'column',gap:16,position:'sticky',top:78}}>
+        <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>Topics</div>
+          <div style={{display:'flex',flexDirection:'column',gap:2}}>
+            {topics.map(([t,n])=>{const on=topic===t;return <button key={t} onClick={()=>setTopic(t)} style={{display:'flex',alignItems:'center',justifyContent:'space-between',height:28,padding:'0 8px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}{n!=null?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:on?'var(--accent-subtle-fg)':'var(--fg-4)'}}>{n}</span>:null}</button>;})}
+          </div>
+        </section>
+        <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
+          <div style={{display:'flex',alignItems:'center',gap:6,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}><Icon name="bolt" size={12}/>Trending now</div>
+          <div style={{display:'flex',flexDirection:'column',gap:9}}>
+            {trending.map(([t,n],i)=><div key={t} style={{display:'flex',alignItems:'center',gap:9}}>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-4)',width:14}}>{i+1}</span>
+              <a href="#" style={{fontSize:13,color:'var(--fg-1)',fontWeight:500,flex:1}}>{t}</a>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-subtle-fg)'}}>+{n}</span>
+            </div>)}
+          </div>
+        </section>
+        <section style={{border:'1px solid var(--accent)',borderRadius:'var(--radius-lg)',background:'var(--accent-subtle)',padding:16}}>
+          <div style={{fontSize:14,fontWeight:600,color:'var(--fg-1)',marginBottom:4}}>Get the daily digest</div>
+          <p style={{fontSize:12,color:'var(--fg-2)',lineHeight:1.5,marginBottom:12}}>Top 10 stories, every morning. No noise.</p>
+          <button style={{width:'100%',height:32,border:'none',borderRadius:'var(--radius-md)',background:'var(--accent)',color:'var(--accent-fg)',fontSize:13,fontWeight:600,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Subscribe</button>
+        </section>
+      </aside>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

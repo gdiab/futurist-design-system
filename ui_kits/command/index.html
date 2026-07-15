@@ -1,0 +1,133 @@
+<!-- @dsCard group="Command" viewport="1280x760" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Command palette</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>#root{min-height:100vh;} *::-webkit-scrollbar{width:8px;} *::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState, useEffect, useRef, useMemo } = React;
+const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  search:<><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></>, arrow:<path d="M5 12h14M13 6l6 6-6 6"/>,
+  server:<><rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/></>,
+  deploy:<path d="M12 2L4 7v10l8 5 8-5V7z M12 2v20M4 7l8 5 8-5"/>, doc:<><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></>,
+  user:<><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></>, gear:<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8M4.6 9a1.6 1.6 0 00-.3-1.8"/></>,
+  moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>, sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2"/></>,
+  plus:<path d="M12 5v14M5 12h14"/>, logout:<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>,
+  bolt:<path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+
+const commands = [
+  {g:"Navigate",items:[
+    {ic:'server',label:'Go to Services',hint:'G S'},
+    {ic:'deploy',label:'Go to Deployments',hint:'G D'},
+    {ic:'doc',label:'Go to Logs',hint:'G L'},
+  ]},
+  {g:"Actions",items:[
+    {ic:'plus',label:'New deploy',hint:'⌘N',accent:true},
+    {ic:'bolt',label:'Trigger incident drill',hint:''},
+    {ic:'gear',label:'Open project settings',hint:'⌘,'},
+  ]},
+  {g:"Services",items:[
+    {ic:'server',label:'api-gateway',hint:'us-east-1',mono:true},
+    {ic:'server',label:'billing-worker',hint:'eu-west-1',mono:true},
+    {ic:'server',label:'search-index',hint:'ap-south-1',mono:true},
+  ]},
+  {g:"Account",items:[
+    {ic:'user',label:'View profile',hint:''},
+    {ic:'moon',label:'Toggle theme',hint:'⌘⇧L'},
+    {ic:'logout',label:'Sign out',hint:'',danger:true},
+  ]},
+];
+
+function Palette({onClose,onToggleTheme}) {
+  const [q,setQ]=useState('');
+  const [sel,setSel]=useState(0);
+  const inputRef=useRef(null);
+  useEffect(()=>{inputRef.current&&inputRef.current.focus();},[]);
+  const flat=useMemo(()=>{
+    const out=[]; commands.forEach(sec=>{const hits=sec.items.filter(it=>it.label.toLowerCase().includes(q.toLowerCase())); if(hits.length)out.push({header:sec.g}); hits.forEach(it=>out.push(it));}); return out;
+  },[q]);
+  const selectable=flat.filter(x=>!x.header);
+  useEffect(()=>{setSel(0);},[q]);
+  useEffect(()=>{
+    const k=(e)=>{
+      if(e.key==='Escape')onClose();
+      if(e.key==='ArrowDown'){e.preventDefault();setSel(s=>Math.min(s+1,selectable.length-1));}
+      if(e.key==='ArrowUp'){e.preventDefault();setSel(s=>Math.max(s-1,0));}
+      if(e.key==='Enter'){const it=selectable[sel]; if(it&&it.label==='Toggle theme')onToggleTheme();}
+    };
+    window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
+  },[sel,selectable]);
+  let si=-1;
+  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'12vh 16px',background:'oklch(0.2 0.02 262 / 0.45)',backdropFilter:'blur(3px)'}}>
+    <div onMouseDown={e=>e.stopPropagation()} style={{width:'100%',maxWidth:560,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden'}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,padding:'0 16px',height:52,borderBottom:'1px solid var(--border-1)'}}>
+        <span style={{color:'var(--fg-3)'}}><Icon name="search" size={18}/></span>
+        <input ref={inputRef} value={q} onChange={e=>setQ(e.target.value)} placeholder="Type a command or search…" style={{flex:1,border:'none',outline:'none',background:'transparent',fontSize:15,fontFamily:'var(--font-sans)',color:'var(--fg-1)'}}/>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:11,padding:'2px 6px',border:'1px solid var(--border-2)',borderRadius:'var(--radius-sm)',color:'var(--fg-3)'}}>ESC</span>
+      </div>
+      <div style={{maxHeight:380,overflow:'auto',padding:6}}>
+        {flat.length===0?<div style={{padding:'32px 16px',textAlign:'center',color:'var(--fg-3)',fontSize:13}}>No results for “{q}”</div>:flat.map((row,i)=>{
+          if(row.header)return <div key={i} style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-4)',padding:'10px 10px 5px'}}>{row.header}</div>;
+          si++; const on=si===sel; const idx=si;
+          return <button key={i} onMouseEnter={()=>setSel(idx)} onClick={()=>{if(row.label==='Toggle theme')onToggleTheme();}} style={{display:'flex',alignItems:'center',gap:11,width:'100%',padding:'9px 10px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',textAlign:'left',background:on?'var(--accent-subtle)':'transparent',color:row.danger?'var(--danger)':on?'var(--accent-subtle-fg)':'var(--fg-1)',transition:'background var(--dur-fast)'}}>
+            <span style={{display:'inline-flex',color:row.danger?'var(--danger)':on?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name={row.ic} size={17}/></span>
+            <span style={{flex:1,fontSize:13.5,fontWeight:on?600:500,fontFamily:row.mono?'var(--font-mono)':'var(--font-sans)'}}>{row.label}</span>
+            {row.hint?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:on?'var(--accent-subtle-fg)':'var(--fg-4)'}}>{row.hint}</span>:null}
+            {on?<span style={{color:'var(--accent-subtle-fg)'}}><Icon name="arrow" size={14}/></span>:null}
+          </button>;
+        })}
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:16,padding:'9px 14px',borderTop:'1px solid var(--border-1)',background:'var(--bg-2)',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
+        <span>↑↓ navigate</span><span>↵ select</span><span>esc close</span>
+      </div>
+    </div>
+  </div>;
+}
+
+function App() {
+  const [dark,setDark]=useState(false);
+  const [open,setOpen]=useState(true);
+  const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  useEffect(()=>{
+    const k=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setOpen(true);}};
+    window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
+  },[]);
+  return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
+    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:12,height:56,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+      <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+      <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// command palette</span>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+    </header>
+    <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16,padding:'80px 20px',textAlign:'center'}}>
+      <div style={{width:44,height:44,borderRadius:'var(--radius-lg)',background:'var(--accent-subtle)',color:'var(--accent-subtle-fg)',display:'flex',alignItems:'center',justifyContent:'center'}}><Icon name="search" size={22}/></div>
+      <h1 style={{fontSize:26,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Command palette</h1>
+      <p style={{fontSize:14,color:'var(--fg-2)',maxWidth:380,lineHeight:1.55}}>Press <kbd style={{fontFamily:'var(--font-mono)',fontSize:12,padding:'2px 7px',border:'1px solid var(--border-2)',borderRadius:'var(--radius-sm)',color:'var(--fg-1)',background:'var(--bg-2)'}}>⌘K</kbd> to open. Type to filter, arrow keys to move, enter to run.</p>
+      <button onClick={()=>setOpen(true)} style={{height:36,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Open palette</button>
+    </div>
+    {open?<Palette onClose={()=>setOpen(false)} onToggleTheme={()=>setTheme(!dark)}/>:null}
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

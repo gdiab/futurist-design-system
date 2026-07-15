@@ -1,0 +1,183 @@
+<!-- @dsCard group="News" viewport="1280x900" -->
+<!-- @startingPoint section="News" subtitle="Story detail + comment thread" viewport="1280x900" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Dispatch · Story</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  #root{min-height:100vh;}
+  a{text-decoration:none;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;border:3px solid var(--bg-0);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState } = React;
+const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  up:<path d="M12 19V5M6 11l6-6 6 6"/>,
+  chat:<path d="M21 12a8 8 0 01-11.5 7.2L3 21l1.8-6.5A8 8 0 1121 12z"/>,
+  ext:<><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></>,
+  back:<path d="M15 6l-6 6 6 6"/>,
+  bookmark:<path d="M6 3h12a1 1 0 011 1v17l-7-4-7 4V4a1 1 0 011-1z"/>,
+  share:<><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></>,
+  reply:<path d="M9 17l-5-5 5-5M4 12h11a5 5 0 015 5v1"/>,
+  moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>,
+  sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+function Badge({tone='accent',children}) {
+  const T={neutral:['var(--bg-3)','var(--fg-2)'],accent:['var(--accent-subtle)','var(--accent-subtle-fg)']}[tone];
+  return <span style={{display:'inline-flex',alignItems:'center',height:18,padding:'0 7px',borderRadius:'var(--radius-sm)',fontFamily:'var(--font-mono)',fontSize:10,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',background:T[0],color:T[1]}}>{children}</span>;
+}
+function Avatar({name,size=24,tone='accent'}) {
+  const bg=tone==='accent'?'var(--accent)':'var(--bg-3)';
+  const fg=tone==='accent'?'var(--accent-fg)':'var(--fg-2)';
+  return <div style={{width:size,height:size,borderRadius:'var(--radius-full)',background:bg,color:fg,display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0,fontFamily:'var(--font-mono)',fontSize:size*0.42,fontWeight:600}}>{name.slice(0,1).toUpperCase()}</div>;
+}
+
+const comments = [
+  {a:"lin.dev",t:"14m",pts:64,tone:'accent',body:"The 0.7ms median is impressive, but I'd love to see the tail. What does p99.9 look like under a noisy-neighbor scenario? GC-free doesn't help if the allocator fragments.",kids:[
+    {a:"kira_v",t:"9m",pts:41,tone:'neutral',body:"Fair — p99.9 sits around 3.1ms today. We use a slab allocator with per-core arenas, so fragmentation stays bounded. Full histogram is in the appendix.",kids:[
+      {a:"lin.dev",t:"6m",pts:12,tone:'accent',body:"Per-core arenas, nice. That explains the flat curve. Subscribed.",kids:[]}
+    ]}
+  ]},
+  {a:"corbet",t:"22m",pts:38,tone:'neutral',body:"Zig's comptime is underrated for this class of problem. Curious whether you considered Rust and what tipped the decision.",kids:[
+    {a:"kira_v",t:"18m",pts:29,tone:'neutral',body:"We prototyped both. Rust won on ecosystem, Zig won on build times and C interop, which mattered because we embed into an existing C daemon. Close call.",kids:[]}
+  ]},
+  {a:"m. okafor",t:"31m",pts:17,tone:'neutral',body:"Deleting code is the best feeling in engineering. Congrats on the rewrite.",kids:[]},
+];
+
+function Comment({c,depth=0}) {
+  const [pts,setPts]=useState(c.pts);
+  const [voted,setVoted]=useState(false);
+  const [collapsed,setCollapsed]=useState(false);
+  const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
+  return <div style={{marginLeft:depth?16:0,paddingLeft:depth?16:0,borderLeft:depth?'1px solid var(--border-1)':'none'}}>
+    <div style={{padding:'12px 0'}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:7}}>
+        <Avatar name={c.a} size={22} tone={c.tone}/>
+        <span style={{fontSize:13,fontWeight:600,color:'var(--fg-1)'}}>{c.a}</span>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>{c.t} ago</span>
+        <button onClick={()=>setCollapsed(!collapsed)} style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)',border:'none',background:'transparent',cursor:'pointer'}}>[{collapsed?'+':'–'}]</button>
+      </div>
+      {!collapsed && <>
+        <p style={{fontSize:13.5,color:'var(--fg-2)',lineHeight:1.6,margin:'0 0 8px 30px'}}>{c.body}</p>
+        <div style={{display:'flex',alignItems:'center',gap:14,marginLeft:30}}>
+          <button onClick={vote} style={{display:'inline-flex',alignItems:'center',gap:4,border:'none',background:'transparent',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,fontWeight:600,color:voted?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name="up" size={13} sw={voted?2.4:1.8}/>{pts}</button>
+          <button style={{display:'inline-flex',alignItems:'center',gap:4,border:'none',background:'transparent',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}><Icon name="reply" size={12}/>Reply</button>
+        </div>
+        {c.kids.map((k,i)=><Comment key={i} c={k} depth={depth+1}/>)}
+      </>}
+    </div>
+  </div>;
+}
+
+function App() {
+  const [dark,setDark]=useState(false);
+  const [pts,setPts]=useState(842);
+  const [voted,setVoted]=useState(false);
+  const [saved,setSaved]=useState(false);
+  const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
+  const meta={display:'inline-flex',alignItems:'center',gap:5,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'};
+  return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
+    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:14,height:54,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+      <a href="index.html" style={{...meta,color:'var(--fg-2)',fontWeight:500}}><Icon name="back" size={15}/>Back to feed</a>
+      <div style={{display:'flex',alignItems:'center',gap:9,marginLeft:6}}>
+        <div style={{width:20,height:20,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+        <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:15,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Dispatch</span>
+      </div>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',width:30,height:30,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-3)',cursor:'pointer'}}><Icon name={dark?'sun':'moon'} size={15}/></button>
+    </header>
+
+    <div style={{maxWidth:1040,margin:'0 auto',padding:'32px 28px',display:'grid',gridTemplateColumns:'1fr 220px',gap:36,alignItems:'start'}}>
+      <main style={{minWidth:0}}>
+        <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:14}}>
+          <Badge>Show HN</Badge>
+          <span style={{...meta,color:'var(--fg-4)'}}>Systems</span><span style={{color:'var(--fg-4)'}}>·</span>
+          <span style={{...meta,color:'var(--fg-4)'}}>6 min read</span>
+        </div>
+        <h1 style={{fontSize:34,fontWeight:700,letterSpacing:'-.025em',lineHeight:1.15,color:'var(--fg-1)',marginBottom:16}}>A sub-millisecond time-series engine written in Zig</h1>
+        <div style={{display:'flex',alignItems:'center',gap:10,paddingBottom:18,marginBottom:24,borderBottom:'1px solid var(--border-1)'}}>
+          <Avatar name="kira_v" size={30}/>
+          <div style={{display:'flex',flexDirection:'column'}}>
+            <span style={{fontSize:13,fontWeight:600,color:'var(--fg-1)'}}>kira_v</span>
+            <a href="#" style={{...meta,color:'var(--fg-4)'}}>github.com/futurist<Icon name="ext" size={11}/></a>
+          </div>
+          <span style={{...meta,color:'var(--fg-4)',marginLeft:'auto'}}>posted 2h ago</span>
+        </div>
+
+        <div style={{fontSize:15.5,color:'var(--fg-2)',lineHeight:1.72,maxWidth:'68ch'}}>
+          <p style={{marginBottom:16}}>After two years fighting garbage-collection pauses in our Go-based metrics collector, we did the unthinkable and rewrote the ingest path in Zig. The result: median write latency dropped from <strong style={{color:'var(--fg-1)',fontWeight:600}}>4ms to 0.7ms</strong> at four million points per second. This is the architecture, the benchmarks, and an honest account of everything that broke along the way.</p>
+          <h2 style={{fontSize:20,fontWeight:600,letterSpacing:'-.01em',color:'var(--fg-1)',margin:'28px 0 12px'}}>Why the GC had to go</h2>
+          <p style={{marginBottom:16}}>Our old collector spent up to 18% of wall-clock time in stop-the-world pauses under load. For a system whose entire value proposition is "we never drop a sample," that was unacceptable. We profiled relentlessly, and the flame graphs kept pointing at the same wide, flat allocation frontier.</p>
+          <blockquote style={{margin:'0 0 16px',padding:'4px 0 4px 18px',borderLeft:'3px solid var(--accent)',fontSize:16,color:'var(--fg-1)',fontStyle:'italic'}}>“You cannot schedule your way out of an allocation problem. At some point you have to stop allocating.”</blockquote>
+          <p style={{marginBottom:16}}>The rewrite leans on a slab allocator with per-core arenas, so hot-path writes never touch a shared lock. Here's the core loop, trimmed for clarity:</p>
+          <pre style={{background:'var(--bg-inverse)',color:'var(--fg-inverse)',padding:'14px 16px',borderRadius:'var(--radius-md)',fontFamily:'var(--font-mono)',fontSize:12.5,lineHeight:1.7,overflow:'auto',marginBottom:16}}>{`fn ingest(self: *Engine, batch: []const Point) !void {
+    const arena = self.arenaForCore();
+    for (batch) |p| {
+        const slot = try arena.reserve(p.series);
+        slot.append(p.ts, p.value); // lock-free
+    }
+}`}</pre>
+          <p style={{marginBottom:16}}>The payoff shows up in the tail. p99.9 write latency now sits at 3.1ms even under a deliberately hostile noisy-neighbor benchmark — a number the old collector never came close to.</p>
+        </div>
+
+        <div style={{display:'flex',alignItems:'center',gap:8,padding:'18px 0',margin:'8px 0 4px',borderTop:'1px solid var(--border-1)',borderBottom:'1px solid var(--border-1)'}}>
+          <button onClick={vote} style={{display:'inline-flex',alignItems:'center',gap:6,height:34,padding:'0 12px',borderRadius:'var(--radius-md)',border:'1px solid '+(voted?'var(--accent)':'var(--border-3)'),background:voted?'var(--accent-subtle)':'var(--bg-1)',color:voted?'var(--accent-subtle-fg)':'var(--fg-1)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:13,fontWeight:600}}><Icon name="up" size={15} sw={voted?2.4:1.9}/>{pts}</button>
+          <span style={{...meta}}><Icon name="chat" size={14}/>214 comments</span>
+          <div style={{marginLeft:'auto',display:'flex',gap:6}}>
+            <button onClick={()=>setSaved(!saved)} style={{display:'inline-flex',alignItems:'center',gap:6,height:34,padding:'0 12px',borderRadius:'var(--radius-md)',border:'1px solid var(--border-3)',background:'var(--bg-1)',color:saved?'var(--accent-subtle-fg)':'var(--fg-2)',cursor:'pointer',fontSize:13,fontWeight:500}}><Icon name="bookmark" size={14} sw={saved?2.2:1.7}/>{saved?'Saved':'Save'}</button>
+            <button style={{display:'inline-flex',alignItems:'center',gap:6,height:34,padding:'0 12px',borderRadius:'var(--radius-md)',border:'1px solid var(--border-3)',background:'var(--bg-1)',color:'var(--fg-2)',cursor:'pointer',fontSize:13,fontWeight:500}}><Icon name="share" size={14}/>Share</button>
+          </div>
+        </div>
+
+        {/* comment composer */}
+        <div style={{margin:'20px 0 8px'}}>
+          <textarea placeholder="Add a comment…" rows={3} style={{width:'100%',padding:'10px 12px',background:'var(--bg-1)',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',color:'var(--fg-1)',fontFamily:'var(--font-sans)',fontSize:13.5,lineHeight:1.5,outline:'none',resize:'vertical'}}></textarea>
+          <div style={{display:'flex',justifyContent:'flex-end',marginTop:8}}>
+            <button style={{height:32,padding:'0 16px',border:'none',borderRadius:'var(--radius-md)',background:'var(--accent)',color:'var(--accent-fg)',fontSize:13,fontWeight:600,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Comment</button>
+          </div>
+        </div>
+
+        <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',margin:'16px 0 4px'}}>214 comments · sorted by top</div>
+        <div>{comments.map((c,i)=><Comment key={i} c={c}/>)}</div>
+      </main>
+
+      <aside style={{position:'sticky',top:78,display:'flex',flexDirection:'column',gap:16}}>
+        <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>Story stats</div>
+          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+            {[["Points",pts],["Comments","214"],["Rank","#1"],["Domain","github.com"]].map(([k,v])=><div key={k} style={{display:'flex',justifyContent:'space-between',fontSize:13}}><span style={{color:'var(--fg-3)'}}>{k}</span><span style={{fontFamily:'var(--font-mono)',color:'var(--fg-1)',fontWeight:500}}>{v}</span></div>)}
+          </div>
+        </section>
+        <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>More in Systems</div>
+          <div style={{display:'flex',flexDirection:'column',gap:11}}>
+            {["Rust in the Linux kernel: one year later","A field guide to reading flame graphs","io_uring in production: three gotchas"].map((t,i)=><a key={i} href="#" style={{fontSize:13,color:'var(--fg-1)',fontWeight:500,lineHeight:1.4}}>{t}</a>)}
+          </div>
+        </section>
+      </aside>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

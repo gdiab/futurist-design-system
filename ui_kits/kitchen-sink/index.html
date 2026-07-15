@@ -1,0 +1,151 @@
+<!-- @dsCard group="Kitchen Sink" viewport="1280x900" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Kitchen Sink</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>#root{min-height:100vh;} a{text-decoration:none;}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState } = React;
+const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  plus:<path d="M12 5v14M5 12h14"/>, gear:<><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></>,
+  search:<><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></>, sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></>,
+  moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>, check:<path d="M4 12l5 5L20 6"/>, alert:<><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/></>, info:<><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+
+function Btn({variant='primary',size='md',children,style,...r}) {
+  const [h,setH]=useState(false);
+  const S={sm:{height:26,px:10,fs:12},md:{height:32,px:14,fs:13},lg:{height:40,px:18,fs:14}}[size];
+  const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'},ghost:{background:h?'var(--bg-2)':'transparent',color:h?'var(--fg-1)':'var(--fg-2)',border:'1px solid transparent'},danger:{background:'var(--danger)',color:'var(--danger-fg)',border:'1px solid transparent',filter:h?'brightness(.94)':'none'}}[variant];
+  return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,height:S.height,padding:`0 ${S.px}px`,fontSize:S.fs,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',whiteSpace:'nowrap',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
+}
+function IconBtn({children,active}) { const [h,setH]=useState(false); return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{width:32,height:32,display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:'var(--radius-md)',border:'1px solid '+(active?'var(--border-3)':'transparent'),background:(h||active)?'var(--bg-2)':'transparent',color:(h||active)?'var(--fg-1)':'var(--fg-3)',cursor:'pointer',transition:'all var(--dur-fast)'}}>{children}</button>; }
+function Badge({tone='neutral',dot,children}) { const T={neutral:['var(--bg-3)','var(--fg-2)'],accent:['var(--accent-subtle)','var(--accent-subtle-fg)'],success:['var(--success-subtle)','var(--success-subtle-fg)'],warning:['var(--warning-subtle)','var(--warning-subtle-fg)'],danger:['var(--danger-subtle)','var(--danger-subtle-fg)'],info:['var(--info-subtle)','var(--info-subtle-fg)']}[tone]; return <span style={{display:'inline-flex',alignItems:'center',gap:5,height:18,padding:'0 7px',borderRadius:'var(--radius-sm)',fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.03em',background:T[0],color:T[1]}}>{dot?<span style={{width:5,height:5,borderRadius:'50%',background:'currentColor'}}/>:null}{children}</span>; }
+function Tag({children,removable}) { return <span style={{display:'inline-flex',alignItems:'center',gap:6,height:22,padding:removable?'0 5px 0 9px':'0 9px',borderRadius:999,background:'var(--bg-2)',border:'1px solid var(--border-2)',color:'var(--fg-2)',fontSize:12,fontWeight:500}}>{children}{removable?<span style={{width:15,height:15,display:'inline-flex',alignItems:'center',justifyContent:'center',borderRadius:999,color:'var(--fg-3)'}}><svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1L7 7M7 1L1 7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg></span>:null}</span>; }
+function Field({label,error,prefix,suffix,value}) { const [f,setF]=useState(false); return <div style={{display:'flex',flexDirection:'column',gap:5}}><label style={{fontSize:12,fontWeight:500,color:'var(--fg-2)'}}>{label}</label><div style={{display:'flex',alignItems:'center',gap:7,height:32,padding:'0 10px',background:'var(--bg-1)',border:'1px solid '+(error?'var(--danger)':f?'var(--accent)':'var(--border-3)'),borderRadius:'var(--radius-md)',boxShadow:f?(error?'0 0 0 3px var(--danger-subtle)':'var(--focus-ring)'):'none',transition:'all var(--dur-fast)'}}>{prefix?<span style={{color:'var(--fg-3)',fontSize:13}}>{prefix}</span>:null}<input defaultValue={value} onFocus={()=>setF(true)} onBlur={()=>setF(false)} style={{flex:1,minWidth:0,border:'none',outline:'none',background:'transparent',color:'var(--fg-1)',fontFamily:'var(--font-sans)',fontSize:13}}/>{suffix?<span style={{color:'var(--fg-3)',fontFamily:'var(--font-mono)',fontSize:12}}>{suffix}</span>:null}</div>{error?<span style={{fontSize:12,color:'var(--danger)'}}>{error}</span>:null}</div>; }
+function Check({label,on:init}) { const [on,setOn]=useState(init); return <label style={{display:'inline-flex',alignItems:'center',gap:8,cursor:'pointer',fontSize:13,color:'var(--fg-1)'}} onClick={()=>setOn(!on)}><span style={{width:16,height:16,borderRadius:'var(--radius-xs)',display:'inline-flex',alignItems:'center',justifyContent:'center',background:on?'var(--accent)':'var(--bg-1)',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),transition:'all var(--dur-fast)'}}>{on?<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5L4.2 7L8 3" stroke="var(--accent-fg)" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/></svg>:null}</span>{label}</label>; }
+function Sw({label,on:init}) { const [on,setOn]=useState(init); return <label style={{display:'inline-flex',alignItems:'center',gap:9,cursor:'pointer',fontSize:13,color:'var(--fg-1)'}} onClick={()=>setOn(!on)}><span style={{width:30,height:18,borderRadius:999,position:'relative',background:on?'var(--accent)':'var(--bg-3)',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),transition:'background var(--dur-base)'}}><span style={{position:'absolute',top:2,left:on?13:2,width:13,height:13,borderRadius:999,background:'#fff',boxShadow:'0 1px 2px rgba(0,0,0,.25)',transition:'left var(--dur-base) var(--ease-standard)'}}/></span>{label}</label>; }
+function Radio({on}) { return <span style={{width:16,height:16,borderRadius:999,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),background:'var(--bg-1)'}}>{on?<span style={{width:8,height:8,borderRadius:999,background:'var(--accent)'}}/>:null}</span>; }
+function Progress({v}) { return <div style={{height:6,borderRadius:999,background:'var(--bg-3)',overflow:'hidden'}}><div style={{height:'100%',width:v+'%',background:'var(--accent)',borderRadius:999}}/></div>; }
+function Alert({tone,title,children}) { const T={info:['info','var(--info)','var(--info-subtle)'],warning:['alert','var(--warning)','var(--warning-subtle)'],danger:['alert','var(--danger)','var(--danger-subtle)'],success:['check','var(--success)','var(--success-subtle)']}[tone]; return <div style={{display:'flex',gap:10,padding:'11px 13px',borderRadius:'var(--radius-md)',background:T[2],border:'1px solid '+T[1]}}><span style={{color:T[1],marginTop:1}}><Icon name={T[0]} size={16}/></span><div><div style={{fontSize:13,fontWeight:600,color:'var(--fg-1)',marginBottom:2}}>{title}</div><div style={{fontSize:12.5,color:'var(--fg-2)',lineHeight:1.5}}>{children}</div></div></div>; }
+
+function Panel({title,children,span=1}) {
+  return <section style={{gridColumn:'span '+span,display:'flex',flexDirection:'column',gap:14,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',padding:18,boxShadow:'var(--shadow-1)'}}>
+    <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)'}}>{title}</div>
+    {children}
+  </section>;
+}
+const Row = ({children}) => <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>{children}</div>;
+
+function App() {
+  const [dark,setDark]=useState(false);
+  const [tab,setTab]=useState('a');
+  const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  const th={textAlign:'left',padding:'7px 12px',fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--fg-3)',borderBottom:'1px solid var(--border-1)'};
+  return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
+    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:12,height:56,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+      <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+      <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginLeft:2}}>// kitchen sink</span>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+    </header>
+
+    <div style={{padding:'24px 28px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,maxWidth:1240,margin:'0 auto',alignItems:'start'}}>
+      <Panel title="Buttons" span={2}>
+        <Row><Btn variant="primary">Primary</Btn><Btn variant="secondary">Secondary</Btn><Btn variant="ghost">Ghost</Btn><Btn variant="danger">Danger</Btn><Btn variant="primary" disabled style={{opacity:.45,cursor:'not-allowed'}}>Disabled</Btn></Row>
+        <Row><Btn size="sm" variant="secondary">Small</Btn><Btn size="md" variant="secondary">Medium</Btn><Btn size="lg" variant="secondary">Large</Btn><Btn variant="primary"><Icon name="plus" size={14}/>With icon</Btn></Row>
+        <Row><IconBtn active><Icon name="gear" size={16}/></IconBtn><IconBtn><Icon name="search" size={16}/></IconBtn><IconBtn><Icon name="plus" size={16}/></IconBtn></Row>
+      </Panel>
+
+      <Panel title="Selection controls">
+        <Row><Check label="Enabled" on={true}/><Check label="Off" on={false}/></Row>
+        <Row><Sw label="Live" on={true}/><Sw label="Paused" on={false}/></Row>
+        <Row><span style={{display:'inline-flex',gap:8,alignItems:'center',fontSize:13,color:'var(--fg-1)'}}><Radio on={true}/>Selected</span><span style={{display:'inline-flex',gap:8,alignItems:'center',fontSize:13,color:'var(--fg-1)'}}><Radio on={false}/>Option</span></Row>
+      </Panel>
+
+      <Panel title="Inputs">
+        <Field label="Endpoint" value="api.futurist.dev" prefix="https://"/>
+        <Field label="Rate limit" value="120" suffix="req/s"/>
+        <Field label="Token" value="" error="Required field"/>
+      </Panel>
+
+      <Panel title="Badges & tags" span={2}>
+        <Row><Badge tone="success" dot>Healthy</Badge><Badge tone="warning">Degraded</Badge><Badge tone="danger" dot>Down</Badge><Badge tone="accent">Beta</Badge><Badge tone="info">v2.4.1</Badge><Badge>Neutral</Badge></Row>
+        <Row><Tag>region:us-east-1</Tag><Tag removable>status:active</Tag><Tag removable>tier:pro</Tag><Tag removable>zig</Tag></Row>
+      </Panel>
+
+      <Panel title="Tabs">
+        <div style={{display:'flex',gap:2,borderBottom:'1px solid var(--border-1)'}}>
+          {[['a','Overview'],['b','Logs'],['c','Metrics']].map(([v,l])=>{const on=tab===v;return <button key={v} onClick={()=>setTab(v)} style={{position:'relative',height:34,padding:'0 12px',border:'none',background:'transparent',cursor:'pointer',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',color:on?'var(--fg-1)':'var(--fg-3)'}}>{l}<span style={{position:'absolute',left:0,right:0,bottom:-1,height:2,background:on?'var(--accent)':'transparent',borderRadius:'2px 2px 0 0'}}/></button>;})}
+        </div>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>active: {tab}</span>
+      </Panel>
+
+      <Panel title="Progress & meters">
+        <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          <div><div style={{display:'flex',justifyContent:'space-between',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginBottom:5}}><span>CPU</span><span>62%</span></div><Progress v={62}/></div>
+          <div><div style={{display:'flex',justifyContent:'space-between',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginBottom:5}}><span>Memory</span><span>34%</span></div><Progress v={34}/></div>
+          <div><div style={{display:'flex',justifyContent:'space-between',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginBottom:5}}><span>Disk</span><span>88%</span></div><Progress v={88}/></div>
+        </div>
+      </Panel>
+
+      <Panel title="Alerts & banners" span={2}>
+        <Alert tone="info" title="Scheduled maintenance">eu-west-1 will be briefly unavailable at 02:00 UTC.</Alert>
+        <Alert tone="warning" title="Approaching quota">You've used 84% of your monthly span budget.</Alert>
+        <Alert tone="danger" title="Service down">media-encode has been unreachable for 2 minutes.</Alert>
+        <Alert tone="success" title="Deploy complete">v2.4.1 is live across all regions.</Alert>
+      </Panel>
+
+      <Panel title="Metrics">
+        <div style={{display:'flex',gap:20}}>
+          {[['P99','142','ms','var(--fg-1)'],['Errors','0.04','%','var(--success)'],['Uptime','99.98','%','var(--fg-1)']].map((s,i)=><div key={i} style={{display:'flex',flexDirection:'column',gap:5}}><span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--fg-3)'}}>{s[0]}</span><div style={{display:'flex',alignItems:'baseline',gap:3}}><span style={{fontFamily:'var(--font-display)',fontSize:26,fontWeight:600,letterSpacing:'-.02em',color:s[3]}}>{s[1]}</span><span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>{s[2]}</span></div></div>)}
+        </div>
+      </Panel>
+
+      <Panel title="Table" span={3}>
+        <div style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',overflow:'hidden'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+            <thead><tr style={{background:'var(--bg-2)'}}><th style={th}>Service</th><th style={th}>Region</th><th style={th}>Status</th><th style={{...th,textAlign:'right'}}>Req/min</th><th style={{...th,textAlign:'right'}}>P99</th></tr></thead>
+            <tbody>{[['api-gateway','us-east-1','success','ok','18,420','42'],['billing-worker','eu-west-1','warning','degraded','2,140','410'],['media-encode','eu-west-1','danger','down','0','—']].map((r,i)=><tr key={i}><td style={{padding:'8px 12px',color:'var(--fg-1)',fontWeight:500,borderBottom:i<2?'1px solid var(--border-1)':'none'}}>{r[0]}</td><td style={{padding:'8px 12px',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',borderBottom:i<2?'1px solid var(--border-1)':'none'}}>{r[1]}</td><td style={{padding:'8px 12px',borderBottom:i<2?'1px solid var(--border-1)':'none'}}><Badge tone={r[2]} dot>{r[3]}</Badge></td><td style={{padding:'8px 12px',textAlign:'right',fontFamily:'var(--font-mono)',color:'var(--fg-1)',borderBottom:i<2?'1px solid var(--border-1)':'none'}}>{r[4]}</td><td style={{padding:'8px 12px',textAlign:'right',fontFamily:'var(--font-mono)',color:r[5]==='410'?'var(--danger)':'var(--fg-1)',borderBottom:i<2?'1px solid var(--border-1)':'none'}}>{r[5]}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </Panel>
+
+      <Panel title="Typography">
+        <div style={{display:'flex',flexDirection:'column',gap:6}}>
+          <div style={{fontFamily:'var(--font-display)',fontSize:28,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Display 28</div>
+          <div style={{fontSize:15,color:'var(--fg-1)',fontWeight:500}}>Body medium 15</div>
+          <div style={{fontSize:13,color:'var(--fg-2)'}}>Body 13 — running text</div>
+          <div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>mono 12 · 142ms · 99.98%</div>
+        </div>
+      </Panel>
+
+      <Panel title="Toasts" span={2}>
+        <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+          {[['success','Deployed','v2.4.1 is live in us-east-1.'],['danger','Build failed','3 tests failed on main.']].map((t,i)=><div key={i} style={{display:'flex',gap:10,width:300,padding:'11px 12px',background:'var(--bg-1)',border:'1px solid var(--border-2)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-3)'}}><span style={{width:7,height:7,marginTop:5,borderRadius:'50%',background:`var(--${t[0]})`,flexShrink:0}}/><div><div style={{fontSize:13,fontWeight:600,color:'var(--fg-1)'}}>{t[1]}</div><div style={{fontSize:12,color:'var(--fg-3)',lineHeight:1.4}}>{t[2]}</div></div></div>)}
+        </div>
+      </Panel>
+    </div>
+  </div>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

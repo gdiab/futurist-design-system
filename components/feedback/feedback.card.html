@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x220" name="Toasts & Dialog" subtitle="Notifications and modal" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}</style>
+</head><body><div id="root"></div>
+<script type="text/plain" id="app-src">
+const NS = window.Futurist || window.DS || {};
+const { Toast, Button, Dialog } = NS;
+function Demo(){const[open,setOpen]=React.useState(false);return (
+  <div style={{display:'flex',flexDirection:'column',gap:12}}>
+    <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+      <Toast tone="success" title="Deployed" description="v2.4.1 is live in us-east-1." onClose={()=>{}}/>
+      <Toast tone="danger" title="Build failed" description="3 tests failed on main." onClose={()=>{}}/>
+    </div>
+    <div><Button variant="secondary" onClick={()=>setOpen(true)}>Open dialog</Button></div>
+    <Dialog open={open} onClose={()=>setOpen(false)} title="Delete cluster?" description="This action is irreversible and will terminate all running workloads."
+      footer={<><Button variant="ghost" onClick={()=>setOpen(false)}>Cancel</Button><Button variant="danger" onClick={()=>setOpen(false)}>Delete</Button></>}/>
+  </div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+<script>(function(){var s=document.getElementById("app-src").textContent;var o=Babel.transform(s,{presets:[["react",{runtime:"classic"}]]}).code;new Function("React","ReactDOM",o)(window.React,window.ReactDOM);})();</script>
+</body></html>

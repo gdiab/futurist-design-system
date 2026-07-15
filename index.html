@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Views</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{padding:0;}
+  a{text-decoration:none;}
+  @keyframes ftr-spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div style="max-width:1080px;margin:0 auto;padding:48px 32px 64px;">
+  <header style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <div style="width:26px;height:26px;border:2px solid var(--fg-1);border-radius:4px;position:relative;"><div style="position:absolute;inset:5px;background:var(--accent);border-radius:2px;"></div></div>
+    <span style="font-family:var(--font-display);font-weight:700;font-size:20px;letter-spacing:-.02em;color:var(--fg-1);">Futurist</span>
+    <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3);">// design system</span>
+    <button id="theme" style="margin-left:auto;height:32px;padding:0 12px;border:1px solid var(--border-1);border-radius:var(--radius-md);background:transparent;color:var(--fg-2);cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;">LIGHT</button>
+  </header>
+  <h1 style="font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--fg-1);margin-bottom:6px;">Views</h1>
+  <p style="font-size:15px;color:var(--fg-2);max-width:560px;line-height:1.55;margin-bottom:36px;">Every interactive screen built on the system. Foundations and components live in the <strong style="color:var(--fg-1);font-weight:600;">Design System</strong> tab; these are full product recreations.</p>
+
+  <div id="grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;"></div>
+
+  <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);margin:40px 0 14px;">Reference</div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <a class="chip" href="readme.md">readme.md</a>
+    <a class="chip" href="SKILL.md">SKILL.md</a>
+    <a class="chip" href="styles.css">styles.css</a>
+  </div>
+</div>
+
+<script>
+  const views = [
+    ["Dashboard","Data-dense observability console — login, sidebar, metrics, services table.","ui_kits/dashboard/index.html","grid"],
+    ["Marketing","Developer-tool landing page — hero, terminal, features, pricing.","ui_kits/marketing/index.html","bolt"],
+    ["Dispatch — Feed","News aggregator with List / Cards layout toggle.","ui_kits/news/index.html","list"],
+    ["Dispatch — Story","Article + nested comment thread.","ui_kits/news/story.html","doc"],
+    ["Kitchen Sink","Every component & variant on one page.","ui_kits/kitchen-sink/index.html","layers"],
+    ["States","Empty, loading, error, offline patterns.","ui_kits/states/index.html","alert"],
+    ["Data-viz","Area, donut, gauge, sparklines, bars on the viz series.","ui_kits/dataviz/index.html","chart"],
+    ["Overlays","Tooltip, dropdown menu, popover, drawer.","ui_kits/overlays/index.html","stack"],
+    ["Mobile","Dispatch at 375px — feed, story, tab bar.","ui_kits/mobile/index.html","phone"],
+    ["Command palette","⌘K launcher — grouped, keyboard-driven.","ui_kits/command/index.html","cmd"],
+    ["Settings","Form-heavy account & billing screens.","ui_kits/settings/index.html","gear"],
+    ["Deck","8 slide templates — title, big number, quote, roadmap.","ui_kits/deck/index.html","slides"],
+    ["Docs","Long-form documentation with TOC + code.","ui_kits/docs/index.html","book"],
+  ];
+  const paths = {
+    grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    bolt:'<path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/>',
+    list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+    doc:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/>',
+    layers:'<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+    alert:'<path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L14.7 3.9a2 2 0 00-3.4 0z"/>',
+    chart:'<path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/>',
+    stack:'<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>',
+    phone:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+    cmd:'<path d="M9 3a3 3 0 00-3 3v12a3 3 0 003 3M15 3a3 3 0 013 3v12a3 3 0 01-3 3M6 9h12M6 15h12"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 00-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 00-1.7 1l-2.4-1-2 3.5 2 1.5a7 7 0 000 2l-2 1.5 2 3.5 2.4-1a7 7 0 001.7 1l.3 2.5h4l.3-2.5a7 7 0 001.7-1l2.4 1 2-3.5-2-1.5a7 7 0 00.1-1z"/>',
+    slides:'<rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/>',
+    book:'<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z"/><path d="M4 5v14"/>',
+  };
+  const grid = document.getElementById('grid');
+  views.forEach(([t,d,href,ic]) => {
+    const a = document.createElement('a');
+    a.href = href;
+    a.style.cssText = "display:flex;gap:14px;padding:18px;background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);transition:box-shadow var(--dur-base),border-color var(--dur-base),transform var(--dur-base);";
+    a.onmouseenter = () => { a.style.boxShadow='var(--shadow-2)'; a.style.borderColor='var(--border-2)'; a.style.transform='translateY(-2px)'; };
+    a.onmouseleave = () => { a.style.boxShadow='var(--shadow-1)'; a.style.borderColor='var(--border-1)'; a.style.transform='none'; };
+    a.innerHTML = `
+      <div style="width:40px;height:40px;flex-shrink:0;border-radius:var(--radius-md);background:var(--accent-subtle);color:var(--accent-subtle-fg);display:flex;align-items:center;justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths[ic]}</svg>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+        <div style="font-size:15px;font-weight:600;color:var(--fg-1);">${t}</div>
+        <div style="font-size:13px;color:var(--fg-3);line-height:1.45;">${d}</div>
+      </div>`;
+    grid.appendChild(a);
+  });
+
+  document.querySelectorAll('.chip').forEach(c => {
+    c.style.cssText = "display:inline-flex;align-items:center;height:28px;padding:0 12px;border:1px solid var(--border-2);border-radius:var(--radius-full);background:var(--bg-1);color:var(--fg-2);font-family:var(--font-mono);font-size:12px;";
+  });
+
+  const btn = document.getElementById('theme');
+  btn.onclick = () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.textContent = dark ? 'LIGHT' : 'DARK';
+  };
+</script>
+</body>
+</html>

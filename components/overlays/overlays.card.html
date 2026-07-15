@@ -1,0 +1,24 @@
+<!-- @dsCard group="Components" viewport="700x220" name="Overlays" subtitle="Tooltip, Menu, Popover, Drawer" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;}</style>
+</head><body><div id="root"></div>
+<script type="text/plain" id="app-src">
+const NS = window.Futurist || window.DS || {};
+const { Tooltip, Menu, Popover, Drawer, Button } = NS;
+function Demo(){const[open,setOpen]=React.useState(false);return (
+  <div style={{display:'flex',gap:14,flexWrap:'wrap',alignItems:'center'}}>
+    <Tooltip label="Requests per second" side="top"><Button variant="secondary">Hover me</Button></Tooltip>
+    <Menu trigger={<Button variant="secondary">Actions ▾</Button>} items={[{label:'Rename',shortcut:'R'},{label:'Duplicate',shortcut:'D'},{divider:true},{label:'Delete',danger:true}]}/>
+    <Popover trigger={<Button variant="secondary">Filter</Button>}><div style={{fontSize:13,color:'var(--fg-2)'}}>Popover panel with any content.</div></Popover>
+    <Button variant="primary" onClick={()=>setOpen(true)}>Open drawer</Button>
+    <Drawer open={open} onClose={()=>setOpen(false)} title="Service detail" footer={<Button variant="primary" onClick={()=>setOpen(false)}>Done</Button>}><div style={{fontSize:13,color:'var(--fg-2)'}}>Slide-over content.</div></Drawer>
+  </div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+<script>(function(){var s=document.getElementById("app-src").textContent;var o=Babel.transform(s,{presets:[["react",{runtime:"classic"}]]}).code;new Function("React","ReactDOM",o)(window.React,window.ReactDOM);})();</script>
+</body></html>

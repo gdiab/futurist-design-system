@@ -1,0 +1,131 @@
+/* Futurist — Color system
+   Cool, low-chroma neutrals + one signal-green primary + a functional data palette.
+   Light is default on :root; dark overrides live under [data-theme="dark"].
+   All colors authored in oklch for perceptual consistency. */
+
+:root {
+  /* ── Neutral surfaces (cool grey, near-zero chroma) ── */
+  --bg-0:  oklch(0.985 0.002 255);   /* app canvas            */
+  --bg-1:  oklch(1     0     0);      /* card / primary surface */
+  --bg-2:  oklch(0.972 0.003 255);   /* raised / subtle fill  */
+  --bg-3:  oklch(0.951 0.004 255);   /* inset / track         */
+  --bg-inverse: oklch(0.22 0.012 260);
+  --surface-overlay: oklch(1 0 0 / 0.82);   /* translucent sticky nav / blur bars */
+
+  /* ── Borders / hairlines ── */
+  --border-1: oklch(0.918 0.005 255); /* default hairline */
+  --border-2: oklch(0.865 0.007 255); /* strong / focus ring track */
+  --border-3: oklch(0.80  0.009 255); /* control outline */
+
+  /* ── Foreground text ── */
+  --fg-1: oklch(0.235 0.012 262);  /* primary text  */
+  --fg-2: oklch(0.435 0.011 262);  /* secondary     */
+  --fg-3: oklch(0.585 0.009 262);  /* muted / meta  */
+  --fg-4: oklch(0.715 0.007 262);  /* faint / disabled */
+  --fg-on-accent: oklch(0.99 0.003 255);
+  --fg-inverse: oklch(0.97 0.003 255);
+
+  /* ── Primary accent (mint / signal green ~#2CDE85) ── */
+  --accent:        oklch(0.775 0.165 159);
+  --accent-hover:  oklch(0.725 0.170 159);
+  --accent-active: oklch(0.675 0.170 159);
+  --accent-fg:     oklch(0.22 0.045 159);
+  --accent-subtle: oklch(0.955 0.055 159);
+  --accent-subtle-fg: oklch(0.470 0.130 159);
+  --accent-ring:   oklch(0.775 0.165 159 / 0.40);
+
+  /* ── Functional data / semantic palette (chroma ~0.15, hue-varied) ── */
+  --success:     oklch(0.560 0.130 168);
+  --success-fg:  oklch(0.99 0.003 255);
+  --success-subtle: oklch(0.955 0.035 168);
+  --success-subtle-fg: oklch(0.440 0.115 168);
+
+  --warning:     oklch(0.720 0.150 75);
+  --warning-fg:  oklch(0.25 0.03 75);
+  --warning-subtle: oklch(0.960 0.045 78);
+  --warning-subtle-fg: oklch(0.500 0.120 60);
+
+  --danger:      oklch(0.575 0.190 27);
+  --danger-fg:   oklch(0.99 0.003 255);
+  --danger-subtle: oklch(0.958 0.030 27);
+  --danger-subtle-fg: oklch(0.500 0.170 27);
+
+  --info:        oklch(0.600 0.130 240);
+  --info-fg:     oklch(0.99 0.003 255);
+  --info-subtle: oklch(0.955 0.035 240);
+  --info-subtle-fg: oklch(0.460 0.120 240);
+
+  /* ── Data-viz categorical series (dashboards / charts) ── */
+  --viz-1: oklch(0.575 0.168 258);
+  --viz-2: oklch(0.640 0.150 175);
+  --viz-3: oklch(0.720 0.150 75);
+  --viz-4: oklch(0.600 0.190 320);
+  --viz-5: oklch(0.575 0.190 27);
+  --viz-6: oklch(0.650 0.120 210);
+
+  /* ── Semantic aliases (consume these in components) ── */
+  --surface-canvas: var(--bg-0);
+  --surface-card:   var(--bg-1);
+  --surface-raised: var(--bg-2);
+  --surface-inset:  var(--bg-3);
+  --text-strong: var(--fg-1);
+  --text-body:   var(--fg-2);
+  --text-muted:  var(--fg-3);
+  --text-faint:  var(--fg-4);
+  --hairline:    var(--border-1);
+  --control-border: var(--border-3);
+}
+
+[data-theme="dark"] {
+  --bg-0:  oklch(0.175 0.008 262);
+  --bg-1:  oklch(0.205 0.010 262);
+  --bg-2:  oklch(0.245 0.011 262);
+  --bg-3:  oklch(0.285 0.012 262);
+  --bg-inverse: oklch(0.96 0.004 255);
+  --surface-overlay: oklch(0.205 0.010 262 / 0.82);
+
+  --border-1: oklch(0.300 0.012 262);
+  --border-2: oklch(0.375 0.014 262);
+  --border-3: oklch(0.450 0.016 262);
+
+  --fg-1: oklch(0.965 0.003 258);
+  --fg-2: oklch(0.800 0.008 258);
+  --fg-3: oklch(0.655 0.010 260);
+  --fg-4: oklch(0.520 0.011 260);
+  --fg-inverse: oklch(0.22 0.012 260);
+
+  --accent:        oklch(0.800 0.170 159);
+  --accent-hover:  oklch(0.845 0.160 159);
+  --accent-active: oklch(0.750 0.170 159);
+  --accent-fg:     oklch(0.20 0.05 159);
+  --accent-subtle: oklch(0.330 0.080 159);
+  --accent-subtle-fg: oklch(0.850 0.130 159);
+  --accent-ring:   oklch(0.800 0.170 159 / 0.45);
+
+  --success:     oklch(0.680 0.130 168);
+  --success-fg:  oklch(0.16 0.02 168);
+  --success-subtle: oklch(0.320 0.060 168);
+  --success-subtle-fg: oklch(0.800 0.110 168);
+
+  --warning:     oklch(0.780 0.150 78);
+  --warning-fg:  oklch(0.20 0.03 78);
+  --warning-subtle: oklch(0.340 0.060 70);
+  --warning-subtle-fg: oklch(0.820 0.120 78);
+
+  --danger:      oklch(0.640 0.190 27);
+  --danger-fg:   oklch(0.16 0.02 27);
+  --danger-subtle: oklch(0.330 0.080 27);
+  --danger-subtle-fg: oklch(0.800 0.140 27);
+
+  --info:        oklch(0.680 0.130 240);
+  --info-fg:     oklch(0.16 0.02 240);
+  --info-subtle: oklch(0.320 0.060 240);
+  --info-subtle-fg: oklch(0.800 0.110 240);
+
+  --viz-1: oklch(0.680 0.160 258);
+  --viz-2: oklch(0.720 0.140 175);
+  --viz-3: oklch(0.780 0.150 78);
+  --viz-4: oklch(0.680 0.170 320);
+  --viz-5: oklch(0.660 0.180 27);
+  --viz-6: oklch(0.720 0.120 210);
+}

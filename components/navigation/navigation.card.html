@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x150" name="Tabs" subtitle="Underlined tab bar with counts" -->
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}</style>
+</head><body><div id="root"></div>
+<script type="text/plain" id="app-src">
+const NS = window.Futurist || window.DS || {};
+const { Tabs } = NS;
+function Demo(){const[t,setT]=React.useState('logs');return (
+  <div style={{width:'100%',maxWidth:520}}>
+    <Tabs value={t} onChange={setT} tabs={[
+      {value:'overview',label:'Overview'},
+      {value:'logs',label:'Logs',count:42},
+      {value:'metrics',label:'Metrics'},
+      {value:'settings',label:'Settings'},
+    ]}/>
+    <div style={{padding:'14px 4px',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>active: {t}</div>
+  </div>);}
+ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+<script>(function(){var s=document.getElementById("app-src").textContent;var o=Babel.transform(s,{presets:[["react",{runtime:"classic"}]]}).code;new Function("React","ReactDOM",o)(window.React,window.ReactDOM);})();</script>
+</body></html>

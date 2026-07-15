@@ -1,0 +1,173 @@
+<!-- @dsCard group="Marketing" viewport="1280x820" -->
+<!-- @startingPoint section="Marketing" subtitle="Developer-tool landing page" viewport="1280x900" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Futurist — Landing</title>
+<link rel="stylesheet" href="../../styles.css">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>#root{min-height:100vh;} a{ text-decoration:none; }</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="app-src">
+const { useState } = React;
+
+const Ic = ({ d, size=16, sw=1.7 }) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;
+const icons = {
+  zap:<path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/>,
+  shield:<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/>,
+  gauge:<><path d="M12 14l4-4"/><path d="M4 18a8 8 0 1116 0"/><circle cx="12" cy="18" r="1.5"/></>,
+  git:<><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7M18 10.5c0 4-6 2-6 5.5"/></>,
+  chevron:<path d="M9 6l6 6-6 6"/>,
+  check:<path d="M4 12l5 5L20 6"/>,
+};
+const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
+
+function Btn({variant='primary',children,...r}) {
+  const [h,setH]=useState(false);
+  const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
+  return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',gap:7,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V}} {...r}>{children}</button>;
+}
+const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:12,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
+
+function Nav() {
+  return <nav style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:9}}>
+      <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
+      <span style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
+    </div>
+    <div style={{display:'flex',gap:22,marginLeft:12}}>{['Product','Docs','Pricing','Changelog'].map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
+    <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
+      <a href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
+      <Btn variant="primary">Start free<Icon name="chevron" size={14}/></Btn>
+    </div>
+  </nav>;
+}
+
+function Hero() {
+  return <section style={{maxWidth:1200,margin:'0 auto',padding:'80px 40px 40px',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:56,alignItems:'center'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      <div style={{display:'inline-flex',alignItems:'center',gap:8,alignSelf:'flex-start',padding:'4px 10px',borderRadius:999,border:'1px solid var(--border-2)',background:'var(--bg-1)'}}>
+        <span style={{width:6,height:6,borderRadius:'50%',background:'var(--success)'}}/><span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-2)'}}>v2.4 — now with edge deploys</span>
+      </div>
+      <h1 style={{fontSize:56,fontWeight:600,letterSpacing:'-.03em',lineHeight:1.05,color:'var(--fg-1)'}}>Ship telemetry that keeps up with you.</h1>
+      <p style={{fontSize:17,color:'var(--fg-2)',lineHeight:1.55,maxWidth:460}}>A precise, low-overhead observability layer for teams that measure everything. Metrics, traces, and logs — one dense console, zero noise.</p>
+      <div style={{display:'flex',gap:12,marginTop:6}}>
+        <Btn variant="primary">Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
+        <Btn variant="secondary">Read the docs</Btn>
+      </div>
+      <div style={{display:'flex',gap:24,marginTop:14,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>
+        <span>4.2M spans/s</span><span>·</span><span>99.99% uptime</span><span>·</span><span>SOC 2</span>
+      </div>
+    </div>
+    <Terminal/>
+  </section>;
+}
+
+function Terminal() {
+  const rows=[
+    ['$ ','futurist deploy --edge','',''],
+    ['','→ building 6 services','','var(--fg-3)'],
+    ['','✓ api-gateway','142ms','var(--success)'],
+    ['','✓ auth-service','98ms','var(--success)'],
+    ['','✓ search-index','71ms','var(--success)'],
+    ['','⚠ billing-worker','410ms','var(--warning)'],
+    ['','deployed to us-east-1, eu-west-1','','var(--fg-3)'],
+    ['$ ','','',''],
+  ];
+  return <div style={{background:'var(--bg-inverse)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:6,padding:'11px 14px',borderBottom:'1px solid oklch(1 0 0 / 0.08)'}}>
+      {['#ff5f57','#febc2e','#28c840'].map(c=><span key={c} style={{width:11,height:11,borderRadius:'50%',background:c,opacity:.9}}/>)}
+      <span style={{marginLeft:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-inverse)',opacity:.5}}>zsh — futurist</span>
+    </div>
+    <div style={{padding:'16px 18px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.85}}>
+      {rows.map((r,i)=><div key={i} style={{display:'flex',color:r[3]||'var(--fg-inverse)'}}>
+        <span style={{color:'var(--accent)'}}>{r[0]}</span>
+        <span style={{opacity:r[3]?1:.92}}>{r[1]}</span>
+        {r[2]?<span style={{marginLeft:'auto',opacity:.6}}>{r[2]}</span>:null}
+      </div>)}
+    </div>
+  </div>;
+}
+
+function Features() {
+  const feats=[
+    ['zap','Sub-second ingest','Spans land in your console in under 800ms p99, even at 4M events per second.'],
+    ['gauge','Dense by default','Every pixel earns its place. High-density tables, sparklines, and no chrome.'],
+    ['shield','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.'],
+    ['git','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.'],
+  ];
+  return <section style={{maxWidth:1200,margin:'0 auto',padding:'56px 40px'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:32}}>
+      <Eyebrow>// Why Futurist</Eyebrow>
+      <h2 style={{fontSize:34,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Built for precision, not dashboards-as-decoration.</h2>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:16}}>
+      {feats.map((f,i)=><div key={i} style={{background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',padding:24,display:'flex',flexDirection:'column',gap:12,boxShadow:'var(--shadow-1)'}}>
+        <div style={{width:36,height:36,borderRadius:'var(--radius-md)',background:'var(--accent-subtle)',color:'var(--accent-subtle-fg)',display:'flex',alignItems:'center',justifyContent:'center'}}><Icon name={f[0]} size={19}/></div>
+        <h3 style={{fontSize:16,fontWeight:600,color:'var(--fg-1)'}}>{f[1]}</h3>
+        <p style={{fontSize:14,color:'var(--fg-2)',lineHeight:1.55}}>{f[2]}</p>
+      </div>)}
+    </div>
+  </section>;
+}
+
+function Stats() {
+  const s=[['4.2M','spans / second'],['99.99%','measured uptime'],['<800ms','ingest p99'],['3','global regions']];
+  return <section style={{background:'var(--bg-inverse)'}}><div style={{maxWidth:1200,margin:'0 auto',padding:'44px 40px',display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:24}}>
+    {s.map((x,i)=><div key={i} style={{display:'flex',flexDirection:'column',gap:6}}>
+      <span style={{fontFamily:'var(--font-display)',fontSize:38,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-inverse)'}}>{x[0]}</span>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:12,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--fg-inverse)',opacity:.55}}>{x[1]}</span>
+    </div>)}
+  </div></section>;
+}
+
+function Pricing() {
+  const plans=[
+    ['Hobby','$0',['1 project','7-day retention','Community support'],false],
+    ['Team','$40',['Unlimited projects','90-day retention','Deploy correlation','Priority support'],true],
+    ['Enterprise','Custom',['SSO & SAML','Unlimited retention','On-prem / BYOK','Dedicated SLA'],false],
+  ];
+  return <section style={{maxWidth:1200,margin:'0 auto',padding:'56px 40px'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:32,alignItems:'center',textAlign:'center'}}>
+      <Eyebrow>// Pricing</Eyebrow>
+      <h2 style={{fontSize:34,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Priced per seat, not per surprise.</h2>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16}}>
+      {plans.map((p,i)=><div key={i} style={{background:'var(--bg-1)',border:'1px solid '+(p[3]?'var(--accent)':'var(--border-1)'),borderRadius:'var(--radius-lg)',padding:24,display:'flex',flexDirection:'column',gap:16,boxShadow:p[3]?'var(--shadow-2)':'var(--shadow-1)',position:'relative'}}>
+        {p[3]?<span style={{position:'absolute',top:-9,left:24,fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',background:'var(--accent)',color:'var(--accent-fg)',padding:'2px 8px',borderRadius:'var(--radius-sm)'}}>Popular</span>:null}
+        <div><div style={{fontSize:14,fontWeight:600,color:'var(--fg-2)',marginBottom:8}}>{p[0]}</div><div style={{display:'flex',alignItems:'baseline',gap:4}}><span style={{fontFamily:'var(--font-display)',fontSize:36,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>{p[1]}</span>{p[1]!=='Custom'?<span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)'}}>/mo</span>:null}</div></div>
+        <div style={{display:'flex',flexDirection:'column',gap:9}}>{p[2].map((f,j)=><div key={j} style={{display:'flex',alignItems:'center',gap:9,fontSize:13,color:'var(--fg-2)'}}><span style={{color:'var(--accent-subtle-fg)',display:'inline-flex'}}><Icon name="check" size={15}/></span>{f}</div>)}</div>
+        <Btn variant={p[3]?'primary':'secondary'} style={{width:'100%',justifyContent:'center',marginTop:'auto'}}>{p[1]==='Custom'?'Contact sales':'Get started'}</Btn>
+      </div>)}
+    </div>
+  </section>;
+}
+
+function Footer() {
+  return <footer style={{borderTop:'1px solid var(--border-1)',background:'var(--bg-1)'}}><div style={{maxWidth:1200,margin:'0 auto',padding:'32px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+    <div style={{display:'flex',alignItems:'center',gap:9}}>
+      <div style={{width:18,height:18,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:3,background:'var(--accent)',borderRadius:1}}/></div>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>© 2026 Futurist Labs</span>
+    </div>
+    <div style={{display:'flex',gap:20}}>{['Status','Security','Terms','Privacy'].map(x=><a key={x} href="#" style={{fontSize:13,color:'var(--fg-3)'}}>{x}</a>)}</div>
+  </div></footer>;
+}
+
+function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Stats/><Features/><Pricing/><Footer/></div>;}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+<script>
+  (function () {
+    var src = document.getElementById('app-src').textContent;
+    var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
+    new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+  })();
+</script>
+</body>
+</html>

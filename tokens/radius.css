@@ -1,0 +1,11 @@
+/* Futurist — Radius (small & precise) */
+:root {
+  --radius-none: 0px;
+  --radius-xs:   2px;
+  --radius-sm:   3px;   /* default controls */
+  --radius-md:   5px;   /* inputs, buttons  */
+  --radius-lg:   8px;   /* cards            */
+  --radius-xl:   12px;  /* modals, panels   */
+  --radius-2xl:  16px;
+  --radius-full: 999px; /* pills, avatars   */
+}
