@@ -3,10 +3,12 @@
 A single-page marketing site in the Futurist voice (technical, direct, numbers-forward).
 
 **`index.html`** is self-contained (open it directly):
-- Sticky blurred **nav** with wordmark + primary CTA.
+- Sticky blurred **nav** with wordmark, sun/moon **theme toggle** (light/dark via
+  `[data-theme]`, defaults to light) + primary CTA.
 - **Hero:** status pill, big display headline, dual CTAs, mono proof stats, and a dark
-  **terminal** panel showing a deploy with colored status lines.
-- **Stats strip** on an inverse panel (4 big figures).
+  **terminal** panel showing a deploy with colored status lines (pinned dark in both
+  themes — terminals don't invert).
+- **Stats strip** on an inverse panel (4 big figures; inverts with the theme).
 - **Features** grid (2×2) with accent-subtle icon tiles.
 - **Pricing** (3 tiers, middle highlighted with an accent border + "Popular" tag).
 - **Footer** with mono copyright + links.

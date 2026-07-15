@@ -25,6 +25,8 @@ const icons = {
   git:<><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7M18 10.5c0 4-6 2-6 5.5"/></>,
   chevron:<path d="M9 6l6 6-6 6"/>,
   check:<path d="M4 12l5 5L20 6"/>,
+  sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></>,
+  moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>,
 };
 const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 
@@ -35,6 +37,13 @@ function Btn({variant='primary',children,...r}) {
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:12,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
 
+function ThemeButton() {
+  const [dark,setDark]=useState(false);
+  const [h,setH]=useState(false);
+  const toggle=()=>{const d=!dark;setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  return <button aria-label="Theme" onClick={toggle} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:32,height:32,borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:h?'var(--bg-2)':'transparent',color:h?'var(--fg-1)':'var(--fg-3)',transition:'all var(--dur-fast)'}}><Icon name={dark?'sun':'moon'} size={16}/></button>;
+}
+
 function Nav() {
   return <nav style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
     <div style={{display:'flex',alignItems:'center',gap:9}}>
@@ -43,6 +52,7 @@ function Nav() {
     </div>
     <div style={{display:'flex',gap:22,marginLeft:12}}>{['Product','Docs','Pricing','Changelog'].map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
     <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
+      <ThemeButton/>
       <a href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
       <Btn variant="primary">Start free<Icon name="chevron" size={14}/></Btn>
     </div>
@@ -70,6 +80,10 @@ function Hero() {
 }
 
 function Terminal() {
+  /* Terminal chrome stays dark in BOTH themes — --bg-inverse flips to near-white
+     in dark mode, which would produce a light terminal. Pin the light-theme
+     inverse values instead; traffic lights + white hairline assume a dark bg. */
+  const TERM_BG='oklch(0.22 0.012 260)', TERM_FG='oklch(0.97 0.003 255)';
   const rows=[
     ['$ ','futurist deploy --edge','',''],
     ['','→ building 6 services','','var(--fg-3)'],
@@ -80,13 +94,13 @@ function Terminal() {
     ['','deployed to us-east-1, eu-west-1','','var(--fg-3)'],
     ['$ ','','',''],
   ];
-  return <div style={{background:'var(--bg-inverse)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
+  return <div style={{background:TERM_BG,borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
     <div style={{display:'flex',alignItems:'center',gap:6,padding:'11px 14px',borderBottom:'1px solid oklch(1 0 0 / 0.08)'}}>
       {['#ff5f57','#febc2e','#28c840'].map(c=><span key={c} style={{width:11,height:11,borderRadius:'50%',background:c,opacity:.9}}/>)}
-      <span style={{marginLeft:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-inverse)',opacity:.5}}>zsh — futurist</span>
+      <span style={{marginLeft:8,fontFamily:'var(--font-mono)',fontSize:12,color:TERM_FG,opacity:.5}}>zsh — futurist</span>
     </div>
     <div style={{padding:'16px 18px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.85}}>
-      {rows.map((r,i)=><div key={i} style={{display:'flex',color:r[3]||'var(--fg-inverse)'}}>
+      {rows.map((r,i)=><div key={i} style={{display:'flex',color:r[3]||TERM_FG}}>
         <span style={{color:'var(--accent)'}}>{r[0]}</span>
         <span style={{opacity:r[3]?1:.92}}>{r[1]}</span>
         {r[2]?<span style={{marginLeft:'auto',opacity:.6}}>{r[2]}</span>:null}
