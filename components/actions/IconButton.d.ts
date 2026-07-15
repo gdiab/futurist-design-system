@@ -4,6 +4,8 @@ export interface IconButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLBut
   variant?: 'primary' | 'secondary' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
+  /** Shows an inline spinner in place of the icon, sets aria-busy, and blocks clicks. @default false */
+  loading?: boolean;
   'aria-label': string;
   children?: React.ReactNode;
 }

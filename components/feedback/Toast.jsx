@@ -13,7 +13,7 @@ export function Toast({ tone = 'neutral', title, description, onClose, style, ..
         {description ? <span style={{ fontSize: 'var(--text-xs)', color: 'var(--fg-3)', lineHeight: 1.45 }}>{description}</span> : null}
       </div>
       {onClose ? (
-        <button type="button" aria-label="Dismiss" onClick={onClose} style={{ flexShrink: 0, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--fg-4)', padding: '2px', display: 'inline-flex' }}>
+        <button type="button" aria-label="Dismiss" onClick={onClose} style={{ flexShrink: 0, border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--fg-3)', padding: '2px', display: 'inline-flex' }}>
           <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
         </button>
       ) : null}

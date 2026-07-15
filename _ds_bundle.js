@@ -39,6 +39,9 @@ const VARIANTS = {
     },
     hover: {
       background: 'var(--accent-hover)'
+    },
+    active: {
+      background: 'var(--accent-active)'
     }
   },
   secondary: {
@@ -49,6 +52,10 @@ const VARIANTS = {
     },
     hover: {
       background: 'var(--bg-2)',
+      borderColor: 'var(--fg-4)'
+    },
+    active: {
+      background: 'var(--bg-3)',
       borderColor: 'var(--fg-4)'
     }
   },
@@ -61,6 +68,10 @@ const VARIANTS = {
     hover: {
       background: 'var(--bg-2)',
       color: 'var(--fg-1)'
+    },
+    active: {
+      background: 'var(--bg-3)',
+      color: 'var(--fg-1)'
     }
   },
   danger: {
@@ -71,24 +82,64 @@ const VARIANTS = {
     },
     hover: {
       filter: 'brightness(0.94)'
+    },
+    active: {
+      filter: 'brightness(0.88)'
     }
   }
 };
+
+/* Inline spinner — self-contained (SMIL rotation, no keyframes needed). */
+function ButtonSpinner({
+  size = 14
+}) {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 16 16",
+    fill: "none",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "8",
+    cy: "8",
+    r: "6.5",
+    stroke: "currentColor",
+    strokeOpacity: "0.25",
+    strokeWidth: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 1.5a6.5 6.5 0 0 1 6.5 6.5",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round"
+  }, /*#__PURE__*/React.createElement("animateTransform", {
+    attributeName: "transform",
+    type: "rotate",
+    from: "0 8 8",
+    to: "360 8 8",
+    dur: "0.7s",
+    repeatCount: "indefinite"
+  })));
+}
 function Button({
   variant = 'primary',
   size = 'md',
   disabled = false,
+  loading = false,
   fullWidth = false,
   iconLeft,
   iconRight,
   children,
   style,
+  onClick,
   ...rest
 }) {
   const [hover, setHover] = React.useState(false);
+  const [press, setPress] = React.useState(false);
   const s = SIZES[size] || SIZES.md;
   const v = VARIANTS[variant] || VARIANTS.primary;
+  const interactive = !disabled && !loading;
   const base = {
+    position: 'relative',
     display: fullWidth ? 'flex' : 'inline-flex',
     width: fullWidth ? '100%' : 'auto',
     alignItems: 'center',
@@ -103,21 +154,59 @@ function Button({
     letterSpacing: '0.005em',
     whiteSpace: 'nowrap',
     borderRadius: 'var(--radius-md)',
-    cursor: disabled ? 'not-allowed' : 'pointer',
+    cursor: disabled ? 'not-allowed' : loading ? 'progress' : 'pointer',
     transition: 'background var(--dur-fast) var(--ease-standard), border-color var(--dur-fast), filter var(--dur-fast)',
     opacity: disabled ? 0.45 : 1,
     userSelect: 'none',
     ...v.rest,
-    ...(hover && !disabled ? v.hover : null),
+    ...(hover && interactive ? v.hover : null),
+    ...(press && interactive ? v.active : null),
     ...style
+  };
+  const handleClick = e => {
+    if (!interactive) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    onClick && onClick(e);
   };
   return /*#__PURE__*/React.createElement("button", {
     type: "button",
     disabled: disabled,
+    "aria-disabled": disabled || loading || undefined,
+    "aria-busy": loading || undefined,
     style: base,
     onMouseEnter: () => setHover(true),
-    onMouseLeave: () => setHover(false),
+    onMouseLeave: () => {
+      setHover(false);
+      setPress(false);
+    },
+    onMouseDown: () => setPress(true),
+    onMouseUp: () => setPress(false),
+    onKeyDown: e => {
+      if (e.key === ' ' || e.key === 'Enter') setPress(true);
+    },
+    onKeyUp: () => setPress(false),
+    onBlur: () => setPress(false),
+    onClick: handleClick,
     ...rest
+  }, loading ? /*#__PURE__*/React.createElement("span", {
+    "aria-hidden": "true",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement(ButtonSpinner, null)) : null, /*#__PURE__*/React.createElement("span", {
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: s.gap,
+      visibility: loading ? 'hidden' : 'visible'
+    }
   }, iconLeft ? /*#__PURE__*/React.createElement("span", {
     style: {
       display: 'inline-flex',
@@ -128,7 +217,7 @@ function Button({
       display: 'inline-flex',
       flexShrink: 0
     }
-  }, iconRight) : null);
+  }, iconRight) : null));
 }
 return Button;
 })();
@@ -150,6 +239,10 @@ const VARIANTS = {
     hover: {
       background: 'var(--bg-2)',
       color: 'var(--fg-1)'
+    },
+    active: {
+      background: 'var(--bg-3)',
+      color: 'var(--fg-1)'
     }
   },
   ghost: {
@@ -161,6 +254,10 @@ const VARIANTS = {
     hover: {
       background: 'var(--bg-2)',
       color: 'var(--fg-1)'
+    },
+    active: {
+      background: 'var(--bg-3)',
+      color: 'var(--fg-1)'
     }
   },
   primary: {
@@ -171,21 +268,60 @@ const VARIANTS = {
     },
     hover: {
       background: 'var(--accent-hover)'
+    },
+    active: {
+      background: 'var(--accent-active)'
     }
   }
 };
+
+/* Inline spinner — self-contained (SMIL rotation, no keyframes needed). */
+function IconButtonSpinner({
+  size = 14
+}) {
+  return /*#__PURE__*/React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 16 16",
+    fill: "none",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "8",
+    cy: "8",
+    r: "6.5",
+    stroke: "currentColor",
+    strokeOpacity: "0.25",
+    strokeWidth: "2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 1.5a6.5 6.5 0 0 1 6.5 6.5",
+    stroke: "currentColor",
+    strokeWidth: "2",
+    strokeLinecap: "round"
+  }, /*#__PURE__*/React.createElement("animateTransform", {
+    attributeName: "transform",
+    type: "rotate",
+    from: "0 8 8",
+    to: "360 8 8",
+    dur: "0.7s",
+    repeatCount: "indefinite"
+  })));
+}
 function IconButton({
   variant = 'ghost',
   size = 'md',
   disabled = false,
+  loading = false,
   'aria-label': ariaLabel,
   children,
   style,
+  onClick,
   ...rest
 }) {
   const [hover, setHover] = React.useState(false);
+  const [press, setPress] = React.useState(false);
   const dim = SIZES[size] || SIZES.md;
   const v = VARIANTS[variant] || VARIANTS.ghost;
+  const interactive = !disabled && !loading;
   const base = {
     display: 'inline-flex',
     alignItems: 'center',
@@ -194,22 +330,44 @@ function IconButton({
     height: dim,
     padding: 0,
     borderRadius: 'var(--radius-md)',
-    cursor: disabled ? 'not-allowed' : 'pointer',
+    cursor: disabled ? 'not-allowed' : loading ? 'progress' : 'pointer',
     opacity: disabled ? 0.45 : 1,
     transition: 'background var(--dur-fast) var(--ease-standard), color var(--dur-fast)',
     ...v.rest,
-    ...(hover && !disabled ? v.hover : null),
+    ...(hover && interactive ? v.hover : null),
+    ...(press && interactive ? v.active : null),
     ...style
+  };
+  const handleClick = e => {
+    if (!interactive) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    onClick && onClick(e);
   };
   return /*#__PURE__*/React.createElement("button", {
     type: "button",
     "aria-label": ariaLabel,
     disabled: disabled,
+    "aria-disabled": disabled || loading || undefined,
+    "aria-busy": loading || undefined,
     style: base,
     onMouseEnter: () => setHover(true),
-    onMouseLeave: () => setHover(false),
+    onMouseLeave: () => {
+      setHover(false);
+      setPress(false);
+    },
+    onMouseDown: () => setPress(true),
+    onMouseUp: () => setPress(false),
+    onKeyDown: e => {
+      if (e.key === ' ' || e.key === 'Enter') setPress(true);
+    },
+    onKeyUp: () => setPress(false),
+    onBlur: () => setPress(false),
+    onClick: handleClick,
     ...rest
-  }, children);
+  }, loading ? /*#__PURE__*/React.createElement(IconButtonSpinner, null) : children);
 }
 return IconButton;
 })();
@@ -230,6 +388,9 @@ function Checkbox({
   const isControlled = checked !== undefined;
   const [internal, setInternal] = React.useState(!!defaultChecked);
   const on = isControlled ? checked : internal;
+  /* The native input is visually hidden (0×0), so the browser focus ring lands on an
+     invisible element — mirror :focus-visible onto the visible box instead. */
+  const [focusVisible, setFocusVisible] = React.useState(false);
   const toggle = e => {
     if (disabled) return;
     if (!isControlled) setInternal(e.target.checked);
@@ -245,7 +406,8 @@ function Checkbox({
     justifyContent: 'center',
     background: on ? 'var(--accent)' : 'var(--bg-1)',
     border: '1px solid ' + (on ? 'var(--accent)' : 'var(--border-3)'),
-    transition: 'background var(--dur-fast), border-color var(--dur-fast)'
+    boxShadow: focusVisible ? 'var(--focus-ring)' : 'none',
+    transition: 'background var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast)'
   };
   return /*#__PURE__*/React.createElement("label", {
     htmlFor: rid,
@@ -265,6 +427,14 @@ function Checkbox({
     checked: on,
     disabled: disabled,
     onChange: toggle,
+    onFocus: e => {
+      try {
+        setFocusVisible(e.target.matches(':focus-visible'));
+      } catch (_) {
+        setFocusVisible(true);
+      }
+    },
+    onBlur: () => setFocusVisible(false),
     style: {
       position: 'absolute',
       opacity: 0,
@@ -496,6 +666,9 @@ function Switch({
   const isControlled = checked !== undefined;
   const [internal, setInternal] = React.useState(!!defaultChecked);
   const on = isControlled ? checked : internal;
+  /* The native input is visually hidden (0×0), so the browser focus ring lands on an
+     invisible element — mirror :focus-visible onto the visible track instead. */
+  const [focusVisible, setFocusVisible] = React.useState(false);
   const toggle = e => {
     if (disabled) return;
     if (!isControlled) setInternal(e.target.checked);
@@ -509,7 +682,8 @@ function Switch({
     position: 'relative',
     background: on ? 'var(--accent)' : 'var(--bg-3)',
     border: '1px solid ' + (on ? 'var(--accent)' : 'var(--border-3)'),
-    transition: 'background var(--dur-base) var(--ease-standard)'
+    boxShadow: focusVisible ? 'var(--focus-ring)' : 'none',
+    transition: 'background var(--dur-base) var(--ease-standard), box-shadow var(--dur-fast)'
   };
   const knob = {
     position: 'absolute',
@@ -537,9 +711,18 @@ function Switch({
   }, /*#__PURE__*/React.createElement("input", {
     id: rid,
     type: "checkbox",
+    role: "switch",
     checked: on,
     disabled: disabled,
     onChange: toggle,
+    onFocus: e => {
+      try {
+        setFocusVisible(e.target.matches(':focus-visible'));
+      } catch (_) {
+        setFocusVisible(true);
+      }
+    },
+    onBlur: () => setFocusVisible(false),
     style: {
       position: 'absolute',
       opacity: 0,
@@ -1006,7 +1189,7 @@ function Tabs({
       style: {
         fontFamily: 'var(--font-mono)',
         fontSize: 'var(--text-2xs)',
-        color: 'var(--fg-4)'
+        color: 'var(--fg-3)'
       }
     }, t.count) : null, /*#__PURE__*/React.createElement("span", {
       style: {
@@ -1113,6 +1296,9 @@ function Menu({
 }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef(null);
+  const listRef = React.useRef(null);
+  const initialFocus = React.useRef('first');
+  const menuId = React.useId();
   React.useEffect(() => {
     const h = e => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -1120,16 +1306,112 @@ function Menu({
     document.addEventListener('mousedown', h);
     return () => document.removeEventListener('mousedown', h);
   }, []);
+  const itemEls = () => listRef.current ? Array.prototype.slice.call(listRef.current.querySelectorAll('[role="menuitem"]:not([disabled])')) : [];
+  const focusTrigger = () => {
+    const t = ref.current && ref.current.querySelector('[aria-haspopup="menu"]');
+    t && t.focus();
+  };
+  const closeAndRestore = () => {
+    setOpen(false);
+    focusTrigger();
+  };
+
+  /* Move focus into the menu when it opens. */
+  React.useEffect(() => {
+    if (!open) return;
+    const els = itemEls();
+    const target = initialFocus.current === 'last' ? els[els.length - 1] : els[0];
+    target && target.focus();
+    initialFocus.current = 'first';
+  }, [open]);
+  const moveFocus = dir => {
+    const els = itemEls();
+    if (!els.length) return;
+    const i = els.indexOf(document.activeElement);
+    const next = i === -1 ? dir > 0 ? 0 : els.length - 1 : (i + dir + els.length) % els.length;
+    els[next].focus();
+  };
+  const onTriggerKeyDown = e => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      initialFocus.current = 'first';
+      setOpen(true);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      initialFocus.current = 'last';
+      setOpen(true);
+    }
+    /* Enter / Space activate the native button (onClick toggle) by default. */
+  };
+  const onMenuKeyDown = e => {
+    if (e.key === 'Escape') {
+      e.stopPropagation();
+      closeAndRestore();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveFocus(1);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveFocus(-1);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      const els = itemEls();
+      els[0] && els[0].focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      const els = itemEls();
+      const l = els[els.length - 1];
+      l && l.focus();
+    } else if (e.key === 'Tab') {
+      setOpen(false);
+    }
+  };
+  const triggerProps = {
+    'aria-haspopup': 'menu',
+    'aria-expanded': open,
+    'aria-controls': open ? menuId : undefined,
+    onKeyDown: onTriggerKeyDown
+  };
+
+  /* Real, focusable trigger: merge props into a provided element (e.g. <Button>),
+     otherwise wrap plain content in an unstyled native <button>. */
+  const triggerNode = React.isValidElement(trigger) ? React.cloneElement(trigger, {
+    ...triggerProps,
+    onClick: e => {
+      trigger.props.onClick && trigger.props.onClick(e);
+      setOpen(o => !o);
+    },
+    onKeyDown: e => {
+      trigger.props.onKeyDown && trigger.props.onKeyDown(e);
+      onTriggerKeyDown(e);
+    }
+  }) : /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    ...triggerProps,
+    onClick: () => setOpen(o => !o),
+    style: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: 0,
+      margin: 0,
+      border: 'none',
+      background: 'transparent',
+      font: 'inherit',
+      color: 'inherit',
+      cursor: 'pointer'
+    }
+  }, trigger);
   return /*#__PURE__*/React.createElement("div", {
     ref: ref,
     style: {
       position: 'relative',
       display: 'inline-flex'
     }
-  }, /*#__PURE__*/React.createElement("span", {
-    onClick: () => setOpen(o => !o)
-  }, trigger), open ? /*#__PURE__*/React.createElement("div", {
+  }, triggerNode, open ? /*#__PURE__*/React.createElement("div", {
+    ref: listRef,
+    id: menuId,
     role: "menu",
+    onKeyDown: onMenuKeyDown,
     style: {
       position: 'absolute',
       top: '100%',
@@ -1145,6 +1427,7 @@ function Menu({
     }
   }, items.map((it, i) => it.divider ? /*#__PURE__*/React.createElement("div", {
     key: i,
+    role: "separator",
     style: {
       height: '1px',
       background: 'var(--border-1)',
@@ -1152,14 +1435,18 @@ function Menu({
     }
   }) : /*#__PURE__*/React.createElement("button", {
     key: i,
+    type: "button",
     role: "menuitem",
+    tabIndex: -1,
     disabled: it.disabled,
     onClick: () => {
       it.onClick && it.onClick();
-      setOpen(false);
+      closeAndRestore();
     },
     onMouseEnter: e => e.currentTarget.style.background = it.danger ? 'var(--danger-subtle)' : 'var(--bg-2)',
     onMouseLeave: e => e.currentTarget.style.background = 'transparent',
+    onFocus: e => e.currentTarget.style.background = it.danger ? 'var(--danger-subtle)' : 'var(--bg-2)',
+    onBlur: e => e.currentTarget.style.background = 'transparent',
     style: {
       display: 'flex',
       alignItems: 'center',
@@ -1188,7 +1475,7 @@ function Menu({
     style: {
       fontFamily: 'var(--font-mono)',
       fontSize: 'var(--text-2xs)',
-      color: 'var(--fg-4)'
+      color: 'var(--fg-3)'
     }
   }, it.shortcut) : null))) : null);
 }
@@ -1305,6 +1592,7 @@ return Tooltip;
 
   /* ── components/feedback/Dialog.jsx ── */
   var Dialog = (function () {
+const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 function Dialog({
   open,
   onClose,
@@ -1314,14 +1602,59 @@ function Dialog({
   width = 460,
   children
 }) {
+  const panelRef = React.useRef(null);
+  const onCloseRef = React.useRef(onClose);
+  onCloseRef.current = onClose;
+  const titleId = React.useId();
   React.useEffect(() => {
     if (!open) return;
+    const previouslyFocused = document.activeElement;
+    const panel = panelRef.current;
+    const focusables = () => panel ? Array.prototype.slice.call(panel.querySelectorAll(FOCUSABLE)) : [];
+
+    /* Initial focus: first focusable element in the panel, else the panel itself. */
+    const first = focusables()[0];
+    (first || panel) && (first || panel).focus();
     const onKey = e => {
-      if (e.key === 'Escape') onClose && onClose();
+      if (e.key === 'Escape') {
+        onCloseRef.current && onCloseRef.current();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      /* Focus trap: cycle Tab / Shift-Tab within the panel. */
+      const els = focusables();
+      if (!els.length) {
+        e.preventDefault();
+        panel && panel.focus();
+        return;
+      }
+      const firstEl = els[0],
+        lastEl = els[els.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey) {
+        if (active === firstEl || !panel.contains(active)) {
+          e.preventDefault();
+          lastEl.focus();
+        }
+      } else {
+        if (active === lastEl || !panel.contains(active)) {
+          e.preventDefault();
+          firstEl.focus();
+        }
+      }
     };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+    document.addEventListener('keydown', onKey, true);
+
+    /* Body scroll lock while open. */
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      document.body.style.overflow = prevOverflow;
+      /* Return focus to the trigger. */
+      if (previouslyFocused && typeof previouslyFocused.focus === 'function') previouslyFocused.focus();
+    };
+  }, [open]);
   if (!open) return null;
   return /*#__PURE__*/React.createElement("div", {
     onMouseDown: onClose,
@@ -1337,9 +1670,12 @@ function Dialog({
       backdropFilter: 'blur(2px)'
     }
   }, /*#__PURE__*/React.createElement("div", {
+    ref: panelRef,
+    tabIndex: -1,
     onMouseDown: e => e.stopPropagation(),
     role: "dialog",
     "aria-modal": "true",
+    "aria-labelledby": title ? titleId : undefined,
     style: {
       width: '100%',
       maxWidth: width + 'px',
@@ -1347,7 +1683,8 @@ function Dialog({
       border: '1px solid var(--border-1)',
       borderRadius: 'var(--radius-xl)',
       boxShadow: 'var(--shadow-3)',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      outline: 'none'
     }
   }, title || description ? /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1357,6 +1694,7 @@ function Dialog({
       gap: '5px'
     }
   }, title ? /*#__PURE__*/React.createElement("h3", {
+    id: titleId,
     style: {
       fontSize: 'var(--text-lg)',
       fontWeight: 'var(--weight-semibold)'
@@ -1455,7 +1793,7 @@ function Toast({
       border: 'none',
       background: 'transparent',
       cursor: 'pointer',
-      color: 'var(--fg-4)',
+      color: 'var(--fg-3)',
       padding: '2px',
       display: 'inline-flex'
     }

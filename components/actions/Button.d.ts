@@ -9,6 +9,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   /** @default "md" */
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
+  /** Shows an inline spinner, sets aria-busy, and blocks clicks while preserving width. @default false */
+  loading?: boolean;
   fullWidth?: boolean;
   iconLeft?: React.ReactNode;
   iconRight?: React.ReactNode;
