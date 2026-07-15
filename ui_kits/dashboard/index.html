@@ -113,7 +113,7 @@ function ServicesTable() {
         <td style={{...td(false),fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>{s[1]}</td>
         <td style={td(false)}><Badge tone={tone[s[2]]} dot>{s[2]}</Badge></td>
         <td style={td(true)}>{s[3].toLocaleString()}</td>
-        <td style={{...td(true),color:s[4]===null?'var(--fg-4)':s[4]>200?'var(--danger)':'var(--fg-1)'}}>{s[4]===null?'—':s[4]}</td>
+        <td style={{...td(true),color:s[4]===null?'var(--fg-3)':s[4]>200?'var(--danger)':'var(--fg-1)'}}>{s[4]===null?'—':s[4]}</td>
         <td style={td(true)}>{s[5]}</td>
       </tr>)}</tbody>
     </table>

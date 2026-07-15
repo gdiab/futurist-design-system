@@ -66,8 +66,8 @@ function Comment({c,depth=0}) {
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:7}}>
         <Avatar name={c.a} size={22} tone={c.tone}/>
         <span style={{fontSize:13,fontWeight:600,color:'var(--fg-1)'}}>{c.a}</span>
-        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>{c.t} ago</span>
-        <button onClick={()=>setCollapsed(!collapsed)} style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)',border:'none',background:'transparent',cursor:'pointer'}}>[{collapsed?'+':'–'}]</button>
+        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{c.t} ago</span>
+        <button onClick={()=>setCollapsed(!collapsed)} style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',border:'none',background:'transparent',cursor:'pointer'}}>[{collapsed?'+':'–'}]</button>
       </div>
       {!collapsed && <>
         <p style={{fontSize:13.5,color:'var(--fg-2)',lineHeight:1.6,margin:'0 0 8px 30px'}}>{c.body}</p>
@@ -103,17 +103,17 @@ function App() {
       <main style={{minWidth:0}}>
         <div style={{display:'flex',alignItems:'center',gap:9,marginBottom:14}}>
           <Badge>Show HN</Badge>
-          <span style={{...meta,color:'var(--fg-4)'}}>Systems</span><span style={{color:'var(--fg-4)'}}>·</span>
-          <span style={{...meta,color:'var(--fg-4)'}}>6 min read</span>
+          <span style={{...meta,color:'var(--fg-3)'}}>Systems</span><span style={{color:'var(--fg-3)'}}>·</span>
+          <span style={{...meta,color:'var(--fg-3)'}}>6 min read</span>
         </div>
         <h1 style={{fontSize:34,fontWeight:700,letterSpacing:'-.025em',lineHeight:1.15,color:'var(--fg-1)',marginBottom:16}}>A sub-millisecond time-series engine written in Zig</h1>
         <div style={{display:'flex',alignItems:'center',gap:10,paddingBottom:18,marginBottom:24,borderBottom:'1px solid var(--border-1)'}}>
           <Avatar name="kira_v" size={30}/>
           <div style={{display:'flex',flexDirection:'column'}}>
             <span style={{fontSize:13,fontWeight:600,color:'var(--fg-1)'}}>kira_v</span>
-            <a href="#" style={{...meta,color:'var(--fg-4)'}}>github.com/futurist<Icon name="ext" size={11}/></a>
+            <a href="#" style={{...meta,color:'var(--fg-3)'}}>github.com/futurist<Icon name="ext" size={11}/></a>
           </div>
-          <span style={{...meta,color:'var(--fg-4)',marginLeft:'auto'}}>posted 2h ago</span>
+          <span style={{...meta,color:'var(--fg-3)',marginLeft:'auto'}}>posted 2h ago</span>
         </div>
 
         <div style={{fontSize:15.5,color:'var(--fg-2)',lineHeight:1.72,maxWidth:'68ch'}}>

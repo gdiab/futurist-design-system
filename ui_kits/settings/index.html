@@ -86,7 +86,7 @@ function App() {
     </header>
     <div style={{maxWidth:920,margin:'0 auto',padding:'28px',display:'grid',gridTemplateColumns:'190px 1fr',gap:32,alignItems:'start'}}>
       <aside style={{position:'sticky',top:80,display:'flex',flexDirection:'column',gap:2}}>
-        <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-4)',padding:'0 8px 8px'}}>Settings</div>
+        <div style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',padding:'0 8px 8px'}}>Settings</div>
         {nav.map(([ic,l])=>{const on=route===l;return <button key={l} onClick={()=>setRoute(l)} style={{display:'flex',alignItems:'center',gap:10,height:34,padding:'0 10px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',textAlign:'left'}}><Icon name={ic} size={16}/>{l}</button>;})}
       </aside>
       <main style={{minWidth:0}}>
@@ -141,7 +141,7 @@ function App() {
           <Section title="API keys" desc="Keys grant full programmatic access. Treat them like passwords." footer={<Btn variant="primary">Generate new key</Btn>}>
             {[['Production','ftr_live_8f2c…a41d','2 days ago'],['CI pipeline','ftr_live_31bc…9e07','3 weeks ago'],['Local dev','ftr_test_a90f…2c11','never']].map((k,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 0',borderTop:'1px solid var(--border-1)'}}>
               <div style={{flex:1,minWidth:0}}><div style={{fontSize:13,fontWeight:500,color:'var(--fg-1)'}}>{k[0]}</div><div style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',marginTop:2}}>{k[1]}</div></div>
-              <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>used {k[2]}</span>
+              <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>used {k[2]}</span>
               <Btn size="sm"><Icon name="copy" size={13}/></Btn>
               <Btn size="sm" variant="danger">Revoke</Btn>
             </div>)}

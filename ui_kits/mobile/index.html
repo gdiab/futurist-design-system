@@ -57,7 +57,7 @@ function Detail({s,onBack}) {
       <button onClick={onBack} style={{display:'inline-flex',alignItems:'center',gap:5,height:40,padding:'0 10px',border:'none',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)'}}><Icon name="back" size={20}/>Feed</button>
     </div>
     <div style={{padding:'8px 20px 20px'}}>
-      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>{s.tag?<Badge tone={s.tag==='Hot'?'warning':'accent'}>{s.tag}</Badge>:null}<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-4)'}}>{s.src} · {s.time} ago</span></div>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>{s.tag?<Badge tone={s.tag==='Hot'?'warning':'accent'}>{s.tag}</Badge>:null}<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{s.src} · {s.time} ago</span></div>
       <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-.02em',lineHeight:1.2,color:'var(--fg-1)',marginBottom:14}}>{s.t}</h1>
       <p style={{fontSize:15,color:'var(--fg-2)',lineHeight:1.65,marginBottom:14}}>After two years fighting GC pauses in our Go collector, we rewrote the ingest path. Median write latency dropped from 4ms to 0.7ms at four million points per second.</p>
       <p style={{fontSize:15,color:'var(--fg-2)',lineHeight:1.65}}>The rewrite leans on a slab allocator with per-core arenas, so hot-path writes never touch a shared lock. The payoff shows up in the tail: p99.9 now sits at 3.1ms.</p>
@@ -97,7 +97,7 @@ function Phone({dark,setTheme}) {
     <div style={{flex:1,overflow:'auto'}}>{story?<Detail s={story} onBack={()=>setStory(null)}/>:<Feed onOpen={setStory}/>}</div>
     {/* tab bar */}
     <div style={{display:'flex',borderTop:'1px solid var(--border-1)',background:'var(--bg-1)',flexShrink:0,paddingBottom:8}}>
-      {tabs.map(([ic,l])=>{const on=tab===ic;return <button key={ic} onClick={()=>{setTab(ic);setStory(null);}} style={{flex:1,height:52,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:3,border:'none',background:'transparent',cursor:'pointer',color:on?'var(--accent-subtle-fg)':'var(--fg-4)'}}><Icon name={ic} size={22} fill={on}/><span style={{fontSize:10,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{l}</span></button>;})}
+      {tabs.map(([ic,l])=>{const on=tab===ic;return <button key={ic} onClick={()=>{setTab(ic);setStory(null);}} style={{flex:1,height:52,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:3,border:'none',background:'transparent',cursor:'pointer',color:on?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name={ic} size={22} fill={on}/><span style={{fontSize:10,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{l}</span></button>;})}
     </div>
   </div>;
 }
