@@ -1236,7 +1236,7 @@ function Drawer({
       zIndex: 1000,
       display: 'flex',
       justifyContent: isRight ? 'flex-end' : 'flex-start',
-      background: 'oklch(0.2 0.02 262 / 0.45)',
+      background: 'var(--scrim)',
       backdropFilter: 'blur(2px)'
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -1666,7 +1666,7 @@ function Dialog({
       alignItems: 'flex-start',
       justifyContent: 'center',
       padding: '10vh 16px',
-      background: 'oklch(0.2 0.02 262 / 0.45)',
+      background: 'var(--scrim)',
       backdropFilter: 'blur(2px)'
     }
   }, /*#__PURE__*/React.createElement("div", {

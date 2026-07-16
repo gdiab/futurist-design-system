@@ -9,7 +9,7 @@ export function Drawer({ open, onClose, side = 'right', width = 400, title, chil
   if (!open) return null;
   const isRight = side === 'right';
   return (
-    <div onMouseDown={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: isRight ? 'flex-end' : 'flex-start', background: 'oklch(0.2 0.02 262 / 0.45)', backdropFilter: 'blur(2px)' }}>
+    <div onMouseDown={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', justifyContent: isRight ? 'flex-end' : 'flex-start', background: 'var(--scrim)', backdropFilter: 'blur(2px)' }}>
       <div onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true"
         style={{ width: width + 'px', maxWidth: '92vw', height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--bg-1)', borderLeft: isRight ? '1px solid var(--border-1)' : 'none', borderRight: isRight ? 'none' : '1px solid var(--border-1)', boxShadow: 'var(--shadow-3)' }}>
         {title ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'var(--space-4) var(--space-5)', borderBottom: '1px solid var(--border-1)' }}><h3 style={{ fontSize: 'var(--text-md)', fontWeight: 'var(--weight-semibold)' }}>{title}</h3></div> : null}

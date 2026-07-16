@@ -1,4 +1,5 @@
 <!-- @dsCard group="Overlays" viewport="1280x760" -->
+<!-- Self-contained recipe: primitives are re-implemented inline for copy-paste use. components/ is the source of truth — prefer its specs where they differ. -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -69,7 +70,7 @@ function Popover({trigger,children,width=260,align='start'}) {
 function Drawer({open,onClose,title,children,footer}) {
   useEffect(()=>{if(!open)return;const k=e=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',k);return()=>window.removeEventListener('keydown',k);},[open]);
   if(!open)return null;
-  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',justifyContent:'flex-end',background:'oklch(0.2 0.02 262 / 0.45)',backdropFilter:'blur(2px)'}}>
+  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',justifyContent:'flex-end',background:'var(--scrim)',backdropFilter:'blur(2px)'}}>
     <div onMouseDown={e=>e.stopPropagation()} style={{width:400,maxWidth:'92vw',height:'100%',display:'flex',flexDirection:'column',background:'var(--bg-1)',borderLeft:'1px solid var(--border-1)',boxShadow:'var(--shadow-3)'}}>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',borderBottom:'1px solid var(--border-1)'}}><h3 style={{fontSize:15,fontWeight:600}}>{title}</h3><button type="button" aria-label="Close" onClick={onClose} style={{border:'none',background:'transparent',cursor:'pointer',color:'var(--fg-3)',fontSize:18}}>×</button></div>
       <div style={{flex:1,overflow:'auto',padding:20}}>{children}</div>

@@ -48,7 +48,7 @@ export function Dialog({ open, onClose, title, description, footer, width = 460,
 
   if (!open) return null;
   return (
-    <div onMouseDown={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '10vh 16px', background: 'oklch(0.2 0.02 262 / 0.45)', backdropFilter: 'blur(2px)' }}>
+    <div onMouseDown={onClose} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '10vh 16px', background: 'var(--scrim)', backdropFilter: 'blur(2px)' }}>
       <div ref={panelRef} tabIndex={-1} onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby={title ? titleId : undefined}
         style={{ width: '100%', maxWidth: width + 'px', background: 'var(--bg-1)', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-3)', overflow: 'hidden', outline: 'none' }}>
         {(title || description) ? (

@@ -1,4 +1,5 @@
 <!-- @dsCard group="Command" viewport="1280x760" -->
+<!-- Self-contained recipe: primitives are re-implemented inline for copy-paste use. components/ is the source of truth — prefer its specs where they differ. -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -70,7 +71,7 @@ function Palette({onClose,onToggleTheme}) {
     window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
   },[sel,selectable]);
   let si=-1;
-  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'12vh 16px',background:'oklch(0.2 0.02 262 / 0.45)',backdropFilter:'blur(3px)'}}>
+  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'12vh 16px',background:'var(--scrim)',backdropFilter:'blur(3px)'}}>
     <div onMouseDown={e=>e.stopPropagation()} style={{width:'100%',maxWidth:560,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden'}}>
       <div style={{display:'flex',alignItems:'center',gap:10,padding:'0 16px',height:52,borderBottom:'1px solid var(--border-1)'}}>
         <span style={{color:'var(--fg-3)'}}><Icon name="search" size={18}/></span>

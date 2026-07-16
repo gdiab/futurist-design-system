@@ -1,4 +1,5 @@
 <!-- @dsCard group="Docs" viewport="1280x900" -->
+<!-- Self-contained recipe: primitives are re-implemented inline for copy-paste use. components/ is the source of truth — prefer its specs where they differ. -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -60,7 +61,7 @@
         <h2 id="install">Install the SDK</h2>
         <p>The client is distributed as a single package with no runtime dependencies. Install it with your package manager of choice:</p>
         <div style="background:var(--bg-inverse);border-radius:var(--radius-md);overflow:hidden;margin:0 0 16px;max-width:70ch;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid oklch(1 0 0 / 0.08);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--stroke-inverse);">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-inverse);opacity:.5;">terminal</span>
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-inverse);opacity:.4;">copy</span>
           </div>
@@ -70,7 +71,7 @@
         <h2 id="configure">Configure the client</h2>
         <p>Initialize once at process start. The client batches spans and flushes on an interval or when the buffer fills — whichever comes first.</p>
         <div style="background:var(--bg-inverse);border-radius:var(--radius-md);overflow:hidden;margin:0 0 16px;max-width:70ch;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid oklch(1 0 0 / 0.08);">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--stroke-inverse);">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-inverse);opacity:.5;">client.ts</span>
           </div>
           <pre style="margin:0;padding:14px 16px;font-family:var(--font-mono);font-size:13px;line-height:1.75;color:var(--fg-inverse);overflow:auto;">import { Telemetry } from '@futurist/telemetry';
