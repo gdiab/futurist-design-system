@@ -10,9 +10,11 @@ If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy as
 static HTML files for the user to view — link `styles.css` for tokens, and follow the CONTENT
 FUNDAMENTALS, VISUAL FOUNDATIONS, and ICONOGRAPHY sections in `readme.md`. If working on production
 code, copy assets and read the rules here to become an expert in designing with this brand; import
-the components in `components/` (props documented in each `.d.ts` / `.prompt.md`).
+the components in `components/` (props documented in each `.d.ts` / `.prompt.md`). `components/`
+is the source of truth for primitives; the `ui_kits/` pages are self-contained copy-paste recipes
+that re-implement them inline — follow the components' specs when the two differ.
 
-Key reflexes: base UI text 14px, numbers + labels in mono, sentence-case copy, `//`-prefixed
+Key reflexes: base UI text 0.875rem (14px), numbers + labels in mono, sentence-case copy, `//`-prefixed
 eyebrows, no emoji, thin geometric line icons (Lucide in production), quick mechanical motion with
 no bounce, and always support `[data-theme="dark"]`.
 

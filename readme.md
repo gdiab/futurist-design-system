@@ -59,9 +59,10 @@ status/data, each with a `-subtle` tinted background pair. Six `--viz-*` series 
   high-legibility face with distinctive letterforms (open apertures, unambiguous `a`/`g`/`I`/`l`/`1`).
   Use the **Next** release specifically — it's the variable version that supports the full weight
   range (400/500/600/700); the original Atkinson Hyperlegible ships only 400/700 and loses the
-  mid-weight step. Base size **14px** for density; 13px in tables/controls.
+  mid-weight step. Base size **0.875rem (14px)** for density; 0.8125rem (13px) in tables/controls.
 - `--font-mono` **IBM Plex Mono** — data, code, metrics, eyebrows, table numerics, keyboard hints.
-Scale runs 11 → 62px (compact). Numeric values and labels almost always go mono.
+Scale runs 0.6875 → 3.875rem (11 → 62px at the 16px root; compact). Sizes are rem-based so they
+respect user browser font-size preferences. Numeric values and labels almost always go mono.
 
 **Spacing & layout.** 4px base grid, tuned tight. Page gutter 24px; card padding 20px; control
 height 32px (26 sm / 40 lg). Layouts are grid-first with `gap`; dashboards use fixed 240px sidebars
@@ -84,7 +85,9 @@ focus tracks. Tables and lists are separated by hairlines, not zebra fills (hove
 
 **Motion.** Quick and mechanical — 90/150/240ms with `cubic-bezier(0.2,0,0,1)`. **No bounce, no
 overshoot.** Transitions are limited to color, background, border, box-shadow, and small positional
-moves (switch knob, tab underline).
+moves (switch knob, tab underline). `prefers-reduced-motion: reduce` is honored globally: the
+`--dur-*` tokens collapse to `0.01ms` (tokens/elevation.css) and a wildcard guard in `styles.css`
+neutralizes any hard-coded animation/transition durations.
 
 **Interaction states.**
 - *Hover:* surfaces step one level (`bg-1 → bg-2`), text darkens (`fg-2 → fg-1`), accent buttons
@@ -134,7 +137,11 @@ moves (switch knob, tab underline).
 
 **`guidelines/`** — foundation specimen cards (Type · Colors · Spacing · Brand) for the Design System tab.
 
-**`ui_kits/`** — full-screen product recreations (self-contained, interactive)
+**`ui_kits/`** — full-screen product recreations (self-contained, interactive). Kits are
+standalone copy-paste **recipes**: they deliberately re-implement primitives inline (no build step,
+no imports) so each page works as a single static file. `components/` is the **source of truth** —
+when a primitive's spec changes there, kits showing that primitive should be re-checked; when in
+doubt, the component's `.jsx` / `.d.ts` wins over kit markup.
 - `dashboard/` — data-dense observability console (login → sidebar → metrics → services table; light/dark).
 - `marketing/` — developer-tool landing page (nav, hero + terminal, stats, features, pricing, footer).
 - `news/` — **Dispatch** tech news aggregator:
