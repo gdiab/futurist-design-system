@@ -1,5 +1,6 @@
 /* Futurist Design System — global entry point.
-   Consumers link this single file. Import-only; no rules live here. */
+   Consumers link this single file. Imports plus the global
+   reduced-motion guard; all other rules live in tokens/. */
 @import "./tokens/fonts.css";
 @import "./tokens/colors.css";
 @import "./tokens/typography.css";
@@ -7,3 +8,17 @@
 @import "./tokens/radius.css";
 @import "./tokens/elevation.css";
 @import "./tokens/base.css";
+
+/* Accessibility — respect the user's reduced-motion preference.
+   Duration tokens are also zeroed in tokens/elevation.css; this
+   wildcard guard catches hard-coded durations and inline styles. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
