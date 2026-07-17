@@ -13,13 +13,27 @@ const VARIANTS = {
   danger:    { rest: { background: 'var(--danger)', color: 'var(--danger-fg)', border: '1px solid transparent' },        hover: { filter: 'brightness(0.94)' },                            active: { filter: 'brightness(0.88)' } },
 };
 
-/* Inline spinner — self-contained (SMIL rotation, no keyframes needed). */
+/* SMIL ignores CSS media queries, so reduced-motion must be checked in JS. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = (e) => setReduced(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduced;
+}
+
+/* Inline spinner — self-contained (SMIL rotation, no keyframes needed).
+   Under reduced motion the rotation is omitted, leaving a static arc. */
 function ButtonSpinner({ size = 14 }) {
+  const reduced = usePrefersReducedMotion();
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
       <path d="M8 1.5a6.5 6.5 0 0 1 6.5 6.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.7s" repeatCount="indefinite" />
+        {reduced ? null : <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.7s" repeatCount="indefinite" />}
       </path>
     </svg>
   );

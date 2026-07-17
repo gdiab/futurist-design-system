@@ -89,10 +89,24 @@ const VARIANTS = {
   }
 };
 
-/* Inline spinner — self-contained (SMIL rotation, no keyframes needed). */
+/* SMIL ignores CSS media queries, so reduced-motion must be checked in JS. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = e => setReduced(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduced;
+}
+
+/* Inline spinner — self-contained (SMIL rotation, no keyframes needed).
+   Under reduced motion the rotation is omitted, leaving a static arc. */
 function ButtonSpinner({
   size = 14
 }) {
+  const reduced = usePrefersReducedMotion();
   return /*#__PURE__*/React.createElement("svg", {
     width: size,
     height: size,
@@ -111,7 +125,7 @@ function ButtonSpinner({
     stroke: "currentColor",
     strokeWidth: "2",
     strokeLinecap: "round"
-  }, /*#__PURE__*/React.createElement("animateTransform", {
+  }, reduced ? null : /*#__PURE__*/React.createElement("animateTransform", {
     attributeName: "transform",
     type: "rotate",
     from: "0 8 8",
@@ -275,10 +289,24 @@ const VARIANTS = {
   }
 };
 
-/* Inline spinner — self-contained (SMIL rotation, no keyframes needed). */
+/* SMIL ignores CSS media queries, so reduced-motion must be checked in JS. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = React.useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  React.useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = e => setReduced(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduced;
+}
+
+/* Inline spinner — self-contained (SMIL rotation, no keyframes needed).
+   Under reduced motion the rotation is omitted, leaving a static arc. */
 function IconButtonSpinner({
   size = 14
 }) {
+  const reduced = usePrefersReducedMotion();
   return /*#__PURE__*/React.createElement("svg", {
     width: size,
     height: size,
@@ -297,7 +325,7 @@ function IconButtonSpinner({
     stroke: "currentColor",
     strokeWidth: "2",
     strokeLinecap: "round"
-  }, /*#__PURE__*/React.createElement("animateTransform", {
+  }, reduced ? null : /*#__PURE__*/React.createElement("animateTransform", {
     attributeName: "transform",
     type: "rotate",
     from: "0 8 8",

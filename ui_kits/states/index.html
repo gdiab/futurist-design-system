@@ -16,6 +16,8 @@
   @keyframes ftr-spin { to { transform: rotate(360deg) } }
   @keyframes ftr-pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
   .sk { background: linear-gradient(90deg, var(--bg-2) 0%, var(--bg-3) 40%, var(--bg-2) 80%); background-size: 720px 100%; animation: ftr-shimmer 1.3s linear infinite; border-radius: var(--radius-sm); }
+  /* Reduced motion: skeletons become a deliberate flat fill, not a frozen gradient frame. */
+  @media (prefers-reduced-motion: reduce) { .sk { animation: none; background: var(--bg-2); } }
 </style>
 </head>
 <body>
