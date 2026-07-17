@@ -24,6 +24,18 @@
   -webkit-mask-image:radial-gradient(ellipse 85% 90% at 65% 0%, black 25%, transparent 78%);
   mask-image:radial-gradient(ellipse 85% 90% at 65% 0%, black 25%, transparent 78%);
 }
+/* Panel variant — pinned faint white grid for the dark hero panel (part of the
+   pinned-panel exception; theme hairlines would vanish against the pinned bg). */
+.grid-bg-panel{position:relative;}
+.grid-bg-panel::before{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(oklch(1 0 0 / 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.045) 1px, transparent 1px);
+  background-size:48px 48px;
+  -webkit-mask-image:radial-gradient(ellipse 85% 90% at 65% 0%, black 25%, transparent 78%);
+  mask-image:radial-gradient(ellipse 85% 90% at 65% 0%, black 25%, transparent 78%);
+}
 /* Live-state pulse — duration collapses to instant under prefers-reduced-motion
    via the global wildcard guard in styles.css. */
 @keyframes fz-pulse{0%,100%{opacity:1}50%{opacity:.25}}
@@ -36,11 +48,12 @@
    breakpoint overrides need !important to win. Spacing stays on the 4px grid. */
 @media (max-width:880px){
   .fz-nav-links{display:none !important;}
-  .fz-hero,.fz-features,.fz-pricing{grid-template-columns:1fr !important;}
-  .fz-hero{padding:var(--space-12) var(--space-10) var(--space-10) !important;gap:var(--space-8) !important;}
+  .fz-hero,.fz-features{grid-template-columns:1fr !important;}
+  .fz-hero{padding:var(--space-12) var(--space-10) 0 !important;gap:var(--space-8) !important;}
   .fz-features{gap:var(--space-8) !important;}
-  .fz-pricing > div{border-left:none !important;}
-  .fz-pricing > div + div{border-top:1px solid var(--border-1);}
+  .fz-panel-stats{grid-template-columns:1fr !important;}
+  .fz-panel-stats > div{border-left:none !important;padding-left:0 !important;}
+  .fz-reg{display:none !important;}
   .fz-footer{flex-wrap:wrap;gap:var(--space-4) var(--space-6);}
 }
 @media (max-width:560px){
@@ -77,10 +90,35 @@ function Btn({variant='primary',children,...r}) {
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
 
-/* Dotted-leader status line — signature grammar (label ······ value). */
-const Leader = () => <span aria-hidden="true" style={{flex:1,borderBottom:'1px dotted var(--border-3)',margin:'0 var(--space-2)',transform:'translateY(-3px)'}}/>;
-const StatRow = ({k,v,color}) => <div style={{display:'flex',alignItems:'baseline',fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}><span>{k}</span><Leader/><span style={{color:color||'var(--fg-2)'}}>{v}</span></div>;
+/* Dotted-leader status line — signature grammar (label ······ value).
+   Color props exist so the same grammar can run on the pinned-dark panel. */
+const Leader = ({dots}) => <span aria-hidden="true" style={{flex:1,borderBottom:`1px dotted ${dots||'var(--border-3)'}`,margin:'0 var(--space-2)',transform:'translateY(-3px)'}}/>;
+const StatRow = ({k,v,color,labelColor,dots}) => <div style={{display:'flex',alignItems:'baseline',fontFamily:'var(--font-mono)',fontSize:12,color:labelColor||'var(--fg-3)'}}><span>{k}</span><Leader dots={dots}/><span style={{color:color||'var(--fg-2)'}}>{v}</span></div>;
 const LiveDot = ({size=6}) => <span className="fz-live" style={{width:size,height:size,borderRadius:'50%',background:'var(--accent)',flex:'none'}}/>;
+
+/* ── The instrument panel ────────────────────────────────────────────
+   The hero pins the dark-theme palette in BOTH themes (the sanctioned
+   pinned-panel exception, same as the deploy readout inside it):
+   in light theme it reads as a committed dark drench; in dark theme it
+   sits flush with the canvas. Every value below is its dark-theme token
+   from tokens/colors.css — foregrounds included, so text clears AA
+   against the pinned background in both themes. */
+const PANEL = {
+  bg:     'oklch(0.22 0.012 260)',   /* --bg-inverse (light theme)   */
+  inset:  'oklch(0.175 0.008 262)',  /* dark --bg-0 — readout well   */
+  fg1:    'oklch(0.965 0.003 258)',  /* dark --fg-1                  */
+  fg2:    'oklch(0.800 0.008 258)',  /* dark --fg-2                  */
+  muted:  'oklch(0.655 0.010 260)',  /* dark --fg-3 — 5.5:1 on bg    */
+  hair:   'oklch(1 0 0 / 0.10)',     /* hairline on the panel        */
+  dots:   'oklch(1 0 0 / 0.28)',     /* dotted leaders on the panel  */
+  bar:    'oklch(1 0 0 / 0.22)',     /* inactive sparkline bars      */
+  accent: 'oklch(0.800 0.170 159)',  /* dark --accent                */
+  success:'oklch(0.680 0.130 168)',  /* dark --success               */
+  warning:'oklch(0.780 0.150 78)',   /* dark --warning               */
+};
+
+/* Corner registration mark — the blueprint grammar, machined into the panel. */
+const RegMark = ({style}) => <svg className="fz-reg" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" style={{position:'absolute',...style}}><g stroke={PANEL.dots} strokeWidth="1"><line x1="0" y1="6" x2="12" y2="6"/><line x1="6" y1="0" x2="6" y2="12"/></g></svg>;
 
 function ThemeButton() {
   const [dark,setDark]=useState(false);
@@ -105,76 +143,58 @@ function Nav() {
 }
 
 function Hero() {
-  return <section className="grid-bg" style={{position:'relative'}}><div className="fz-hero" style={{maxWidth:1200,margin:'0 auto',padding:'80px 40px 48px',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'start'}}>
-    <div style={{display:'flex',flexDirection:'column',gap:20,paddingTop:16}}>
-      <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
-        <LiveDot/>
-        <span style={{color:'var(--accent-subtle-fg)',fontWeight:500}}>// telemetry platform</span>
-        <span style={{color:'var(--fg-3)'}}>rev 2.4.0 — edge deploys</span>
+  return <section className="grid-bg-panel" style={{position:'relative',background:PANEL.bg}}>
+    <div style={{maxWidth:1200,margin:'0 auto',position:'relative'}}>
+      <RegMark style={{top:28,left:28}}/><RegMark style={{top:28,right:28}}/>
+      <RegMark style={{bottom:28,left:28}}/><RegMark style={{bottom:28,right:28}}/>
+      <div className="fz-hero" style={{padding:'88px 40px 0',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'start'}}>
+        <div style={{display:'flex',flexDirection:'column',gap:20,paddingTop:16}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
+            <LiveDot/>
+            <span style={{color:PANEL.accent,fontWeight:500}}>// telemetry platform</span>
+            <span style={{color:PANEL.muted}}>rev 2.4.0 — edge deploys</span>
+          </div>
+          <h1 className="fz-h1" style={{fontSize:62,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.04,color:PANEL.fg1}}>Ship telemetry that keeps up with you.</h1>
+          <p style={{fontSize:17,color:PANEL.fg2,lineHeight:1.55,maxWidth:460}}>A precise, low-overhead observability layer for teams that measure everything. Metrics, traces, and logs — one dense console, zero noise.</p>
+          <div style={{display:'flex',gap:12,marginTop:4}}>
+            <Btn variant="primary">Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
+            <Btn variant="secondary">Read the docs</Btn>
+          </div>
+        </div>
+        <DeployReadout/>
       </div>
-      <h1 className="fz-h1" style={{fontSize:56,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.05,color:'var(--fg-1)'}}>Ship telemetry that keeps up with you.</h1>
-      <p style={{fontSize:17,color:'var(--fg-2)',lineHeight:1.55,maxWidth:460}}>A precise, low-overhead observability layer for teams that measure everything. Metrics, traces, and logs — one dense console, zero noise.</p>
-      <div style={{display:'flex',gap:12,marginTop:4}}>
-        <Btn variant="primary">Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
-        <Btn variant="secondary">Read the docs</Btn>
-      </div>
-      <div style={{marginTop:12,maxWidth:360,display:'flex',flexDirection:'column',gap:8,paddingTop:16,borderTop:'1px solid var(--border-1)'}}>
-        <StatRow k="ingest" v="4.2M spans/s"/>
-        <StatRow k="uptime" v="99.99%"/>
-        <StatRow k="compliance" v="SOC 2 type II"/>
+      {/* Machined stat band — the panel's bottom edge, dotted-leader grammar. */}
+      <div style={{padding:'0 40px'}}>
+        <div className="fz-panel-stats" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px 0',borderTop:`1px solid ${PANEL.hair}`,marginTop:56,padding:'20px 0 32px'}}>
+          <div style={{paddingRight:32}}><StatRow k="ingest" v="4.2M spans/s" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
+          <div style={{borderLeft:`1px solid ${PANEL.hair}`,padding:'0 32px'}}><StatRow k="uptime" v="99.99%" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
+          <div style={{borderLeft:`1px solid ${PANEL.hair}`,paddingLeft:32}}><StatRow k="compliance" v="SOC 2 type II" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
+        </div>
       </div>
     </div>
-    <div style={{display:'flex',flexDirection:'column',gap:12}}>
-      <Terminal/>
-      <IngestStrip/>
-    </div>
-  </div></section>;
+  </section>;
 }
 
-/* Live-feeling ingest readout under the terminal — CSS-drawn bar sparkline,
-   fully tokenized (themes both ways), one Signal Green live bar. */
-function IngestStrip() {
-  const bars=[34,46,40,58,52,66,60,72,64,55,61,70,78,68,74,82,71,63,69,77,85,79,88,92];
-  return <div style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:'12px 16px',display:'flex',alignItems:'center',gap:16}}>
-    <div style={{display:'flex',alignItems:'flex-end',gap:3,height:28,flex:1}} aria-hidden="true">
-      {bars.map((h,i)=><span key={i} className={i===bars.length-1?'fz-live':undefined} style={{flex:1,height:`${h}%`,borderRadius:1,background:i===bars.length-1?'var(--accent)':'var(--border-2)'}}/>)}
-    </div>
-    <div style={{display:'flex',alignItems:'baseline',gap:8,fontFamily:'var(--font-mono)',fontSize:12,whiteSpace:'nowrap'}}>
-      <span style={{color:'var(--fg-3)',letterSpacing:'.08em',textTransform:'uppercase'}}>live ingest</span>
-      <span style={{color:'var(--fg-1)'}}>4.19M/s</span>
-    </div>
-  </div>;
-}
-
-function Terminal() {
-  /* Terminal chrome stays dark in BOTH themes — --bg-inverse flips to near-white
-     in dark mode, which would produce a light terminal. Pin the light-theme
-     inverse values instead; traffic lights + white hairline assume a dark bg.
-     Foregrounds are pinned too: theme-relative tokens (--fg-3, --success, …)
-     drop below AA against the pinned-dark bg in the light theme, so every
-     terminal color is a local constant set to its dark-theme token value
-     (tokens/colors.css [data-theme="dark"]) — the panel renders identically
-     in both themes and each row clears 4.5:1. */
-  const TERM_BG='oklch(0.22 0.012 260)', TERM_FG='oklch(0.97 0.003 255)',
-        TERM_MUTED='oklch(0.655 0.010 260)',   /* dark --fg-3 */
-        TERM_SUCCESS='oklch(0.680 0.130 168)', /* dark --success */
-        TERM_WARNING='oklch(0.780 0.150 78)',  /* dark --warning */
-        TERM_ACCENT='oklch(0.800 0.170 159)';  /* dark --accent */
+/* The deploy readout — no window chrome, no traffic lights: this is not a
+   picture of a terminal, it is a readout milled into the instrument panel.
+   Colors come from PANEL (pinned dark-theme values; see PANEL above).
+   Replay-on-load: rows render visible by default; JS hides them only after
+   mount and only when motion is allowed, then reveals top-to-bottom at a
+   mechanical cadence (visibility swap — no slide, no typewriter). The ⚠ row
+   holds an extra beat. Runs once; reduced motion or JS failure = full static
+   transcript. */
+function DeployReadout() {
   const rows=[
     ['$ ','futurist deploy --edge','',''],
-    ['','→ building 6 services','',TERM_MUTED],
-    ['','✓ api-gateway','142ms',TERM_SUCCESS],
-    ['','✓ auth-service','98ms',TERM_SUCCESS],
-    ['','✓ search-index','71ms',TERM_SUCCESS],
-    ['','⚠ billing-worker','410ms',TERM_WARNING],
-    ['','deployed to us-east-1, eu-west-1','',TERM_MUTED],
+    ['','→ building 6 services','',PANEL.muted],
+    ['','✓ api-gateway','142ms',PANEL.success],
+    ['','✓ auth-service','98ms',PANEL.success],
+    ['','✓ search-index','71ms',PANEL.success],
+    ['','⚠ billing-worker','410ms',PANEL.warning],
+    ['','deployed to us-east-1, eu-west-1','',PANEL.muted],
     ['$ ','','',''],
   ];
-  /* Replay-on-load: rows render visible by default; JS hides them only after
-     mount and only when motion is allowed, then reveals top-to-bottom at a
-     mechanical cadence (visibility swap — no slide, no typewriter). The ⚠ row
-     holds an extra beat. Runs once; reduced motion or JS failure = full static
-     transcript. */
+  const bars=[34,46,40,58,52,66,60,72,64,55,61,70,78,68,74,82,71,63,69,77,85,79,88,92];
   const [shown,setShown]=useState(rows.length);
   React.useEffect(()=>{
     let allow=false;
@@ -189,18 +209,28 @@ function Terminal() {
     });
     return ()=>timers.forEach(clearTimeout);
   },[]);
-  return <div style={{background:TERM_BG,borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
-    <div style={{display:'flex',alignItems:'center',gap:6,padding:'11px 14px',borderBottom:'1px solid oklch(1 0 0 / 0.08)'}}>
-      {['#ff5f57','#febc2e','#28c840'].map(c=><span key={c} style={{width:11,height:11,borderRadius:'50%',background:c,opacity:.9}}/>)}
-      <span style={{marginLeft:8,fontFamily:'var(--font-mono)',fontSize:12,color:TERM_FG,opacity:.5}}>zsh — futurist</span>
+  return <div style={{background:PANEL.inset,borderRadius:'var(--radius-lg)',border:`1px solid ${PANEL.hair}`,overflow:'hidden'}}>
+    <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 16px',borderBottom:`1px solid ${PANEL.hair}`,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
+      <LiveDot size={5}/>
+      <span style={{color:PANEL.muted}}>deploy — rev 2.4.0</span>
+      <span style={{marginLeft:'auto',color:PANEL.muted}}>us-east-1</span>
     </div>
     <div style={{padding:'16px 18px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.85}}>
-      {rows.map((r,i)=><div key={i} className="fz-term-row" style={{display:'flex',color:r[3]||TERM_FG,visibility:i<shown?'visible':'hidden'}}>
-        <span style={{color:TERM_ACCENT}}>{r[0]}</span>
+      {rows.map((r,i)=><div key={i} className="fz-term-row" style={{display:'flex',color:r[3]||PANEL.fg1,visibility:i<shown?'visible':'hidden'}}>
+        <span style={{color:PANEL.accent}}>{r[0]}</span>
         <span style={{opacity:r[3]?1:.92}}>{r[1]}</span>
-        {i===rows.length-1?<span className="fz-cursor" aria-hidden="true" style={{width:8,height:15,background:TERM_FG,alignSelf:'center'}}/>:null}
-        {r[2]?<span style={{marginLeft:'auto',color:TERM_MUTED}}>{r[2]}</span>:null}
+        {i===rows.length-1?<span className="fz-cursor" aria-hidden="true" style={{width:8,height:15,background:PANEL.fg1,alignSelf:'center'}}/>:null}
+        {r[2]?<span style={{marginLeft:'auto',color:PANEL.muted}}>{r[2]}</span>:null}
       </div>)}
+    </div>
+    <div style={{display:'flex',alignItems:'center',gap:16,padding:'12px 16px',borderTop:`1px solid ${PANEL.hair}`}}>
+      <div style={{display:'flex',alignItems:'flex-end',gap:3,height:28,flex:1}} aria-hidden="true">
+        {bars.map((h,i)=><span key={i} className={i===bars.length-1?'fz-live':undefined} style={{flex:1,height:`${h}%`,borderRadius:1,background:i===bars.length-1?PANEL.accent:PANEL.bar}}/>)}
+      </div>
+      <div style={{display:'flex',alignItems:'baseline',gap:8,fontFamily:'var(--font-mono)',fontSize:12,whiteSpace:'nowrap'}}>
+        <span style={{color:PANEL.muted,letterSpacing:'.08em',textTransform:'uppercase'}}>live ingest</span>
+        <span style={{color:PANEL.fg1}}>4.19M/s</span>
+      </div>
     </div>
   </div>;
 }
@@ -270,27 +300,67 @@ function Features() {
   </div></section>;
 }
 
+/* Pricing as a spec sheet — data tables are the system's home turf, so the
+   plans are presented as a machined specification table: mono values,
+   hairline rows, uppercase mono row labels, — for absent, ✓ for included.
+   The recommended column carries an --accent-subtle tint (selection grammar). */
 function Pricing() {
-  const plans=[
-    ['Hobby','$0',['1 project','7-day retention','Community support'],false],
-    ['Team','$40',['Unlimited projects','90-day retention','Deploy correlation','Priority support'],true],
-    ['Enterprise','Custom',['SSO & SAML','Unlimited retention','On-prem / BYOK','Dedicated SLA'],false],
+  const cols=[
+    {name:'Hobby', price:'$0',    per:'/mo', cta:'Get started',  primary:false, rec:false},
+    {name:'Team',  price:'$40',   per:'/mo', cta:'Get started',  primary:true,  rec:true},
+    {name:'Enterprise', price:'Custom', per:'', cta:'Contact sales', primary:false, rec:false},
   ];
+  const specs=[
+    ['projects',['1','Unlimited','Unlimited']],
+    ['retention',['7 days','90 days','Custom']],
+    ['deploy correlation',[null,true,true]],
+    ['SSO & SAML',[null,null,true]],
+    ['on-prem / BYOK',[null,null,true]],
+    ['support',['Community','Priority','Dedicated SLA']],
+  ];
+  const rowLabel={fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)',textAlign:'left',padding:'14px 24px',whiteSpace:'nowrap'};
+  const cellStyle=(rec)=>({padding:'14px 24px',borderLeft:'1px solid var(--border-1)',background:rec?'var(--accent-subtle)':'transparent'});
+  const cell=v=>
+    v===true ? <span style={{color:'var(--accent-subtle-fg)',display:'inline-flex'}} aria-label="included"><Icon name="check" size={15}/></span> :
+    v===null ? <span style={{color:'var(--fg-4)'}} aria-label="not included">—</span> :
+    <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-1)'}}>{v}</span>;
   return <section className="fz-section" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px'}}>
     <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:32,maxWidth:520}}>
       <Eyebrow>// Pricing</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Priced per seat, not per surprise.</h2>
     </div>
-    <div className="fz-pricing" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',overflow:'hidden'}}>
-      {plans.map((p,i)=><div key={i} style={{padding:24,display:'flex',flexDirection:'column',gap:16,borderLeft:i?'1px solid var(--border-1)':'none',background:p[3]?'var(--bg-2)':'transparent'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase'}}>
-          <span style={{color:'var(--fg-3)'}}>// {p[0]}</span>
-          {p[3]?<span style={{display:'inline-flex',alignItems:'center',gap:6,color:'var(--accent-subtle-fg)',marginLeft:'auto'}}><LiveDot size={5}/>recommended</span>:null}
-        </div>
-        <div style={{display:'flex',alignItems:'baseline',gap:4}}><span style={{fontFamily:'var(--font-mono)',fontSize:32,fontWeight:500,color:'var(--fg-1)'}}>{p[1]}</span>{p[1]!=='Custom'?<span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)'}}>/mo</span>:null}</div>
-        <div style={{display:'flex',flexDirection:'column',gap:8,paddingTop:12,borderTop:'1px solid var(--border-1)'}}>{p[2].map((f,j)=><div key={j} style={{display:'flex',alignItems:'center',gap:8,fontSize:13,color:'var(--fg-2)'}}><span style={{color:'var(--accent-subtle-fg)',display:'inline-flex'}}><Icon name="check" size={15}/></span>{f}</div>)}</div>
-        <Btn variant={p[3]?'primary':'secondary'} style={{width:'100%',justifyContent:'center',marginTop:'auto'}}>{p[1]==='Custom'?'Contact sales':'Get started'}</Btn>
-      </div>)}
+    <div className="fz-spec-wrap" style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',overflowX:'auto'}}>
+      <table style={{width:'100%',minWidth:720,borderCollapse:'collapse'}}>
+        <thead>
+          <tr>
+            <td style={{padding:'20px 24px'}} aria-hidden="true"/>
+            {cols.map((c,i)=><th key={i} scope="col" style={{...cellStyle(c.rec),textAlign:'left',verticalAlign:'top'}}>
+              <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase'}}>
+                <span style={{color:'var(--fg-3)'}}>// {c.name}</span>
+                {c.rec?<span style={{display:'inline-flex',alignItems:'center',gap:6,color:'var(--accent-subtle-fg)'}}><LiveDot size={5}/>recommended</span>:null}
+              </div>
+              <div style={{display:'flex',alignItems:'baseline',gap:4,marginTop:12}}>
+                <span style={{fontFamily:'var(--font-mono)',fontSize:32,fontWeight:500,color:'var(--fg-1)'}}>{c.price}</span>
+                {c.per?<span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)'}}>{c.per}</span>:null}
+              </div>
+            </th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {specs.map((s,i)=><tr key={i} style={{borderTop:'1px solid var(--border-1)'}}>
+            <th scope="row" style={rowLabel}>{s[0]}</th>
+            {s[1].map((v,j)=><td key={j} style={cellStyle(cols[j].rec)}>{cell(v)}</td>)}
+          </tr>)}
+        </tbody>
+        <tfoot>
+          <tr style={{borderTop:'1px solid var(--border-1)'}}>
+            <td style={{padding:'16px 24px'}} aria-hidden="true"/>
+            {cols.map((c,i)=><td key={i} style={{...cellStyle(c.rec),padding:'16px 24px'}}>
+              <Btn variant={c.primary?'primary':'secondary'} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
+            </td>)}
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </section>;
 }

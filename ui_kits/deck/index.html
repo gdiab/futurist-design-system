@@ -22,6 +22,11 @@
 
   <!-- 1 · TITLE -->
   <section data-label="Title" data-speaker-notes="Set the thesis: telemetry that keeps up. 30 seconds, then advance." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;padding:0 160px;position:relative;">
+    <!-- Corner registration marks — the blueprint grammar, machined into the slide. -->
+    <svg style="position:absolute;top:64px;left:64px;" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><g stroke="var(--border-3)" stroke-width="2"><line x1="0" y1="12" x2="24" y2="12"/><line x1="12" y1="0" x2="12" y2="24"/></g></svg>
+    <svg style="position:absolute;top:64px;right:64px;" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><g stroke="var(--border-3)" stroke-width="2"><line x1="0" y1="12" x2="24" y2="12"/><line x1="12" y1="0" x2="12" y2="24"/></g></svg>
+    <svg style="position:absolute;bottom:64px;left:64px;" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><g stroke="var(--border-3)" stroke-width="2"><line x1="0" y1="12" x2="24" y2="12"/><line x1="12" y1="0" x2="12" y2="24"/></g></svg>
+    <svg style="position:absolute;bottom:64px;right:64px;" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><g stroke="var(--border-3)" stroke-width="2"><line x1="0" y1="12" x2="24" y2="12"/><line x1="12" y1="0" x2="12" y2="24"/></g></svg>
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:48px;">
       <div style="width:44px;height:44px;border:3px solid var(--fg-1);border-radius:7px;position:relative;"><div style="position:absolute;inset:8px;background:var(--accent);border-radius:3px;"></div></div>
       <span style="font-family:var(--font-display);font-weight:700;font-size:2.125rem;letter-spacing:-.02em;color:var(--fg-1);">Futurist</span>
@@ -29,7 +34,12 @@
     <div class="eyebrow" style="margin-bottom:28px;">// Q3 Platform Review</div>
     <h1 class="title" style="font-size:8.25rem;max-width:1400px;">Telemetry that keeps up with you.</h1>
     <p class="lead" style="margin-top:40px;max-width:1100px;">A precise, low-overhead observability layer for teams that measure everything.</p>
-    <div style="position:absolute;bottom:80px;left:160px;font-family:var(--font-mono);font-size:1.25rem;color:var(--fg-3);letter-spacing:.05em;">GEORGE DIAB · JULY 2026</div>
+    <!-- Dotted-leader status readout — the system's instrument grammar as the byline. -->
+    <div style="position:absolute;bottom:120px;left:160px;right:160px;display:flex;gap:96px;font-family:var(--font-mono);font-size:1.25rem;color:var(--fg-3);letter-spacing:.05em;">
+      <div style="flex:1.2;display:flex;align-items:baseline;"><span>presenter</span><span aria-hidden="true" style="flex:1;border-bottom:2px dotted var(--border-3);margin:0 20px;transform:translateY(-6px);"></span><span style="color:var(--fg-2);">GEORGE DIAB</span></div>
+      <div style="flex:1;display:flex;align-items:baseline;"><span>date</span><span aria-hidden="true" style="flex:1;border-bottom:2px dotted var(--border-3);margin:0 20px;transform:translateY(-6px);"></span><span style="color:var(--fg-2);">JULY 2026</span></div>
+      <div style="flex:1;display:flex;align-items:baseline;"><span style="display:inline-flex;align-items:center;gap:12px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--accent);"></span>status</span><span aria-hidden="true" style="flex:1;border-bottom:2px dotted var(--border-3);margin:0 20px;transform:translateY(-6px);"></span><span style="color:var(--fg-2);">OPERATIONAL</span></div>
+    </div>
   </section>
 
   <!-- 2 · SECTION DIVIDER -->
@@ -42,7 +52,15 @@
   <section data-label="Big number" data-speaker-notes="The headline metric. Let it land before explaining." style="width:1920px;height:1080px;background:var(--bg-0);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 160px;">
     <div class="kicker" style="margin-bottom:40px;">Median write latency</div>
     <div style="font-family:var(--font-display);font-weight:700;font-size:21.25rem;line-height:.9;letter-spacing:-.04em;color:var(--fg-1);">0.7<span style="font-size:7.5rem;color:var(--fg-3);letter-spacing:0;">ms</span></div>
-    <p class="lead" style="margin-top:48px;max-width:1000px;">Down from 4ms — a <span style="color:var(--accent);font-weight:600;">5.7× improvement</span> after moving the ingest path off the GC.</p>
+    <!-- Blueprint dimension line — the number, measured. -->
+    <svg width="760" height="40" viewBox="0 0 760 40" aria-hidden="true" style="margin-top:56px;">
+      <g stroke="var(--border-3)" stroke-width="2">
+        <line x1="1" y1="20" x2="759" y2="20"/><line x1="1" y1="8" x2="1" y2="32"/><line x1="759" y1="8" x2="759" y2="32"/>
+      </g>
+      <rect x="230" y="6" width="300" height="28" fill="var(--bg-0)"/>
+      <text x="380" y="26" text-anchor="middle" fill="var(--fg-3)" style="font-family:var(--font-mono);font-size:20px;letter-spacing:.12em;">4.0MS → 0.7MS</text>
+    </svg>
+    <p class="lead" style="margin-top:40px;max-width:1000px;">A <span style="color:var(--accent);font-weight:600;">5.7× improvement</span> after moving the ingest path off the GC.</p>
   </section>
 
   <!-- 4 · TWO COLUMN -->
