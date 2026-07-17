@@ -6,7 +6,7 @@ const TONES = {
 
 export function Toast({ tone = 'neutral', title, description, onClose, style, ...rest }) {
   return (
-    <div role="status" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', width: '320px', padding: '11px 12px', background: 'var(--bg-1)', border: '1px solid var(--border-2)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-3)', ...style }} {...rest}>
+    <div role="status" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', width: '320px', padding: '12px', background: 'var(--bg-1)', border: '1px solid var(--border-2)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-3)', ...style }} {...rest}>
       <span style={{ width: '7px', height: '7px', marginTop: '5px', borderRadius: '50%', flexShrink: 0, background: TONES[tone] || TONES.neutral }} />
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
         {title ? <span style={{ fontSize: 'var(--text-sm)', fontWeight: 'var(--weight-semibold)', color: 'var(--fg-1)' }}>{title}</span> : null}

@@ -3,7 +3,7 @@ import React from 'react';
 export function Tag({ children, onRemove, style, ...rest }) {
   const [hover, setHover] = React.useState(false);
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', height: '22px', padding: onRemove ? '0 5px 0 9px' : '0 9px', borderRadius: 'var(--radius-full)', background: 'var(--bg-2)', border: '1px solid var(--border-2)', color: 'var(--fg-2)', fontSize: 'var(--text-xs)', fontWeight: 'var(--weight-medium)', whiteSpace: 'nowrap', ...style }} {...rest}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', height: '22px', padding: onRemove ? '0 4px 0 8px' : '0 8px', borderRadius: 'var(--radius-full)', background: 'var(--bg-2)', border: '1px solid var(--border-2)', color: 'var(--fg-2)', fontSize: 'var(--text-xs)', fontWeight: 'var(--weight-medium)', whiteSpace: 'nowrap', ...style }} {...rest}>
       {children}
       {onRemove ? (
         <button type="button" aria-label="Remove" onClick={onRemove}

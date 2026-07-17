@@ -5,13 +5,13 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="../../_ds_bundle.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;}</style>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;}</style>
 </head><body><div id="root"></div>
 <script type="text/plain" id="app-src">
 const NS = window.Futurist || window.DS || {};
 const { Tooltip, Menu, Popover, Drawer, Button } = NS;
 function Demo(){const[open,setOpen]=React.useState(false);return (
-  <div style={{display:'flex',gap:14,flexWrap:'wrap',alignItems:'center'}}>
+  <div style={{display:'flex',gap:16,flexWrap:'wrap',alignItems:'center'}}>
     <Tooltip label="Requests per second" side="top"><Button variant="secondary">Hover me</Button></Tooltip>
     <Menu trigger={<Button variant="secondary">Actions ▾</Button>} items={[{label:'Rename',shortcut:'R'},{label:'Duplicate',shortcut:'D'},{divider:true},{label:'Delete',danger:true}]}/>
     <Popover trigger={<Button variant="secondary">Filter</Button>}><div style={{fontSize:13,color:'var(--fg-2)'}}>Popover panel with any content.</div></Popover>

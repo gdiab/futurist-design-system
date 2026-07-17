@@ -12,7 +12,7 @@ const TONES = {
 export function Badge({ tone = 'neutral', dot = false, children, style, ...rest }) {
   const t = TONES[tone] || TONES.neutral;
   return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', height: '18px', padding: '0 7px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-2xs)', fontWeight: 'var(--weight-medium)', letterSpacing: '0.03em', lineHeight: 1, whiteSpace: 'nowrap', ...t, ...style }} {...rest}>
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', height: '18px', padding: '0 8px', borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-mono)', fontSize: 'var(--text-2xs)', fontWeight: 'var(--weight-medium)', letterSpacing: '0.03em', lineHeight: 1, whiteSpace: 'nowrap', ...t, ...style }} {...rest}>
       {dot ? <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} /> : null}
       {children}
     </span>

@@ -21,7 +21,7 @@ export function Switch({ label, checked, defaultChecked, disabled, onChange, id,
     transition: 'left var(--dur-base) var(--ease-standard)',
   };
   return (
-    <label htmlFor={rid} style={{ display: 'inline-flex', alignItems: 'center', gap: '9px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1, fontSize: 'var(--text-sm)', color: 'var(--fg-1)', ...style }}>
+    <label htmlFor={rid} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1, fontSize: 'var(--text-sm)', color: 'var(--fg-1)', ...style }}>
       <input id={rid} type="checkbox" role="switch" checked={on} disabled={disabled} onChange={toggle}
         onFocus={(e) => { try { setFocusVisible(e.target.matches(':focus-visible')); } catch (_) { setFocusVisible(true); } }}
         onBlur={() => setFocusVisible(false)}

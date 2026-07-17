@@ -15,11 +15,11 @@ export function Select({ label, hint, error, size = 'md', options = [], id, styl
   const sel = {
     appearance: 'none', WebkitAppearance: 'none', flex: 1, height: '100%',
     border: 'none', outline: 'none', background: 'transparent',
-    padding: '0 30px 0 10px', color: 'var(--fg-1)',
+    padding: '0 32px 0 12px', color: 'var(--fg-1)',
     fontFamily: 'var(--font-sans)', fontSize: 'var(--text-sm)', cursor: 'pointer',
   };
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', ...style }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', ...style }}>
       {label ? <label htmlFor={rid} style={{ fontSize: 'var(--text-xs)', fontWeight: 'var(--weight-medium)', color: 'var(--fg-2)' }}>{label}</label> : null}
       <div style={wrap}>
         <select id={rid} style={sel} onFocus={() => setFocus(true)} onBlur={() => setFocus(false)} {...rest}>

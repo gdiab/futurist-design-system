@@ -19,13 +19,13 @@
     <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3);">// design system</span>
     <button id="theme" style="margin-left:auto;height:32px;padding:0 12px;border:1px solid var(--border-1);border-radius:var(--radius-md);background:transparent;color:var(--fg-2);cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;">LIGHT</button>
   </header>
-  <h1 style="font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--fg-1);margin-bottom:6px;">Views</h1>
-  <p style="font-size:15px;color:var(--fg-2);max-width:560px;line-height:1.55;margin-bottom:36px;">Every interactive screen built on the system. Foundations and components live in the <strong style="color:var(--fg-1);font-weight:600;">Design System</strong> tab; these are full product recreations.</p>
+  <h1 style="font-size:34px;font-weight:700;letter-spacing:-.025em;color:var(--fg-1);margin-bottom:8px;">Views</h1>
+  <p style="font-size:15px;color:var(--fg-2);max-width:560px;line-height:1.55;margin-bottom:40px;">Every interactive screen built on the system. Foundations and components live in the <strong style="color:var(--fg-1);font-weight:600;">Design System</strong> tab; these are full product recreations.</p>
 
   <div id="grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;"></div>
 
-  <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);margin:40px 0 14px;">Reference</div>
-  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+  <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);margin:40px 0 16px;">Reference</div>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
     <a class="chip" href="readme.md">readme.md</a>
     <a class="chip" href="SKILL.md">SKILL.md</a>
     <a class="chip" href="styles.css">styles.css</a>
@@ -67,7 +67,7 @@
   views.forEach(([t,d,href,ic]) => {
     const a = document.createElement('a');
     a.href = href;
-    a.style.cssText = "display:flex;gap:14px;padding:18px;background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);transition:box-shadow var(--dur-base),border-color var(--dur-base),transform var(--dur-base);";
+    a.style.cssText = "display:flex;gap:16px;padding:20px;background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);transition:box-shadow var(--dur-base),border-color var(--dur-base),transform var(--dur-base);";
     a.onmouseenter = () => { a.style.boxShadow='var(--shadow-2)'; a.style.borderColor='var(--border-2)'; a.style.transform='translateY(-2px)'; };
     a.onmouseleave = () => { a.style.boxShadow='var(--shadow-1)'; a.style.borderColor='var(--border-1)'; a.style.transform='none'; };
     a.innerHTML = `

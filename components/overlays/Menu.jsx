@@ -78,9 +78,9 @@ export function Menu({ trigger, items = [], align = 'start' }) {
     <div ref={ref} style={{ position: 'relative', display: 'inline-flex' }}>
       {triggerNode}
       {open ? (
-        <div ref={listRef} id={menuId} role="menu" onKeyDown={onMenuKeyDown} style={{ position: 'absolute', top: '100%', [align === 'end' ? 'right' : 'left']: 0, marginTop: '6px', zIndex: 60, minWidth: '180px', padding: '5px', background: 'var(--bg-1)', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-3)' }}>
+        <div ref={listRef} id={menuId} role="menu" onKeyDown={onMenuKeyDown} style={{ position: 'absolute', top: '100%', [align === 'end' ? 'right' : 'left']: 0, marginTop: '8px', zIndex: 60, minWidth: '180px', padding: '4px', background: 'var(--bg-1)', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-3)' }}>
           {items.map((it, i) => it.divider ? (
-            <div key={i} role="separator" style={{ height: '1px', background: 'var(--border-1)', margin: '5px 0' }} />
+            <div key={i} role="separator" style={{ height: '1px', background: 'var(--border-1)', margin: '4px 0' }} />
           ) : (
             <button key={i} type="button" role="menuitem" tabIndex={-1} disabled={it.disabled}
               onClick={() => { it.onClick && it.onClick(); closeAndRestore(); }}
@@ -88,7 +88,7 @@ export function Menu({ trigger, items = [], align = 'start' }) {
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               onFocus={(e) => e.currentTarget.style.background = it.danger ? 'var(--danger-subtle)' : 'var(--bg-2)'}
               onBlur={(e) => e.currentTarget.style.background = 'transparent'}
-              style={{ display: 'flex', alignItems: 'center', gap: '9px', width: '100%', padding: '7px 9px', border: 'none', background: 'transparent', borderRadius: 'var(--radius-sm)', cursor: it.disabled ? 'not-allowed' : 'pointer', textAlign: 'left', fontFamily: 'var(--font-sans)', fontSize: 'var(--text-sm)', color: it.danger ? 'var(--danger)' : it.disabled ? 'var(--fg-4)' : 'var(--fg-1)' }}>
+              style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', padding: '8px', border: 'none', background: 'transparent', borderRadius: 'var(--radius-sm)', cursor: it.disabled ? 'not-allowed' : 'pointer', textAlign: 'left', fontFamily: 'var(--font-sans)', fontSize: 'var(--text-sm)', color: it.danger ? 'var(--danger)' : it.disabled ? 'var(--fg-4)' : 'var(--fg-1)' }}>
               {it.icon ? <span style={{ display: 'inline-flex', color: it.danger ? 'var(--danger)' : 'var(--fg-3)' }}>{it.icon}</span> : null}
               <span style={{ flex: 1 }}>{it.label}</span>
               {it.shortcut ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-2xs)', color: 'var(--fg-3)' }}>{it.shortcut}</span> : null}

@@ -28,13 +28,13 @@ const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 function Btn({variant='secondary',children,onClick,style,...r}) {
   const [h,setH]=useState(false);
   const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
-  return <button type="button" onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',gap:7,height:32,padding:'0 14px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
+  return <button type="button" onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',gap:8,height:32,padding:'0 12px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
 }
 
 function Tooltip({label,side='top',children}) {
   const [o,setO]=useState(false);
-  const pos={top:{bottom:'100%',left:'50%',transform:'translateX(-50%)',marginBottom:7},bottom:{top:'100%',left:'50%',transform:'translateX(-50%)',marginTop:7},left:{right:'100%',top:'50%',transform:'translateY(-50%)',marginRight:7},right:{left:'100%',top:'50%',transform:'translateY(-50%)',marginLeft:7}}[side];
-  return <span style={{position:'relative',display:'inline-flex'}} onMouseEnter={()=>setO(true)} onMouseLeave={()=>setO(false)}>{children}{o?<span style={{position:'absolute',zIndex:50,...pos,whiteSpace:'nowrap',padding:'5px 9px',background:'var(--bg-inverse)',color:'var(--fg-inverse)',fontSize:12,borderRadius:'var(--radius-sm)',boxShadow:'var(--shadow-2)',pointerEvents:'none'}}>{label}</span>:null}</span>;
+  const pos={top:{bottom:'100%',left:'50%',transform:'translateX(-50%)',marginBottom:8},bottom:{top:'100%',left:'50%',transform:'translateX(-50%)',marginTop:8},left:{right:'100%',top:'50%',transform:'translateY(-50%)',marginRight:8},right:{left:'100%',top:'50%',transform:'translateY(-50%)',marginLeft:8}}[side];
+  return <span style={{position:'relative',display:'inline-flex'}} onMouseEnter={()=>setO(true)} onMouseLeave={()=>setO(false)}>{children}{o?<span style={{position:'absolute',zIndex:50,...pos,whiteSpace:'nowrap',padding:'4px 8px',background:'var(--bg-inverse)',color:'var(--fg-inverse)',fontSize:12,borderRadius:'var(--radius-sm)',boxShadow:'var(--shadow-2)',pointerEvents:'none'}}>{label}</span>:null}</span>;
 }
 function useOutside(cb){ const r=useRef(null); useEffect(()=>{const h=e=>{if(r.current&&!r.current.contains(e.target))cb();};document.addEventListener('mousedown',h);return()=>document.removeEventListener('mousedown',h);}); return r; }
 function Menu({trigger,items,align='start'}) {
@@ -50,9 +50,9 @@ function Menu({trigger,items,align='start'}) {
   const triggerNode=React.isValidElement(trigger)?React.cloneElement(trigger,tProps):<button type="button" {...tProps} style={{display:'inline-flex',padding:0,border:'none',background:'transparent',font:'inherit',color:'inherit',cursor:'pointer'}}>{trigger}</button>;
   return <div ref={r} style={{position:'relative',display:'inline-flex'}}>
     {triggerNode}
-    {o?<div ref={listRef} role="menu" onKeyDown={onMenuKey} style={{position:'absolute',top:'100%',[align==='end'?'right':'left']:0,marginTop:6,zIndex:60,minWidth:190,padding:5,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',boxShadow:'var(--shadow-3)'}}>
-      {items.map((it,i)=>it.divider?<div key={i} role="separator" style={{height:1,background:'var(--border-1)',margin:'5px 0'}}/>:
-        <button key={i} type="button" role="menuitem" tabIndex={-1} onClick={()=>{it.onClick&&it.onClick();closeAndRestore();}} onMouseEnter={e=>e.currentTarget.style.background=it.danger?'var(--danger-subtle)':'var(--bg-2)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'} onFocus={e=>e.currentTarget.style.background=it.danger?'var(--danger-subtle)':'var(--bg-2)'} onBlur={e=>e.currentTarget.style.background='transparent'} style={{display:'flex',alignItems:'center',gap:9,width:'100%',padding:'7px 9px',border:'none',background:'transparent',borderRadius:'var(--radius-sm)',cursor:'pointer',textAlign:'left',fontFamily:'var(--font-sans)',fontSize:13,color:it.danger?'var(--danger)':'var(--fg-1)'}}>
+    {o?<div ref={listRef} role="menu" onKeyDown={onMenuKey} style={{position:'absolute',top:'100%',[align==='end'?'right':'left']:0,marginTop:8,zIndex:60,minWidth:190,padding:4,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',boxShadow:'var(--shadow-3)'}}>
+      {items.map((it,i)=>it.divider?<div key={i} role="separator" style={{height:1,background:'var(--border-1)',margin:'4px 0'}}/>:
+        <button key={i} type="button" role="menuitem" tabIndex={-1} onClick={()=>{it.onClick&&it.onClick();closeAndRestore();}} onMouseEnter={e=>e.currentTarget.style.background=it.danger?'var(--danger-subtle)':'var(--bg-2)'} onMouseLeave={e=>e.currentTarget.style.background='transparent'} onFocus={e=>e.currentTarget.style.background=it.danger?'var(--danger-subtle)':'var(--bg-2)'} onBlur={e=>e.currentTarget.style.background='transparent'} style={{display:'flex',alignItems:'center',gap:8,width:'100%',padding:8,border:'none',background:'transparent',borderRadius:'var(--radius-sm)',cursor:'pointer',textAlign:'left',fontFamily:'var(--font-sans)',fontSize:13,color:it.danger?'var(--danger)':'var(--fg-1)'}}>
           {it.icon?<span style={{display:'inline-flex',color:it.danger?'var(--danger)':'var(--fg-3)'}}>{it.icon}</span>:null}<span style={{flex:1}}>{it.label}</span>{it.shortcut?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{it.shortcut}</span>:null}
         </button>)}
     </div>:null}
@@ -64,7 +64,7 @@ function Popover({trigger,children,width=260,align='start'}) {
   const triggerNode=React.isValidElement(trigger)?React.cloneElement(trigger,tProps):<button type="button" {...tProps} style={{display:'inline-flex',padding:0,border:'none',background:'transparent',font:'inherit',color:'inherit',cursor:'pointer'}}>{trigger}</button>;
   return <div ref={r} style={{position:'relative',display:'inline-flex'}} onKeyDown={e=>{if(e.key==='Escape'&&o){setO(false);const t=r.current&&r.current.querySelector('[aria-haspopup="dialog"]');t&&t.focus();}}}>
     {triggerNode}
-    {o?<div style={{position:'absolute',top:'100%',[align==='end'?'right':'left']:0,marginTop:8,zIndex:60,width,padding:14,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-3)'}}>{children}</div>:null}
+    {o?<div style={{position:'absolute',top:'100%',[align==='end'?'right':'left']:0,marginTop:8,zIndex:60,width,padding:16,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-3)'}}>{children}</div>:null}
   </div>;
 }
 function Drawer({open,onClose,title,children,footer}) {
@@ -74,14 +74,14 @@ function Drawer({open,onClose,title,children,footer}) {
     <div onMouseDown={e=>e.stopPropagation()} style={{width:400,maxWidth:'92vw',height:'100%',display:'flex',flexDirection:'column',background:'var(--bg-1)',borderLeft:'1px solid var(--border-1)',boxShadow:'var(--shadow-3)'}}>
       <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'16px 20px',borderBottom:'1px solid var(--border-1)'}}><h3 style={{fontSize:15,fontWeight:600}}>{title}</h3><button type="button" aria-label="Close" onClick={onClose} style={{border:'none',background:'transparent',cursor:'pointer',color:'var(--fg-3)',fontSize:18}}>×</button></div>
       <div style={{flex:1,overflow:'auto',padding:20}}>{children}</div>
-      {footer?<div style={{display:'flex',justifyContent:'flex-end',gap:8,padding:'14px 20px',borderTop:'1px solid var(--border-1)',background:'var(--bg-2)'}}>{footer}</div>:null}
+      {footer?<div style={{display:'flex',justifyContent:'flex-end',gap:8,padding:'16px 20px',borderTop:'1px solid var(--border-1)',background:'var(--bg-2)'}}>{footer}</div>:null}
     </div>
   </div>;
 }
 
 function Card({title,note,children}) {
   return <section style={{display:'flex',flexDirection:'column',gap:16,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',padding:20,boxShadow:'var(--shadow-1)',minHeight:180}}>
-    <div style={{display:'flex',flexDirection:'column',gap:3}}><span style={{fontSize:14,fontWeight:600,color:'var(--fg-1)'}}>{title}</span><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{note}</span></div>
+    <div style={{display:'flex',flexDirection:'column',gap:4}}><span style={{fontSize:14,fontWeight:600,color:'var(--fg-1)'}}>{title}</span><span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{note}</span></div>
     <div style={{display:'flex',gap:12,alignItems:'center',flexWrap:'wrap',flex:1}}>{children}</div>
   </section>;
 }
@@ -95,7 +95,7 @@ function App() {
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// overlays</span>
-      <button type="button" onClick={()=>setTheme(!dark)} aria-pressed={dark} aria-label={dark?'Switch to light theme':'Switch to dark theme'} style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+      <button type="button" onClick={()=>setTheme(!dark)} aria-pressed={dark} aria-label={dark?'Switch to light theme':'Switch to dark theme'} style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
     </header>
     <div style={{padding:'24px 28px',display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:16,maxWidth:920,margin:'0 auto'}}>
       <Card title="Tooltip" note="hover · 4 sides">
@@ -115,7 +115,7 @@ function App() {
       </Card>
       <Card title="Popover" note="click · rich content">
         <Popover trigger={<Btn><Icon name="filter" size={14}/>Filter</Btn>}>
-          <div style={{display:'flex',flexDirection:'column',gap:10}}>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
             <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--fg-3)'}}>Status</span>
             {['Healthy','Degraded','Down'].map(s=><label key={s} style={{display:'flex',alignItems:'center',gap:8,fontSize:13,color:'var(--fg-1)',cursor:'pointer'}}><input type="checkbox" defaultChecked style={{accentColor:'var(--accent)'}}/>{s}</label>)}
             <Btn variant="primary" style={{marginTop:4,justifyContent:'center'}}>Apply</Btn>
@@ -130,7 +130,7 @@ function App() {
       </Card>
     </div>
     <Drawer open={drawer} onClose={()=>setDrawer(false)} title="api-gateway" footer={<><Btn onClick={()=>setDrawer(false)}>Close</Btn><Btn variant="primary" onClick={()=>setDrawer(false)}>Restart</Btn></>}>
-      <div style={{display:'flex',flexDirection:'column',gap:14}}>
+      <div style={{display:'flex',flexDirection:'column',gap:12}}>
         {[['Region','us-east-1'],['Status','healthy'],['Req/min','18,420'],['P99','42ms'],['Uptime','99.99%'],['Version','v2.4.1']].map(([k,v])=><div key={k} style={{display:'flex',justifyContent:'space-between',fontSize:13,paddingBottom:12,borderBottom:'1px solid var(--border-1)'}}><span style={{color:'var(--fg-3)'}}>{k}</span><span style={{fontFamily:'var(--font-mono)',color:'var(--fg-1)',fontWeight:500}}>{v}</span></div>)}
       </div>
     </Drawer>

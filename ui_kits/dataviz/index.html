@@ -51,9 +51,9 @@ function AreaChart() {
       {pa.map((p,i)=><rect key={i} x={p[0]-14} y="0" width="28" height={h} fill="transparent" onMouseEnter={()=>setHi(i)}/>)}
       {hi!=null && <><line x1={pa[hi][0]} x2={pa[hi][0]} y1="0" y2={h} stroke="var(--border-2)" strokeWidth="1"/><circle cx={pa[hi][0]} cy={pa[hi][1]} r="4" fill="var(--bg-1)" stroke={G(1)} strokeWidth="2.4"/></>}
     </svg>
-    <div style={{display:'flex',gap:16,marginTop:10,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
-      <span style={{display:'inline-flex',alignItems:'center',gap:6}}><span style={{width:10,height:3,background:G(1),borderRadius:2}}/>requests {a[hi]}k</span>
-      <span style={{display:'inline-flex',alignItems:'center',gap:6}}><span style={{width:10,height:3,background:G(2),borderRadius:2}}/>cache hits {b[hi]}k</span>
+    <div style={{display:'flex',gap:16,marginTop:12,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
+      <span style={{display:'inline-flex',alignItems:'center',gap:8}}><span style={{width:10,height:3,background:G(1),borderRadius:2}}/>requests {a[hi]}k</span>
+      <span style={{display:'inline-flex',alignItems:'center',gap:8}}><span style={{width:10,height:3,background:G(2),borderRadius:2}}/>cache hits {b[hi]}k</span>
     </div>
   </div>;
 }
@@ -62,7 +62,7 @@ function Donut() {
   const data=[["compute",42,1],["storage",28,2],["network",18,3],["egress",12,4]];
   const total=data.reduce((s,d)=>s+d[1],0);
   let acc=0; const r=52,c=2*Math.PI*r;
-  return <div style={{display:'flex',alignItems:'center',gap:18}}>
+  return <div style={{display:'flex',alignItems:'center',gap:16}}>
     <svg viewBox="0 0 140 140" width="140" height="140">
       <g transform="rotate(-90 70 70)">
         {data.map((d,i)=>{ const frac=d[1]/total; const seg=<circle key={i} cx="70" cy="70" r={r} fill="none" stroke={G(d[2])} strokeWidth="16" strokeDasharray={`${frac*c} ${c}`} strokeDashoffset={-acc*c}/>; acc+=frac; return seg; })}
@@ -96,7 +96,7 @@ function Spark({vals,tone,label,value,delta,up}) {
       <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--fg-3)'}}>{label}</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:up?'var(--success)':'var(--danger)'}}>{up?'↑':'↓'} {delta}</span>
     </div>
-    <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:10}}>
+    <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:8}}>
       <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>{value}</span>
       <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h}><path d={line(p)} fill="none" stroke={tone} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx={p[p.length-1][0]} cy={p[p.length-1][1]} r="2.6" fill={tone}/></svg>
     </div>
@@ -106,8 +106,8 @@ function Spark({vals,tone,label,value,delta,up}) {
 function Bars() {
   const cats=[["us-east",92,1],["eu-west",68,2],["ap-south",54,3],["sa-east",38,4],["af-south",22,6]];
   const max=100;
-  return <div style={{display:'flex',flexDirection:'column',gap:10}}>
-    {cats.map((d,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:10}}>
+  return <div style={{display:'flex',flexDirection:'column',gap:8}}>
+    {cats.map((d,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',width:60}}>{d[0]}</span>
       <div style={{flex:1,height:14,background:'var(--bg-3)',borderRadius:3,overflow:'hidden'}}><div style={{height:'100%',width:`${d[1]/max*100}%`,background:G(d[2]),borderRadius:3}}/></div>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-1)',width:36,textAlign:'right'}}>{d[1]}%</span>
@@ -124,13 +124,13 @@ function App() {
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// data-viz</span>
-      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
     </header>
     <div style={{padding:'24px 28px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,maxWidth:1240,margin:'0 auto',alignItems:'start'}}>
       <Panel title="Requests over time" note="hover to inspect" span={2}><AreaChart/></Panel>
       <Panel title="Cost breakdown"><Donut/></Panel>
       <Panel title="Sparklines">
-        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
           <Spark label="Throughput" value="23.1k" delta="8%" up tone={G(1)} vals={s1}/>
           <div style={{height:1,background:'var(--border-1)'}}/>
           <Spark label="P99 latency" value="142ms" delta="12%" tone={G(3)} vals={s2}/>
@@ -141,8 +141,8 @@ function App() {
       <Panel title="Utilization"><Gauge v={73}/></Panel>
       <Panel title="Requests by region"><Bars/></Panel>
       <Panel title="Series palette" span={3}>
-        <div style={{display:'flex',gap:10}}>
-          {[1,2,3,4,5,6].map(i=><div key={i} style={{flex:1,display:'flex',flexDirection:'column',gap:6}}><div style={{height:36,borderRadius:5,background:G(i)}}/><span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--fg-3)'}}>viz-{i}</span></div>)}
+        <div style={{display:'flex',gap:8}}>
+          {[1,2,3,4,5,6].map(i=><div key={i} style={{flex:1,display:'flex',flexDirection:'column',gap:8}}><div style={{height:36,borderRadius:5,background:G(i)}}/><span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--fg-3)'}}>viz-{i}</span></div>)}
         </div>
       </Panel>
     </div>

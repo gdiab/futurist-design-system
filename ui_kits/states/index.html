@@ -37,7 +37,7 @@ const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 function Btn({variant='primary',children,onClick,style}) {
   const [h,setH]=useState(false);
   const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
-  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:7,height:32,padding:'0 14px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}}>{children}</button>;
+  return <button onClick={onClick} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:32,padding:'0 12px',fontSize:13,fontFamily:'var(--font-sans)',fontWeight:500,borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}}>{children}</button>;
 }
 function Spinner({size=16,color='currentColor'}) {
   return <span style={{display:'inline-block',width:size,height:size,border:`2px solid color-mix(in oklch, ${color} 25%, transparent)`,borderTopColor:color,borderRadius:'50%',animation:'ftr-spin 0.7s linear infinite'}}/>;
@@ -48,11 +48,11 @@ function Placeholder({icon,tint='var(--fg-3)',bg='var(--bg-2)'}) {
 
 function Panel({title,children,note}) {
   return <section style={{display:'flex',flexDirection:'column',background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',boxShadow:'var(--shadow-1)'}}>
-    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'11px 16px',borderBottom:'1px solid var(--border-1)',background:'var(--bg-2)'}}>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'12px 16px',borderBottom:'1px solid var(--border-1)',background:'var(--bg-2)'}}>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-2)'}}>{title}</span>
       {note?<span style={{fontFamily:'var(--font-mono)',fontSize:10,color:'var(--fg-3)'}}>{note}</span>:null}
     </div>
-    <div style={{padding:18,minHeight:230,display:'flex',flexDirection:'column'}}>{children}</div>
+    <div style={{padding:20,minHeight:230,display:'flex',flexDirection:'column'}}>{children}</div>
   </section>;
 }
 const Center = ({children}) => <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',textAlign:'center',gap:12,padding:'12px 8px'}}>{children}</div>;
@@ -65,9 +65,9 @@ function SkeletonTable() {
     <div style={{display:'flex',gap:12,padding:'0 0 12px'}}>
       <div className="sk" style={{height:12,width:90}}/><div className="sk" style={{height:12,width:70}}/><div className="sk" style={{height:12,width:60,marginLeft:'auto'}}/>
     </div>
-    {[0,1,2,3].map(i=><div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 0',borderTop:'1px solid var(--border-1)'}}>
+    {[0,1,2,3].map(i=><div key={i} style={{display:'flex',alignItems:'center',gap:12,padding:'12px 0',borderTop:'1px solid var(--border-1)'}}>
       <div className="sk" style={{height:20,width:20,borderRadius:999}}/>
-      <div style={{display:'flex',flexDirection:'column',gap:6,flex:1}}><div className="sk" style={{height:11,width:`${60-i*6}%`}}/><div className="sk" style={{height:9,width:`${40-i*4}%`}}/></div>
+      <div style={{display:'flex',flexDirection:'column',gap:4,flex:1}}><div className="sk" style={{height:11,width:`${60-i*6}%`}}/><div className="sk" style={{height:9,width:`${40-i*4}%`}}/></div>
       <div className="sk" style={{height:18,width:52,borderRadius:'var(--radius-sm)'}}/>
     </div>)}
   </div>;
@@ -92,7 +92,7 @@ function InlineLoading() {
     <Sub>Actions show progress in place — never a full-page spinner for a local action.</Sub>
     <div style={{display:'flex',alignItems:'center',gap:12,marginTop:2}}>
       <Btn onClick={run}>{state==='loading'?<><Spinner size={14} color="var(--accent-fg)"/>Syncing…</>:state==='done'?'Synced ✓':'Sync now'}</Btn>
-      <span style={{display:'inline-flex',alignItems:'center',gap:7,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}><Spinner size={14} color="var(--fg-3)"/>fetching…</span>
+      <span style={{display:'inline-flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}><Spinner size={14} color="var(--fg-3)"/>fetching…</span>
     </div>
   </Center>;
 }
@@ -105,7 +105,7 @@ function App() {
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// empty · loading · error</span>
-      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 11px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
     </header>
 
     <div style={{padding:'24px 28px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,maxWidth:1240,margin:'0 auto',alignItems:'start'}}>
@@ -147,7 +147,7 @@ function App() {
           <Placeholder icon="offline" tint="var(--warning-subtle-fg)" bg="var(--warning-subtle)"/>
           <Title>You’re offline</Title>
           <Sub>Showing the last cached snapshot from 4 minutes ago. Live data resumes on reconnect.</Sub>
-          <div style={{display:'inline-flex',alignItems:'center',gap:7,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',marginTop:2}}><span style={{width:7,height:7,borderRadius:'50%',background:'var(--warning)',animation:'ftr-pulse 1.4s ease-in-out infinite'}}/>reconnecting…</div>
+          <div style={{display:'inline-flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',marginTop:2}}><span style={{width:7,height:7,borderRadius:'50%',background:'var(--warning)',animation:'ftr-pulse 1.4s ease-in-out infinite'}}/>reconnecting…</div>
         </Center>
       </Panel>
 

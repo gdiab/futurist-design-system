@@ -13,19 +13,19 @@
 const SIZES = {
   sm: {
     height: 'var(--control-h-sm)',
-    padding: '0 10px',
+    padding: '0 8px',
     fontSize: 'var(--text-xs)',
-    gap: '6px'
+    gap: '4px'
   },
   md: {
     height: 'var(--control-h)',
-    padding: '0 14px',
+    padding: '0 12px',
     fontSize: 'var(--text-sm)',
-    gap: '7px'
+    gap: '8px'
   },
   lg: {
     height: 'var(--control-h-lg)',
-    padding: '0 18px',
+    padding: '0 16px',
     fontSize: 'var(--text-base)',
     gap: '8px'
   }
@@ -479,9 +479,9 @@ function Input({
   const field = {
     display: 'flex',
     alignItems: 'center',
-    gap: '7px',
+    gap: '8px',
     height: h,
-    padding: '0 10px',
+    padding: '0 12px',
     background: 'var(--bg-1)',
     border: '1px solid ' + (error ? 'var(--danger)' : focus ? 'var(--accent)' : 'var(--border-3)'),
     borderRadius: 'var(--radius-md)',
@@ -503,7 +503,7 @@ function Input({
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '5px',
+      gap: '4px',
       ...style
     }
   }, label ? /*#__PURE__*/React.createElement("label", {
@@ -583,7 +583,7 @@ function Select({
     border: 'none',
     outline: 'none',
     background: 'transparent',
-    padding: '0 30px 0 10px',
+    padding: '0 32px 0 12px',
     color: 'var(--fg-1)',
     fontFamily: 'var(--font-sans)',
     fontSize: 'var(--text-sm)',
@@ -593,7 +593,7 @@ function Select({
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '5px',
+      gap: '4px',
       ...style
     }
   }, label ? /*#__PURE__*/React.createElement("label", {
@@ -701,7 +701,7 @@ function Switch({
     style: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '9px',
+      gap: '8px',
       cursor: disabled ? 'not-allowed' : 'pointer',
       opacity: disabled ? 0.5 : 1,
       fontSize: 'var(--text-sm)',
@@ -755,7 +755,7 @@ function Textarea({
   const area = {
     width: '100%',
     resize: 'vertical',
-    padding: '8px 10px',
+    padding: '8px 12px',
     background: 'var(--bg-1)',
     border: '1px solid ' + (error ? 'var(--danger)' : focus ? 'var(--accent)' : 'var(--border-3)'),
     borderRadius: 'var(--radius-md)',
@@ -771,7 +771,7 @@ function Textarea({
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '5px',
+      gap: '4px',
       ...style
     }
   }, label ? /*#__PURE__*/React.createElement("label", {
@@ -843,9 +843,9 @@ function Badge({
     style: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '5px',
+      gap: '4px',
       height: '18px',
-      padding: '0 7px',
+      padding: '0 8px',
       borderRadius: 'var(--radius-sm)',
       fontFamily: 'var(--font-mono)',
       fontSize: 'var(--text-2xs)',
@@ -912,7 +912,7 @@ function Card({
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '3px',
+      gap: '4px',
       minWidth: 0
     }
   }, eyebrow ? /*#__PURE__*/React.createElement("span", {
@@ -961,7 +961,7 @@ function Stat({
     style: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '6px',
+      gap: '8px',
       ...style
     },
     ...rest
@@ -977,7 +977,7 @@ function Stat({
     style: {
       display: 'flex',
       alignItems: 'baseline',
-      gap: '5px'
+      gap: '4px'
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
@@ -1000,7 +1000,7 @@ function Stat({
       fontSize: 'var(--text-xs)',
       color,
       display: 'inline-flex',
-      gap: '3px'
+      gap: '4px'
     }
   }, arrow, " ", delta) : null);
 }
@@ -1088,9 +1088,9 @@ function Tag({
     style: {
       display: 'inline-flex',
       alignItems: 'center',
-      gap: '6px',
+      gap: '4px',
       height: '22px',
-      padding: onRemove ? '0 5px 0 9px' : '0 9px',
+      padding: onRemove ? '0 4px 0 8px' : '0 8px',
       borderRadius: 'var(--radius-full)',
       background: 'var(--bg-2)',
       border: '1px solid var(--border-2)',
@@ -1173,7 +1173,7 @@ function Tabs({
         position: 'relative',
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '6px',
+        gap: '4px',
         height: '34px',
         padding: '0 12px',
         border: 'none',
@@ -1416,10 +1416,10 @@ function Menu({
       position: 'absolute',
       top: '100%',
       [align === 'end' ? 'right' : 'left']: 0,
-      marginTop: '6px',
+      marginTop: '8px',
       zIndex: 60,
       minWidth: '180px',
-      padding: '5px',
+      padding: '4px',
       background: 'var(--bg-1)',
       border: '1px solid var(--border-1)',
       borderRadius: 'var(--radius-md)',
@@ -1431,7 +1431,7 @@ function Menu({
     style: {
       height: '1px',
       background: 'var(--border-1)',
-      margin: '5px 0'
+      margin: '4px 0'
     }
   }) : /*#__PURE__*/React.createElement("button", {
     key: i,
@@ -1450,9 +1450,9 @@ function Menu({
     style: {
       display: 'flex',
       alignItems: 'center',
-      gap: '9px',
+      gap: '8px',
       width: '100%',
-      padding: '7px 9px',
+      padding: '8px',
       border: 'none',
       background: 'transparent',
       borderRadius: 'var(--radius-sm)',
@@ -1515,7 +1515,7 @@ function Popover({
       marginTop: '8px',
       zIndex: 60,
       width: width + 'px',
-      padding: '14px',
+      padding: '16px',
       background: 'var(--bg-1)',
       border: '1px solid var(--border-1)',
       borderRadius: 'var(--radius-lg)',
@@ -1539,25 +1539,25 @@ function Tooltip({
       bottom: '100%',
       left: '50%',
       transform: 'translateX(-50%)',
-      marginBottom: '7px'
+      marginBottom: '8px'
     },
     bottom: {
       top: '100%',
       left: '50%',
       transform: 'translateX(-50%)',
-      marginTop: '7px'
+      marginTop: '8px'
     },
     left: {
       right: '100%',
       top: '50%',
       transform: 'translateY(-50%)',
-      marginRight: '7px'
+      marginRight: '8px'
     },
     right: {
       left: '100%',
       top: '50%',
       transform: 'translateY(-50%)',
-      marginLeft: '7px'
+      marginLeft: '8px'
     }
   }[side];
   return /*#__PURE__*/React.createElement("span", {
@@ -1576,7 +1576,7 @@ function Tooltip({
       zIndex: 50,
       ...pos,
       whiteSpace: 'nowrap',
-      padding: '5px 9px',
+      padding: '4px 8px',
       background: 'var(--bg-inverse)',
       color: 'var(--fg-inverse)',
       fontSize: 'var(--text-xs)',
@@ -1691,7 +1691,7 @@ function Dialog({
       padding: 'var(--space-5) var(--space-5) var(--space-4)',
       display: 'flex',
       flexDirection: 'column',
-      gap: '5px'
+      gap: '4px'
     }
   }, title ? /*#__PURE__*/React.createElement("h3", {
     id: titleId,
@@ -1745,9 +1745,9 @@ function Toast({
     style: {
       display: 'flex',
       alignItems: 'flex-start',
-      gap: '10px',
+      gap: '12px',
       width: '320px',
-      padding: '11px 12px',
+      padding: '12px',
       background: 'var(--bg-1)',
       border: '1px solid var(--border-2)',
       borderRadius: 'var(--radius-lg)',

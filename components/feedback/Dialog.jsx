@@ -52,7 +52,7 @@ export function Dialog({ open, onClose, title, description, footer, width = 460,
       <div ref={panelRef} tabIndex={-1} onMouseDown={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby={title ? titleId : undefined}
         style={{ width: '100%', maxWidth: width + 'px', background: 'var(--bg-1)', border: '1px solid var(--border-1)', borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-3)', overflow: 'hidden', outline: 'none' }}>
         {(title || description) ? (
-          <div style={{ padding: 'var(--space-5) var(--space-5) var(--space-4)', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+          <div style={{ padding: 'var(--space-5) var(--space-5) var(--space-4)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {title ? <h3 id={titleId} style={{ fontSize: 'var(--text-lg)', fontWeight: 'var(--weight-semibold)' }}>{title}</h3> : null}
             {description ? <p style={{ fontSize: 'var(--text-sm)', color: 'var(--fg-3)', lineHeight: 1.5 }}>{description}</p> : null}
           </div>

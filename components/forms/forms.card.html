@@ -5,7 +5,7 @@
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 <script src="../../_ds_bundle.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start;}</style>
+<style>body{padding:20px;background:var(--bg-0);}#root{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;}</style>
 </head><body><div id="root"></div>
 <script type="text/plain" id="app-src">
 const NS = window.Futurist || window.DS || {};
@@ -16,11 +16,11 @@ function Demo(){const[a,setA]=React.useState(true);return (
     <Input label="Rate limit" suffix="req/s" defaultValue="120" />
     <Select label="Region" options={['us-east-1','eu-west-1','ap-south-1']} />
     <Input label="Token" error="Required field" />
-    <div style={{display:'flex',flexDirection:'column',gap:10,justifyContent:'flex-end'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:12,justifyContent:'flex-end'}}>
       <Checkbox label="Enable telemetry" defaultChecked />
       <Checkbox label="Verbose logging" />
     </div>
-    <div style={{display:'flex',flexDirection:'column',gap:10,justifyContent:'flex-end'}}>
+    <div style={{display:'flex',flexDirection:'column',gap:12,justifyContent:'flex-end'}}>
       <Switch label="Dark mode" checked={a} onChange={e=>setA(e.target.checked)} />
       <Switch label="Maintenance" />
     </div>

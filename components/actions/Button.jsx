@@ -1,9 +1,9 @@
 import React from 'react';
 
 const SIZES = {
-  sm: { height: 'var(--control-h-sm)', padding: '0 10px', fontSize: 'var(--text-xs)', gap: '6px' },
-  md: { height: 'var(--control-h)',    padding: '0 14px', fontSize: 'var(--text-sm)', gap: '7px' },
-  lg: { height: 'var(--control-h-lg)', padding: '0 18px', fontSize: 'var(--text-base)', gap: '8px' },
+  sm: { height: 'var(--control-h-sm)', padding: '0 8px', fontSize: 'var(--text-xs)', gap: '4px' },
+  md: { height: 'var(--control-h)',    padding: '0 12px', fontSize: 'var(--text-sm)', gap: '8px' },
+  lg: { height: 'var(--control-h-lg)', padding: '0 16px', fontSize: 'var(--text-base)', gap: '8px' },
 };
 
 const VARIANTS = {

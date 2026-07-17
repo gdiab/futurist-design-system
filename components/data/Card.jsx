@@ -15,7 +15,7 @@ export function Card({ title, eyebrow, action, padding = 'md', interactive = fal
     <div style={base} onMouseEnter={() => interactive && setHover(true)} onMouseLeave={() => interactive && setHover(false)} {...rest}>
       {hasHeader ? (
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', padding: pad, paddingBottom: children ? 'var(--space-3)' : pad }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', minWidth: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', minWidth: 0 }}>
             {eyebrow ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--text-2xs)', letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{eyebrow}</span> : null}
             {title ? <span style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-md)', fontWeight: 'var(--weight-semibold)', color: 'var(--fg-1)' }}>{title}</span> : null}
           </div>
