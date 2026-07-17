@@ -65,7 +65,7 @@ function StoryRow({s,i}) {
   const [voted,setVoted]=useState(false);
   const [hover,setHover]=useState(false);
   const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
-  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'grid',gridTemplateColumns:'28px 44px 1fr',gap:12,alignItems:'start',padding:'14px 16px',borderBottom:'1px solid var(--border-1)',background:hover?'var(--bg-1)':'transparent',transition:'background var(--dur-fast)'}}>
+  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'grid',gridTemplateColumns:'28px 44px 1fr',gap:12,alignItems:'start',padding:'12px 16px',borderBottom:'1px solid var(--border-1)',background:hover?'var(--bg-1)':'transparent',transition:'background var(--dur-fast)'}}>
     <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)',textAlign:'right',paddingTop:3}}>{String(i+1).padStart(2,'0')}</span>
     <button onClick={vote} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1,border:'none',background:'transparent',cursor:'pointer',padding:'2px 0',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)'}}>
       <Icon name="up" size={16} sw={voted?2.4:1.8}/>
@@ -76,7 +76,7 @@ function StoryRow({s,i}) {
         <a href="#" style={{fontSize:15,fontWeight:600,color:'var(--fg-1)',lineHeight:1.35}}>{s.t}</a>
         <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',display:'inline-flex',alignItems:'center',gap:3}}>{s.src}<Icon name="ext" size={11}/></span>
       </div>
-      <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>
         {s.tag?<Badge tone={s.tag==='Hot'?'warning':s.tag==='Data'?'info':'accent'}>{s.tag}</Badge>:null}
         <span>{s.topic}</span><span style={{opacity:.5}}>·</span>
         <span style={{display:'inline-flex',alignItems:'center',gap:4}}><Icon name="chat" size={12}/>{s.cm}</span>
@@ -99,9 +99,9 @@ function RichCard({s}) {
   const [hover,setHover]=useState(false);
   const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
   const foot={display:'inline-flex',alignItems:'center',gap:5,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'};
-  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',flexDirection:'column',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:14,gap:11,boxShadow:hover?'var(--shadow-2)':'var(--shadow-1)',borderColor:hover?'var(--border-2)':'var(--border-1)',transition:'box-shadow var(--dur-base),border-color var(--dur-base)'}}>
+  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',flexDirection:'column',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,gap:12,boxShadow:hover?'var(--shadow-2)':'var(--shadow-1)',borderColor:hover?'var(--border-2)':'var(--border-1)',transition:'box-shadow var(--dur-base),border-color var(--dur-base)'}}>
     <Thumb topic={s.topic}/>
-    <div style={{display:'flex',alignItems:'center',gap:7}}>
+    <div style={{display:'flex',alignItems:'center',gap:8}}>
       {s.tag?<Badge tone={s.tag==='Hot'?'warning':s.tag==='Data'?'info':'accent'}>{s.tag}</Badge>:null}
       <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--fg-3)'}}>{s.topic}</span>
       <span style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:10,color:'var(--fg-3)'}}>{s.read} read</span>
@@ -114,7 +114,7 @@ function RichCard({s}) {
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{s.src}</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginLeft:'auto'}}>{s.time} ago</span>
     </div>
-    <div style={{display:'flex',alignItems:'center',gap:14,paddingTop:11,borderTop:'1px solid var(--border-1)'}}>
+    <div style={{display:'flex',alignItems:'center',gap:16,paddingTop:12,borderTop:'1px solid var(--border-1)'}}>
       <button onClick={vote} style={{...foot,border:'none',background:'transparent',cursor:'pointer',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',fontWeight:600}}><Icon name="up" size={14} sw={voted?2.4:1.8}/>{pts}</button>
       <span style={foot}><Icon name="chat" size={13}/>{s.cm}</span>
       <button onClick={()=>setSaved(!saved)} aria-label="save" style={{...foot,marginLeft:'auto',border:'none',background:'transparent',cursor:'pointer',color:saved?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name="bookmark" size={13} sw={saved?2.2:1.7}/></button>
@@ -154,7 +154,7 @@ function App() {
     <div style={{maxWidth:1080,margin:'0 auto',padding:'24px 28px',display:'grid',gridTemplateColumns:'1fr 260px',gap:28,alignItems:'start'}}>
       {/* feed */}
       <main>
-        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div style={{display:'flex',flexDirection:'column',gap:3}}>
             <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>// {tab} stories · {topic}</span>
             <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Today on Dispatch</h1>
@@ -166,7 +166,7 @@ function App() {
           : {border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}>
           {stories.map((s,i)=> view==="rich" ? <RichCard key={i} s={s}/> : <StoryRow key={i} s={s} i={i}/>)}
         </div>
-        <div style={{display:'flex',justifyContent:'center',padding:'18px 0'}}>
+        <div style={{display:'flex',justifyContent:'center',padding:'16px 0'}}>
           <button style={{height:34,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Load more</button>
         </div>
       </main>
@@ -181,8 +181,8 @@ function App() {
         </section>
         <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
           <div style={{display:'flex',alignItems:'center',gap:6,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}><Icon name="bolt" size={12}/>Trending now</div>
-          <div style={{display:'flex',flexDirection:'column',gap:9}}>
-            {trending.map(([t,n],i)=><div key={t} style={{display:'flex',alignItems:'center',gap:9}}>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {trending.map(([t,n],i)=><div key={t} style={{display:'flex',alignItems:'center',gap:8}}>
               <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)',width:14}}>{i+1}</span>
               <a href="#" style={{fontSize:13,color:'var(--fg-1)',fontWeight:500,flex:1}}>{t}</a>
               <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--accent-subtle-fg)'}}>+{n}</span>
