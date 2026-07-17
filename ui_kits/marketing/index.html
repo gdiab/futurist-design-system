@@ -28,6 +28,24 @@
    via the global wildcard guard in styles.css. */
 @keyframes fz-pulse{0%,100%{opacity:1}50%{opacity:.25}}
 .fz-live{animation:fz-pulse 2s var(--ease-in-out) infinite;}
+/* Responsive collapse — desktop specs live in inline styles, so the
+   breakpoint overrides need !important to win. Spacing stays on the 4px grid. */
+@media (max-width:880px){
+  .fz-nav-links{display:none !important;}
+  .fz-hero,.fz-features,.fz-pricing{grid-template-columns:1fr !important;}
+  .fz-hero{padding:var(--space-12) var(--space-10) var(--space-10) !important;gap:var(--space-8) !important;}
+  .fz-features{gap:var(--space-8) !important;}
+  .fz-pricing > div{border-left:none !important;}
+  .fz-pricing > div + div{border-top:1px solid var(--border-1);}
+  .fz-footer{flex-wrap:wrap;gap:var(--space-4) var(--space-6);}
+}
+@media (max-width:560px){
+  .fz-nav{padding:0 var(--space-4) !important;gap:var(--space-4) !important;}
+  .fz-h1{font-size:2.25rem !important;}
+  .fz-hero{padding:var(--space-10) var(--space-4) var(--space-8) !important;}
+  .fz-section{padding:var(--space-10) var(--space-4) !important;}
+  .fz-footer{padding:var(--space-6) var(--space-4) !important;}
+}
 </style>
 </head>
 <body>
@@ -68,12 +86,12 @@ function ThemeButton() {
 }
 
 function Nav() {
-  return <nav style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+  return <nav className="fz-nav" style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
     <div style={{display:'flex',alignItems:'center',gap:8}}>
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
     </div>
-    <div style={{display:'flex',gap:24,marginLeft:12}}>{['Product','Docs','Pricing','Changelog'].map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
+    <div className="fz-nav-links" style={{display:'flex',gap:24,marginLeft:12}}>{['Product','Docs','Pricing','Changelog'].map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
     <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
       <ThemeButton/>
       <a href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
@@ -83,14 +101,14 @@ function Nav() {
 }
 
 function Hero() {
-  return <section className="grid-bg" style={{position:'relative'}}><div style={{maxWidth:1200,margin:'0 auto',padding:'80px 40px 48px',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'start'}}>
+  return <section className="grid-bg" style={{position:'relative'}}><div className="fz-hero" style={{maxWidth:1200,margin:'0 auto',padding:'80px 40px 48px',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'start'}}>
     <div style={{display:'flex',flexDirection:'column',gap:20,paddingTop:16}}>
       <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
         <LiveDot/>
         <span style={{color:'var(--accent-subtle-fg)',fontWeight:500}}>// telemetry platform</span>
         <span style={{color:'var(--fg-3)'}}>rev 2.4.0 — edge deploys</span>
       </div>
-      <h1 style={{fontSize:56,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.05,color:'var(--fg-1)'}}>Ship telemetry that keeps up with you.</h1>
+      <h1 className="fz-h1" style={{fontSize:56,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.05,color:'var(--fg-1)'}}>Ship telemetry that keeps up with you.</h1>
       <p style={{fontSize:17,color:'var(--fg-2)',lineHeight:1.55,maxWidth:460}}>A precise, low-overhead observability layer for teams that measure everything. Metrics, traces, and logs — one dense console, zero noise.</p>
       <div style={{display:'flex',gap:12,marginTop:4}}>
         <Btn variant="primary">Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
@@ -127,16 +145,25 @@ function IngestStrip() {
 function Terminal() {
   /* Terminal chrome stays dark in BOTH themes — --bg-inverse flips to near-white
      in dark mode, which would produce a light terminal. Pin the light-theme
-     inverse values instead; traffic lights + white hairline assume a dark bg. */
-  const TERM_BG='oklch(0.22 0.012 260)', TERM_FG='oklch(0.97 0.003 255)';
+     inverse values instead; traffic lights + white hairline assume a dark bg.
+     Foregrounds are pinned too: theme-relative tokens (--fg-3, --success, …)
+     drop below AA against the pinned-dark bg in the light theme, so every
+     terminal color is a local constant set to its dark-theme token value
+     (tokens/colors.css [data-theme="dark"]) — the panel renders identically
+     in both themes and each row clears 4.5:1. */
+  const TERM_BG='oklch(0.22 0.012 260)', TERM_FG='oklch(0.97 0.003 255)',
+        TERM_MUTED='oklch(0.655 0.010 260)',   /* dark --fg-3 */
+        TERM_SUCCESS='oklch(0.680 0.130 168)', /* dark --success */
+        TERM_WARNING='oklch(0.780 0.150 78)',  /* dark --warning */
+        TERM_ACCENT='oklch(0.800 0.170 159)';  /* dark --accent */
   const rows=[
     ['$ ','futurist deploy --edge','',''],
-    ['','→ building 6 services','','var(--fg-3)'],
-    ['','✓ api-gateway','142ms','var(--success)'],
-    ['','✓ auth-service','98ms','var(--success)'],
-    ['','✓ search-index','71ms','var(--success)'],
-    ['','⚠ billing-worker','410ms','var(--warning)'],
-    ['','deployed to us-east-1, eu-west-1','','var(--fg-3)'],
+    ['','→ building 6 services','',TERM_MUTED],
+    ['','✓ api-gateway','142ms',TERM_SUCCESS],
+    ['','✓ auth-service','98ms',TERM_SUCCESS],
+    ['','✓ search-index','71ms',TERM_SUCCESS],
+    ['','⚠ billing-worker','410ms',TERM_WARNING],
+    ['','deployed to us-east-1, eu-west-1','',TERM_MUTED],
     ['$ ','','',''],
   ];
   return <div style={{background:TERM_BG,borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
@@ -146,9 +173,9 @@ function Terminal() {
     </div>
     <div style={{padding:'16px 18px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.85}}>
       {rows.map((r,i)=><div key={i} style={{display:'flex',color:r[3]||TERM_FG}}>
-        <span style={{color:'var(--accent)'}}>{r[0]}</span>
+        <span style={{color:TERM_ACCENT}}>{r[0]}</span>
         <span style={{opacity:r[3]?1:.92}}>{r[1]}</span>
-        {r[2]?<span style={{marginLeft:'auto',opacity:.6}}>{r[2]}</span>:null}
+        {r[2]?<span style={{marginLeft:'auto',color:TERM_MUTED}}>{r[2]}</span>:null}
       </div>)}
     </div>
   </div>;
@@ -194,7 +221,7 @@ function Features() {
     ['03','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.','BYOK · SOC 2'],
     ['04','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.','sha ↔ span'],
   ];
-  return <section style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px',display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:64,alignItems:'start'}}>
+  return <section style={{borderTop:'1px solid var(--border-1)'}}><div className="fz-section fz-features" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px',display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:64,alignItems:'start'}}>
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
       <Eyebrow>// Why Futurist</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.15,color:'var(--fg-1)'}}>Built for precision, not dashboards-as-decoration.</h2>
@@ -216,20 +243,7 @@ function Features() {
       </div>)}
       <div style={{borderTop:'1px solid var(--border-1)'}}/>
     </div>
-  </section>;
-}
-
-function Stats() {
-  const s=[['spans / second','4.2M','sustained ingest'],['measured uptime','99.99%','rolling 90 days'],['ingest p99','<800ms','agent to console'],['global regions','3','us · eu · apac']];
-  return <section style={{borderTop:'1px solid var(--border-1)',borderBottom:'1px solid var(--border-1)',background:'var(--bg-1)'}}>
-    <div style={{maxWidth:1200,margin:'0 auto',padding:'0 40px',display:'grid',gridTemplateColumns:'repeat(4,1fr)'}}>
-      {s.map((x,i)=><div key={i} style={{padding:'28px 24px',paddingLeft:i?24:0,borderLeft:i?'1px solid var(--border-1)':'none',display:'flex',flexDirection:'column',gap:8}}>
-        <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)'}}>// {x[0]}</span>
-        <span style={{fontFamily:'var(--font-mono)',fontSize:30,fontWeight:500,color:'var(--fg-1)'}}>{x[1]}</span>
-        <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{x[2]}</span>
-      </div>)}
-    </div>
-  </section>;
+  </div></section>;
 }
 
 function Pricing() {
@@ -238,12 +252,12 @@ function Pricing() {
     ['Team','$40',['Unlimited projects','90-day retention','Deploy correlation','Priority support'],true],
     ['Enterprise','Custom',['SSO & SAML','Unlimited retention','On-prem / BYOK','Dedicated SLA'],false],
   ];
-  return <section style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px'}}>
+  return <section className="fz-section" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px'}}>
     <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:32,maxWidth:520}}>
       <Eyebrow>// Pricing</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Priced per seat, not per surprise.</h2>
     </div>
-    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',overflow:'hidden'}}>
+    <div className="fz-pricing" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',overflow:'hidden'}}>
       {plans.map((p,i)=><div key={i} style={{padding:24,display:'flex',flexDirection:'column',gap:16,borderLeft:i?'1px solid var(--border-1)':'none',background:p[3]?'var(--bg-2)':'transparent'}}>
         <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase'}}>
           <span style={{color:'var(--fg-3)'}}>// {p[0]}</span>
@@ -258,7 +272,7 @@ function Pricing() {
 }
 
 function Footer() {
-  return <footer style={{borderTop:'1px solid var(--border-1)',background:'var(--bg-1)'}}><div style={{maxWidth:1200,margin:'0 auto',padding:'32px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+  return <footer style={{borderTop:'1px solid var(--border-1)',background:'var(--bg-1)'}}><div className="fz-footer" style={{maxWidth:1200,margin:'0 auto',padding:'32px 40px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
     <div style={{display:'flex',alignItems:'center',gap:9}}>
       <div style={{width:18,height:18,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:3,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>© 2026 Futurist Labs</span>
@@ -270,7 +284,7 @@ function Footer() {
   </div></footer>;
 }
 
-function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Stats/><Features/><Pricing/><Footer/></div>;}
+function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Features/><Pricing/><Footer/></div>;}
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 <script>

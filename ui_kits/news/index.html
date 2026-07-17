@@ -16,6 +16,23 @@
   a{text-decoration:none;}
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;border:3px solid var(--bg-0);}
+  /* Responsive layout: header wraps, sidebar stacks, cards go single-column below 900px. */
+  .site-header{position:sticky;top:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;min-height:54px;padding:8px 28px;border-bottom:1px solid var(--border-1);background:var(--surface-overlay);backdrop-filter:blur(10px);}
+  .site-header nav{flex-wrap:wrap;}
+  .header-search{width:200px;}
+  .feed-layout{max-width:1080px;margin:0 auto;padding:24px 28px;display:grid;grid-template-columns:1fr 260px;gap:28px;align-items:start;}
+  .feed-aside{position:sticky;top:78px;}
+  .cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:900px){
+    .site-header{padding:8px 16px;gap:8px 12px;}
+    .header-search{width:120px;}
+    .feed-layout{grid-template-columns:1fr;padding:16px;gap:24px;}
+    .feed-aside{position:static;}
+    .cards-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:520px){
+    .header-search{display:none;}
+  }
 </style>
 </head>
 <body>
@@ -86,12 +103,6 @@ function StoryRow({s,i}) {
   </article>;
 }
 
-function Thumb({topic}) {
-  return <div style={{position:'relative',height:120,borderRadius:'var(--radius-md)',overflow:'hidden',flexShrink:0,background:'repeating-linear-gradient(135deg,var(--bg-2),var(--bg-2) 9px,var(--bg-3) 9px,var(--bg-3) 18px)',border:'1px solid var(--border-1)',display:'flex',alignItems:'center',justifyContent:'center'}}>
-    <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.06em',textTransform:'uppercase',color:'var(--fg-4)'}}>thumbnail · {topic}</span>
-  </div>;
-}
-
 function RichCard({s}) {
   const [pts,setPts]=useState(s.pts);
   const [voted,setVoted]=useState(false);
@@ -99,8 +110,7 @@ function RichCard({s}) {
   const [hover,setHover]=useState(false);
   const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
   const foot={display:'inline-flex',alignItems:'center',gap:5,fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'};
-  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',flexDirection:'column',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,gap:12,boxShadow:hover?'var(--shadow-2)':'var(--shadow-1)',borderColor:hover?'var(--border-2)':'var(--border-1)',transition:'box-shadow var(--dur-base),border-color var(--dur-base)'}}>
-    <Thumb topic={s.topic}/>
+  return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'flex',flexDirection:'column',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:20,gap:12,boxShadow:hover?'var(--shadow-2)':'var(--shadow-1)',borderColor:hover?'var(--border-2)':'var(--border-1)',transition:'box-shadow var(--dur-base),border-color var(--dur-base)'}}>
     <div style={{display:'flex',alignItems:'center',gap:8}}>
       {s.tag?<Badge tone={s.tag==='Hot'?'warning':s.tag==='Data'?'info':'accent'}>{s.tag}</Badge>:null}
       <span style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.05em',textTransform:'uppercase',color:'var(--fg-3)'}}>{s.topic}</span>
@@ -129,12 +139,12 @@ function App() {
   const [dark,setDark]=useState(false);
   const [tab,setTab]=useState("Top");
   const [topic,setTopic]=useState("Top");
-  const [view,setView]=useState("rich");
+  const [view,setView]=useState("compact");
   const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
   const tabs=["Top","New","Best","Ask","Show"];
   return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
     {/* nav */}
-    <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:20,height:54,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
+    <header className="site-header">
       <div style={{display:'flex',alignItems:'center',gap:9}}>
         <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
         <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Dispatch</span>
@@ -146,12 +156,12 @@ function App() {
         <div style={{display:'flex',gap:2,padding:2,background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)'}}>
           {[["compact","List"],["rich","Cards"]].map(([v,l])=>{const on=view===v;return <button key={v} onClick={()=>setView(v)} style={{height:24,padding:'0 9px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--bg-1)':'transparent',boxShadow:on?'var(--shadow-1)':'none',color:on?'var(--fg-1)':'var(--fg-3)',fontSize:12,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{l}</button>;})}
         </div>
-        <div style={{display:'flex',alignItems:'center',gap:7,width:200,height:30,padding:'0 10px',background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',color:'var(--fg-3)'}}><Icon name="search" size={13}/><span style={{fontSize:12}}>Search</span></div>
+        <div className="header-search" style={{display:'flex',alignItems:'center',gap:7,height:30,padding:'0 10px',background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',color:'var(--fg-3)'}}><Icon name="search" size={13}/><span style={{fontSize:12}}>Search</span></div>
         <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{width:30,height:30,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-3)',cursor:'pointer'}}><Icon name={dark?'sun':'moon'} size={15}/></button>
       </div>
     </header>
 
-    <div style={{maxWidth:1080,margin:'0 auto',padding:'24px 28px',display:'grid',gridTemplateColumns:'1fr 260px',gap:28,alignItems:'start'}}>
+    <div className="feed-layout">
       {/* feed */}
       <main>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
@@ -161,8 +171,8 @@ function App() {
           </div>
           <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>updated 30s ago</span>
         </div>
-        <div style={view==="rich"
-          ? {display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}
+        <div className={view==="rich"?"cards-grid":undefined} style={view==="rich"
+          ? undefined
           : {border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}>
           {stories.map((s,i)=> view==="rich" ? <RichCard key={i} s={s}/> : <StoryRow key={i} s={s} i={i}/>)}
         </div>
@@ -172,7 +182,7 @@ function App() {
       </main>
 
       {/* sidebar */}
-      <aside style={{display:'flex',flexDirection:'column',gap:16,position:'sticky',top:78}}>
+      <aside className="feed-aside" style={{display:'flex',flexDirection:'column',gap:16}}>
         <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
           <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>Topics</div>
           <div style={{display:'flex',flexDirection:'column',gap:2}}>

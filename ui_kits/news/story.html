@@ -16,6 +16,13 @@
   a{text-decoration:none;}
   ::-webkit-scrollbar{width:10px;height:10px;}
   ::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;border:3px solid var(--bg-0);}
+  /* Responsive layout: sidebar stacks below the article under 900px, prose takes full width. */
+  .story-layout{max-width:1040px;margin:0 auto;padding:32px 28px;display:grid;grid-template-columns:1fr 220px;gap:36px;align-items:start;}
+  .story-aside{position:sticky;top:78px;}
+  @media (max-width:900px){
+    .story-layout{grid-template-columns:1fr;padding:24px 16px;gap:24px;}
+    .story-aside{position:static;}
+  }
 </style>
 </head>
 <body>
@@ -90,6 +97,10 @@ function App() {
   const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
   const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
   const meta={display:'inline-flex',alignItems:'center',gap:5,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'};
+  /* Code panel stays dark in BOTH themes — --bg-inverse/--fg-inverse flip to
+     near-white in dark mode, which would render a light panel inside the dark
+     article. Pin the dark-theme token values (tokens/colors.css) instead. */
+  const CODE_BG='oklch(0.22 0.012 260)', CODE_FG='oklch(0.965 0.003 258)';
   return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
     <header style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:16,height:54,padding:'0 28px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
       <a href="index.html" style={{...meta,color:'var(--fg-2)',fontWeight:500}}><Icon name="back" size={15}/>Back to feed</a>
@@ -100,7 +111,7 @@ function App() {
       <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',width:30,height:30,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-3)',cursor:'pointer'}}><Icon name={dark?'sun':'moon'} size={15}/></button>
     </header>
 
-    <div style={{maxWidth:1040,margin:'0 auto',padding:'32px 28px',display:'grid',gridTemplateColumns:'1fr 220px',gap:36,alignItems:'start'}}>
+    <div className="story-layout">
       <main style={{minWidth:0}}>
         <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16}}>
           <Badge>Show HN</Badge>
@@ -126,7 +137,7 @@ function App() {
             <p style={{margin:0,fontSize:17,lineHeight:1.55,fontStyle:'italic',letterSpacing:'-.01em',color:'var(--fg-1)'}}>“You cannot schedule your way out of an allocation problem. At some point you have to stop allocating.”</p>
           </blockquote>
           <p style={{marginBottom:16}}>The rewrite leans on a slab allocator with per-core arenas, so hot-path writes never touch a shared lock. Here's the core loop, trimmed for clarity:</p>
-          <pre style={{background:'var(--bg-inverse)',color:'var(--fg-inverse)',padding:'12px 16px',borderRadius:'var(--radius-md)',fontFamily:'var(--font-mono)',fontSize:12.5,lineHeight:1.7,overflow:'auto',marginBottom:16}}>{`fn ingest(self: *Engine, batch: []const Point) !void {
+          <pre style={{background:CODE_BG,color:CODE_FG,padding:'12px 16px',borderRadius:'var(--radius-md)',fontFamily:'var(--font-mono)',fontSize:12.5,lineHeight:1.7,overflow:'auto',marginBottom:16}}>{`fn ingest(self: *Engine, batch: []const Point) !void {
     const arena = self.arenaForCore();
     for (batch) |p| {
         const slot = try arena.reserve(p.series);
@@ -157,7 +168,7 @@ function App() {
         <div>{comments.map((c,i)=><Comment key={i} c={c}/>)}</div>
       </main>
 
-      <aside style={{position:'sticky',top:78,display:'flex',flexDirection:'column',gap:16}}>
+      <aside className="story-aside" style={{display:'flex',flexDirection:'column',gap:16}}>
         <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
           <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>Story stats</div>
           <div style={{display:'flex',flexDirection:'column',gap:8}}>

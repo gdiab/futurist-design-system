@@ -16,12 +16,22 @@
   #root { height: 100vh; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 999px; border: 3px solid var(--bg-0); }
+  /* Header search — real input, standard focus treatment */
+  .hdr-search {
+    appearance: none; -webkit-appearance: none;
+    width: 100%; height: 32px; padding: 0 48px 0 32px;
+    background: var(--bg-2); border: 1px solid var(--border-3); border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-size: 0.8125rem; color: var(--fg-1); outline: none;
+    transition: border-color var(--dur-fast) var(--ease-standard), box-shadow var(--dur-fast) var(--ease-standard);
+  }
+  .hdr-search::placeholder { color: var(--fg-3); }
+  .hdr-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/plain" id="app-src">
-const { useState } = React;
+const { useState, useEffect } = React;
 
 /* ── Icons (inline stroke set) ────────────────────────────── */
 const Ic = ({ d, size = 16, sw = 1.7, fill = false }) => (
@@ -65,12 +75,14 @@ function Badge({ tone='neutral', dot, children }) {
 function Card({ children, style }) {
   return <div style={{background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',boxShadow:'var(--shadow-1)',...style}}>{children}</div>;
 }
-function Stat({ label, value, unit, delta, trend }) {
-  const c=trend==='up'?'var(--success)':trend==='down'?'var(--danger)':'var(--fg-3)';
+function Stat({ label, value, unit, delta, trend, lowerIsBetter=false }) {
+  /* Valence-aware delta color: improving → success, worsening → danger (One Signal Rule — status semantics, not accent). */
+  const improving=trend==='up'?!lowerIsBetter:trend==='down'?lowerIsBetter:null;
+  const c=improving==null?'var(--fg-3)':improving?'var(--success)':'var(--danger)';
   const a=trend==='up'?'↑':trend==='down'?'↓':'';
   return <div style={{display:'flex',flexDirection:'column',gap:8}}>
     <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)'}}>{label}</span>
-    <div style={{display:'flex',alignItems:'baseline',gap:4}}><span style={{fontFamily:'var(--font-display)',fontSize:30,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)',lineHeight:1}}>{value}</span>{unit?<span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)'}}>{unit}</span>:null}</div>
+    <div style={{display:'flex',alignItems:'baseline',gap:4}}><span style={{fontFamily:'var(--font-mono)',fontSize:30,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)',lineHeight:1}}>{value}</span>{unit?<span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)'}}>{unit}</span>:null}</div>
     {delta!=null?<span style={{fontFamily:'var(--font-mono)',fontSize:12,color:c}}>{a} {delta}</span>:null}
   </div>;
 }
@@ -130,6 +142,19 @@ function App() {
   const [authed,setAuthed]=useState(true);
   const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
 
+  /* ⌘K / Ctrl+K focuses the header search */
+  useEffect(()=>{
+    const onKey=(e)=>{
+      if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){
+        e.preventDefault();
+        const el=document.getElementById('global-search');
+        if(el) el.focus();
+      }
+    };
+    document.addEventListener('keydown',onKey);
+    return ()=>document.removeEventListener('keydown',onKey);
+  },[]);
+
   if(!authed) return <Login onIn={()=>setAuthed(true)} dark={dark} setTheme={setTheme}/>;
 
   const tabs=[['live','Live'],['24h','24h'],['7d','7d'],['30d','30d']];
@@ -152,9 +177,10 @@ function App() {
     {/* main */}
     <main style={{display:'flex',flexDirection:'column',minWidth:0,overflow:'hidden'}}>
       <header style={{display:'flex',alignItems:'center',gap:12,height:52,padding:'0 20px',borderBottom:'1px solid var(--border-1)',background:'var(--bg-1)'}}>
-        <div style={{display:'flex',alignItems:'center',gap:8,flex:1,maxWidth:340,height:32,padding:'0 12px',background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',color:'var(--fg-3)'}}>
-          <Icon name="search" size={14}/><span style={{fontSize:13}}>Search services, logs…</span>
-          <span style={{marginLeft:'auto',fontFamily:'var(--font-mono)',fontSize:11,padding:'1px 4px',border:'1px solid var(--border-2)',borderRadius:3}}>⌘K</span>
+        <div style={{position:'relative',display:'flex',alignItems:'center',flex:1,maxWidth:340}}>
+          <span style={{position:'absolute',left:12,display:'flex',color:'var(--fg-3)',pointerEvents:'none'}}><Icon name="search" size={14}/></span>
+          <input id="global-search" type="search" className="hdr-search" placeholder="Search services, logs…" aria-label="Search services and logs"/>
+          <span style={{position:'absolute',right:12,fontFamily:'var(--font-mono)',fontSize:11,padding:'1px 4px',border:'1px solid var(--border-2)',borderRadius:3,color:'var(--fg-3)',pointerEvents:'none'}}>⌘K</span>
         </div>
         <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:8}}>
           <IconButton label="Notifications"><Icon name="bell" size={16}/></IconButton>
@@ -183,7 +209,8 @@ function App() {
 
         {/* stat row */}
         <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:16}}>
-          {[['Requests / min','18.4','K','8.1% wk','up'],['P99 latency','142','ms','12% wk','down'],['Error rate','0.04','%','0.01 wk','down'],['Uptime','99.98','%','30d','flat']].map((s,i)=><Card key={i} style={{padding:'16px 20px'}}><Stat label={s[0]} value={s[1]} unit={s[2]} delta={s[3]} trend={s[4]}/></Card>)}
+          {/* lowerIsBetter: latency and error rate improve when they go down */}
+          {[['Requests / min','18.4','K','8.1% wk','up',false],['P99 latency','142','ms','12% wk','down',true],['Error rate','0.04','%','0.01 wk','down',true],['Uptime','99.98','%','30d','flat',false]].map((s,i)=><Card key={i} style={{padding:'16px 20px'}}><Stat label={s[0]} value={s[1]} unit={s[2]} delta={s[3]} trend={s[4]} lowerIsBetter={s[5]}/></Card>)}
         </div>
 
         {/* chart + side */}

@@ -980,10 +980,16 @@ function Stat({
   unit,
   delta,
   trend,
+  lowerIsBetter = false,
   style,
   ...rest
 }) {
-  const color = trend === 'up' ? 'var(--success)' : trend === 'down' ? 'var(--danger)' : 'var(--fg-3)';
+  // Delta color is valence-based, not direction-based: an improving metric is
+  // --success, a worsening one --danger. For metrics where down is good
+  // (latency, error rate), pass lowerIsBetter. Default (false) keeps the
+  // legacy behavior: up → success, down → danger.
+  const improving = trend === 'up' ? !lowerIsBetter : trend === 'down' ? lowerIsBetter : null;
+  const color = improving == null ? 'var(--fg-3)' : improving ? 'var(--success)' : 'var(--danger)';
   const arrow = trend === 'up' ? '↑' : trend === 'down' ? '↓' : '';
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -1009,7 +1015,7 @@ function Stat({
     }
   }, /*#__PURE__*/React.createElement("span", {
     style: {
-      fontFamily: 'var(--font-display)',
+      fontFamily: 'var(--font-mono)',
       fontSize: 'var(--text-3xl)',
       fontWeight: 'var(--weight-semibold)',
       letterSpacing: '-0.02em',
