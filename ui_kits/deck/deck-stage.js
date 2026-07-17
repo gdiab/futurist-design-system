@@ -216,7 +216,7 @@
       background: #000;
       color: #fff;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 0.75rem;
       font-feature-settings: "tnum" 1;
       letter-spacing: 0.01em;
       opacity: 0;
@@ -260,7 +260,7 @@
     .btn::-moz-focus-inner { border: 0; }
     .btn svg { width: 14px; height: 14px; display: block; }
     .btn.reset {
-      font-size: 11px;
+      font-size: 0.6875rem;
       font-weight: 500;
       letter-spacing: 0.02em;
       padding: 0 10px 0 12px;
@@ -275,7 +275,7 @@
       height: 16px;
       padding: 0 4px;
       font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-size: 10px;
+      font-size: 0.625rem;
       line-height: 1;
       color: rgba(255,255,255,0.88);
       background: rgba(255,255,255,0.12);
@@ -289,7 +289,7 @@
       padding: 0 8px;
       min-width: 42px;
       text-align: center;
-      font-size: 12px;
+      font-size: 0.75rem;
     }
     .count .sep { color: rgba(255,255,255,0.45); margin: 0 3px; font-weight: 400; }
     .count .total { color: rgba(255,255,255,0.55); }
@@ -373,7 +373,7 @@
     .thumb .num {
       width: 16px;
       flex-shrink: 0;
-      font-size: 11px;
+      font-size: 0.6875rem;
       font-weight: 500;
       text-align: right;
       color: rgba(255,255,255,0.55);
@@ -429,7 +429,7 @@
       justify-content: center;
       background: rgba(0,0,0,0.45);
       color: #fff;
-      font-size: 10px;
+      font-size: 0.625rem;
       font-weight: 500;
       letter-spacing: 0.04em;
     }
@@ -444,7 +444,7 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.45);
       z-index: 2147483100;
       display: none;
-      font-size: 12px;
+      font-size: 0.75rem;
     }
     .ctxmenu[data-open] { display: block; }
     .ctxmenu button {
@@ -514,8 +514,8 @@
       to { opacity: 1; transform: scale(1); }
     }
     .confirm .body { padding: 20px 20px 16px; }
-    .confirm .title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-    .confirm .msg { font-size: 13px; line-height: 1.5; color: rgba(255,255,255,0.65); }
+    .confirm .title { font-size: 0.875rem; font-weight: 600; margin-bottom: 4px; }
+    .confirm .msg { font-size: 0.8125rem; line-height: 1.5; color: rgba(255,255,255,0.65); }
     .confirm .footer {
       padding: 14px 20px;
       background: #1f1f1f;
@@ -527,7 +527,7 @@
     .confirm button {
       appearance: none;
       font: inherit;
-      font-size: 13px;
+      font-size: 0.8125rem;
       font-weight: 500;
       padding: 8px 16px;
       border-radius: 8px;
