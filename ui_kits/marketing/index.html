@@ -83,10 +83,10 @@ const icons = {
 };
 const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 
-function Btn({variant='primary',children,...r}) {
+function Btn({variant='primary',children,style,...r}) {
   const [h,setH]=useState(false);
   const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
-  return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V}} {...r}>{children}</button>;
+  return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
 
