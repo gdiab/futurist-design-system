@@ -720,8 +720,8 @@ function Switch({
     width: '13px',
     height: '13px',
     borderRadius: 'var(--radius-full)',
-    background: '#fff',
-    boxShadow: '0 1px 2px rgba(0,0,0,0.25)',
+    background: 'var(--control-knob)',
+    border: '1px solid var(--border-2)',
     transition: 'left var(--dur-base) var(--ease-standard)'
   };
   return /*#__PURE__*/React.createElement("label", {

@@ -46,8 +46,14 @@
 .fz-cursor{animation:fz-blink 1s step-end infinite;}
 /* Responsive collapse — desktop specs live in inline styles, so the
    breakpoint overrides need !important to win. Spacing stays on the 4px grid. */
+/* Mobile menu button + disclosure panel — desktop hides both */
+.fz-menu-btn{display:none;}
+@media (min-width:881px){
+  .fz-menu-panel{display:none !important;}
+}
 @media (max-width:880px){
   .fz-nav-links{display:none !important;}
+  .fz-menu-btn{display:inline-flex;}
   .fz-hero,.fz-features{grid-template-columns:1fr !important;}
   .fz-hero{padding:var(--space-12) var(--space-10) 0 !important;gap:var(--space-8) !important;}
   .fz-features{gap:var(--space-8) !important;}
@@ -58,6 +64,7 @@
 }
 @media (max-width:560px){
   .fz-nav{padding:0 var(--space-4) !important;gap:var(--space-4) !important;}
+  .fz-nav-signin{display:none;} /* reachable via the menu panel */
   .fz-h1{font-size:2.25rem !important;}
   .fz-hero{padding:var(--space-10) var(--space-4) var(--space-8) !important;}
   .fz-section{padding:var(--space-10) var(--space-4) !important;}
@@ -80,6 +87,8 @@ const icons = {
   check:<path d="M4 12l5 5L20 6"/>,
   sun:<><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></>,
   moon:<path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/>,
+  menu:<path d="M4 7h16M4 12h16M4 17h16"/>,
+  close:<path d="M6 6l12 12M18 6L6 18"/>,
 };
 const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 
@@ -128,17 +137,33 @@ function ThemeButton() {
 }
 
 function Nav() {
+  /* Mobile menu — below 880px the inline links hide, so a disclosure panel
+     keeps Product/Docs/Pricing/Changelog reachable. Escape closes and
+     returns focus to the button. */
+  const [open,setOpen]=useState(false);
+  React.useEffect(()=>{
+    if(!open) return;
+    const onKey=(e)=>{if(e.key==='Escape'){setOpen(false);const b=document.getElementById('fz-menu-btn');if(b)b.focus();}};
+    document.addEventListener('keydown',onKey);
+    return ()=>document.removeEventListener('keydown',onKey);
+  },[open]);
+  const links=['Product','Docs','Pricing','Changelog'];
   return <nav className="fz-nav" style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
     <div style={{display:'flex',alignItems:'center',gap:8}}>
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
     </div>
-    <div className="fz-nav-links" style={{display:'flex',gap:24,marginLeft:12}}>{['Product','Docs','Pricing','Changelog'].map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
+    <div className="fz-nav-links" style={{display:'flex',gap:24,marginLeft:12}}>{links.map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
     <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
       <ThemeButton/>
-      <a href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
+      <a href="#" className="fz-nav-signin" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
       <Btn variant="primary">Start free<Icon name="chevron" size={14}/></Btn>
+      <button id="fz-menu-btn" className="fz-menu-btn" aria-label="Menu" aria-expanded={open} aria-controls="fz-mobile-menu" onClick={()=>setOpen(!open)} style={{alignItems:'center',justifyContent:'center',width:40,height:40,margin:'0 -8px 0 -4px',borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:'transparent',color:'var(--fg-1)'}}><Icon name={open?'close':'menu'} size={18}/></button>
     </div>
+    {open&&<div id="fz-mobile-menu" className="fz-menu-panel" style={{position:'absolute',top:'100%',left:0,right:0,display:'flex',flexDirection:'column',padding:'var(--space-2) var(--space-4)',background:'var(--bg-1)',borderBottom:'1px solid var(--border-1)',boxShadow:'var(--shadow-2)'}}>
+      {links.concat(['Sign in']).map(x=><a key={x} href="#" onClick={()=>setOpen(false)} style={{display:'flex',alignItems:'center',minHeight:44,fontSize:15,color:'var(--fg-1)',fontWeight:500,borderBottom:'1px solid var(--border-1)'}}>{x}</a>)}
+      <div style={{padding:'var(--space-3) 0 var(--space-2)'}}><Btn variant="primary" style={{width:'100%'}}>Start free<Icon name="chevron" size={14}/></Btn></div>
+    </div>}
   </nav>;
 }
 
@@ -270,10 +295,10 @@ function PipelineDiagram() {
 
 function Features() {
   const feats=[
-    ['01','Sub-second ingest','Spans land in your console in under 800ms p99, even at 4M events per second.','p99 · 780ms'],
-    ['02','Dense by default','Every pixel earns its place. High-density tables, sparklines, and no chrome.','13px base grid'],
-    ['03','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.','BYOK · SOC 2'],
-    ['04','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.','sha ↔ span'],
+    ['zap','Sub-second ingest','Spans land in your console in under 800ms p99, even at 4M events per second.','p99 · 780ms'],
+    ['gauge','Dense by default','Every pixel earns its place. High-density tables, sparklines, and no chrome.','13px base grid'],
+    ['shield','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.','BYOK · SOC 2'],
+    ['git','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.','sha ↔ span'],
   ];
   return <section style={{borderTop:'1px solid var(--border-1)'}}><div className="fz-section fz-features" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px',display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:64,alignItems:'start'}}>
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
@@ -286,7 +311,7 @@ function Features() {
     </div>
     <div style={{display:'flex',flexDirection:'column'}}>
       {feats.map((f,i)=><div key={i} style={{display:'grid',gridTemplateColumns:'44px 1fr',gap:16,padding:'20px 0',borderTop:'1px solid var(--border-1)'}}>
-        <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-4)',paddingTop:2}}>{f[0]}</span>
+        <span style={{display:'inline-flex',color:'var(--fg-3)',paddingTop:2}} aria-hidden="true"><Icon name={f[0]} size={18}/></span>
         <div style={{display:'flex',flexDirection:'column',gap:6}}>
           <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:16}}>
             <h3 style={{fontSize:16,fontWeight:600,color:'var(--fg-1)'}}>{f[1]}</h3>
@@ -336,7 +361,7 @@ function Pricing() {
             <td style={{padding:'20px 24px'}} aria-hidden="true"/>
             {cols.map((c,i)=><th key={i} scope="col" style={{...cellStyle(c.rec),textAlign:'left',verticalAlign:'top'}}>
               <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase'}}>
-                <span style={{color:'var(--fg-3)'}}>// {c.name}</span>
+                <span style={{color:'var(--fg-3)'}}>{c.name}</span>
                 {c.rec?<span style={{display:'inline-flex',alignItems:'center',gap:6,color:'var(--accent-subtle-fg)'}}><LiveDot size={5}/>recommended</span>:null}
               </div>
               <div style={{display:'flex',alignItems:'baseline',gap:4,marginTop:12}}>

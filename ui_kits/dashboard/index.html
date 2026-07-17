@@ -26,6 +26,32 @@
   }
   .hdr-search::placeholder { color: var(--fg-3); }
   .hdr-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-ring); }
+  /* Skip link — visually parked above the viewport until keyboard-focused */
+  .skip-link {
+    position: absolute; left: 12px; top: -48px; z-index: 30;
+    display: inline-flex; align-items: center; height: 32px; padding: 0 12px;
+    background: var(--bg-1); border: 1px solid var(--border-3); border-radius: var(--radius-md);
+    font-family: var(--font-sans); font-size: 13px; font-weight: 500; color: var(--fg-1);
+  }
+  .skip-link:focus-visible { top: 12px; }
+  /* Responsive collapse — desktop specs live in inline styles, so the
+     breakpoint overrides need !important to win. Sidebar becomes a
+     horizontal bar; grids stack. */
+  @media (max-width: 768px) {
+    .console-grid { grid-template-columns: 1fr !important; grid-template-rows: auto 1fr; }
+    .console-sidebar { flex-direction: row !important; align-items: center; gap: 4px;
+      border-right: none !important; border-bottom: 1px solid var(--border-1);
+      padding: 8px 12px !important; overflow-x: auto; }
+    .console-sidebar > nav { flex-direction: row !important; }
+    .console-logo { padding: 0 8px 0 0 !important; }
+    .console-theme { margin-top: 0 !important; margin-left: auto; border-top: none !important;
+      padding: 0 0 0 12px !important; gap: 8px; }
+    .chart-grid { grid-template-columns: 1fr !important; }
+    .stat-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 640px) {
+    .hdr-kbd { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -86,8 +112,8 @@ function Stat({ label, value, unit, delta, trend, lowerIsBetter=false }) {
     {delta!=null?<span style={{fontFamily:'var(--font-mono)',fontSize:12,color:c}}>{a} {delta}</span>:null}
   </div>;
 }
-function Switch({ on, onClick }) {
-  return <button onClick={onClick} aria-label="toggle" style={{width:30,height:18,borderRadius:999,position:'relative',cursor:'pointer',background:on?'var(--accent)':'var(--bg-3)',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),transition:'background var(--dur-base)'}}><span style={{position:'absolute',top:2,left:on?13:2,width:13,height:13,borderRadius:999,background:'#fff',boxShadow:'0 1px 2px rgba(0,0,0,.25)',transition:'left var(--dur-base) var(--ease-standard)'}}/></button>;
+function Switch({ on, onClick, label }) {
+  return <button onClick={onClick} role="switch" aria-checked={on} aria-label={label} style={{width:30,height:18,borderRadius:'var(--radius-full)',position:'relative',cursor:'pointer',background:on?'var(--accent)':'var(--bg-3)',border:'1px solid '+(on?'var(--accent)':'var(--border-3)'),transition:'background var(--dur-base)'}}><span style={{position:'absolute',top:2,left:on?13:2,width:13,height:13,borderRadius:'var(--radius-full)',background:'var(--control-knob)',border:'1px solid var(--border-2)',transition:'left var(--dur-base) var(--ease-standard)'}}/></button>;
 }
 
 /* ── Chart (simple token-colored bars) ────────────────────── */
@@ -95,6 +121,14 @@ function Switch({ on, onClick }) {
    render mounts at 0 and transitions to height over --dur-base (mechanical,
    ≤240ms). Reduced motion swaps instantly — data still updates. */
 const CHART_SEED=[42,55,48,63,58,71,66,80,74,88,82,95];
+/* Seeded per-range windows — 24h/7d/30d are static aggregates; only Live
+   ticks. Deltas compare against the prior window; error-rate deltas are in
+   percentage points (pp). */
+const RANGES={
+  '24h':{bars:[52,44,38,33,36,48,61,72,78,83,80,74],stats:[['Requests / min','16.4','K','2.9% 24h','up',false],['P99 latency','151','ms','4% 24h','down',true],['Error rate','0.05','%','0.01pp 24h','up',true],['Uptime','100.00','%','24h window','flat',false]]},
+  '7d':{bars:[68,74,79,81,76,52,44,70,77,83,86,80],stats:[['Requests / min','15.8','K','5.4% wk','up',false],['P99 latency','148','ms','6% wk','down',true],['Error rate','0.04','%','0.00pp wk','flat',true],['Uptime','99.99','%','7d window','flat',false]]},
+  '30d':{bars:[41,44,48,47,53,58,56,63,69,72,78,84],stats:[['Requests / min','14.1','K','11% mo','up',false],['P99 latency','163','ms','8% mo','up',true],['Error rate','0.06','%','0.02pp mo','down',true],['Uptime','99.98','%','30d window','flat',false]]},
+};
 function Bar({ v, accent, opacity, entering }) {
   const [h,setH]=useState(entering?0:v);
   const ref=useRef(null);
@@ -108,10 +142,12 @@ function Bar({ v, accent, opacity, entering }) {
     <div ref={ref} style={{height:`${h}%`,background:accent?'var(--accent)':'var(--viz-1)',opacity,borderRadius:'3px 3px 0 0',transition:entering?'height var(--dur-base) var(--ease-standard)':'none'}}/>
   </div>;
 }
-function BarChart({ data, reducedMotion }) {
+function BarChart({ data, reducedMotion, label }) {
   const max=100;
-  return <div style={{display:'flex',alignItems:'flex-end',gap:4,height:150,padding:'0 2px'}}>
-    {data.map((d,i)=><Bar key={d.id} v={d.v/max*100} accent={i===data.length-1} opacity={i===data.length-1?1:.35+i*0.05} entering={!reducedMotion&&d.id>=CHART_SEED.length}/>)}
+  /* role="img" + generated summary: the bars are otherwise invisible to
+     screen readers (bare divs, no text alternative). */
+  return <div role="img" aria-label={label} style={{display:'flex',alignItems:'flex-end',gap:4,height:150,padding:'0 2px'}}>
+    {data.map((d,i)=><Bar key={d.id} v={d.v/max*100} accent={i===data.length-1} opacity={i===data.length-1?1:.35+i*0.05} entering={!reducedMotion&&typeof d.id==='number'&&d.id>=CHART_SEED.length}/>)}
   </div>;
 }
 
@@ -207,19 +243,26 @@ function App() {
   if(!authed) return <Login onIn={()=>setAuthed(true)} dark={dark} setTheme={setTheme}/>;
 
   const tabs=[['live','Live'],['24h','24h'],['7d','7d'],['30d','30d']];
-  return <div style={{display:'grid',gridTemplateColumns:'var(--sidebar-w) 1fr',height:'100vh',background:'var(--bg-0)'}}>
+  const rangeData=tab==='live'?chart:RANGES[tab].bars.map((v,i)=>({id:tab+'-'+i,v}));
+  const stats=tab==='live'
+    ?[['Requests / min',reqRate.toFixed(1),'K','8.1% wk','up',false],['P99 latency','142','ms','12% wk','down',true],['Error rate','0.04','%','0.01pp wk','down',true],['Uptime','99.98','%','30d window','flat',false]]
+    :RANGES[tab].stats;
+  const vals=rangeData.map(d=>d.v);
+  const chartLabel=`Requests over time, ${tab==='live'?'live':tab} window: ${vals.length} samples on a relative 0–100 scale, low ${Math.min(...vals)}, high ${Math.max(...vals)}, latest ${vals[vals.length-1]}`;
+  return <div className="console-grid" style={{display:'grid',gridTemplateColumns:'var(--sidebar-w) 1fr',height:'100vh',background:'var(--bg-0)'}}>
+    <a href="#console-main" className="skip-link">Skip to content</a>
     {/* sidebar */}
-    <aside style={{borderRight:'1px solid var(--border-1)',background:'var(--bg-1)',display:'flex',flexDirection:'column',padding:'12px'}}>
-      <div style={{display:'flex',alignItems:'center',gap:8,padding:'8px 8px 16px'}}>
+    <aside className="console-sidebar" style={{borderRight:'1px solid var(--border-1)',background:'var(--bg-1)',display:'flex',flexDirection:'column',padding:'12px'}}>
+      <div className="console-logo" style={{display:'flex',alignItems:'center',gap:8,padding:'8px 8px 16px'}}>
         <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
         <span style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       </div>
       <nav style={{display:'flex',flexDirection:'column',gap:2}}>
-        {nav.map(([ic,label])=>{const on=route===label;return <button key={label} onClick={()=>setRoute(label)} style={{display:'flex',alignItems:'center',gap:8,height:32,padding:'0 8px',borderRadius:'var(--radius-md)',border:'none',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',textAlign:'left'}}><Icon name={ic} size={16}/>{label}</button>;})}
+        {nav.map(([ic,label])=>{const on=route===label;return <button key={label} onClick={()=>setRoute(label)} aria-current={on?'page':undefined} style={{display:'flex',alignItems:'center',gap:8,height:32,padding:'0 8px',borderRadius:'var(--radius-md)',border:'none',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',textAlign:'left'}}><Icon name={ic} size={16}/>{label}</button>;})}
       </nav>
-      <div style={{marginTop:'auto',padding:'12px 8px 4px',borderTop:'1px solid var(--border-1)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+      <div className="console-theme" style={{marginTop:'auto',padding:'12px 8px 4px',borderTop:'1px solid var(--border-1)',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
         <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{dark?'DARK':'LIGHT'}</span>
-        <Switch on={dark} onClick={()=>setTheme(!dark)}/>
+        <Switch on={dark} onClick={()=>setTheme(!dark)} label="Dark theme"/>
       </div>
     </aside>
 
@@ -229,17 +272,17 @@ function App() {
         <div style={{position:'relative',display:'flex',alignItems:'center',flex:1,maxWidth:340}}>
           <span style={{position:'absolute',left:12,display:'flex',color:'var(--fg-3)',pointerEvents:'none'}}><Icon name="search" size={14}/></span>
           <input id="global-search" type="search" className="hdr-search" placeholder="Search services, logs…" aria-label="Search services and logs"/>
-          <span style={{position:'absolute',right:12,fontFamily:'var(--font-mono)',fontSize:11,padding:'1px 4px',border:'1px solid var(--border-2)',borderRadius:3,color:'var(--fg-3)',pointerEvents:'none'}}>⌘K</span>
+          <span className="hdr-kbd" style={{position:'absolute',right:12,fontFamily:'var(--font-mono)',fontSize:11,padding:'1px 4px',border:'1px solid var(--border-2)',borderRadius:3,color:'var(--fg-3)',pointerEvents:'none'}}>⌘K</span>
         </div>
         <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:8}}>
           <IconButton label="Notifications"><Icon name="bell" size={16}/></IconButton>
           <IconButton label="Theme" onClick={()=>setTheme(!dark)}><Icon name={dark?'sun':'moon'} size={16}/></IconButton>
           <div style={{width:1,height:20,background:'var(--border-1)',margin:'0 4px'}}/>
-          <div style={{width:28,height:28,borderRadius:'var(--radius-full)',background:'var(--accent)',color:'var(--accent-fg)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:600,fontFamily:'var(--font-mono)'}}>GD</div>
+          <div style={{width:28,height:28,borderRadius:'var(--radius-full)',background:'var(--bg-3)',border:'1px solid var(--border-2)',color:'var(--fg-2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:600,fontFamily:'var(--font-mono)'}}>GD</div>
         </div>
       </header>
 
-      <div style={{flex:1,overflow:'auto',padding:'20px 24px'}}>
+      <div id="console-main" tabIndex={-1} style={{flex:1,overflow:'auto',padding:'20px 24px',outline:'none'}}>
         <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:16,marginBottom:16}}>
           <div style={{display:'flex',flexDirection:'column',gap:4}}>
             <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)'}}>Production · us-east-1</span>
@@ -251,25 +294,25 @@ function App() {
           </div>
         </div>
 
-        {/* tabs */}
-        <div style={{display:'flex',gap:2,borderBottom:'1px solid var(--border-1)',marginBottom:16}}>
-          {tabs.map(([v,l])=>{const on=tab===v;return <button key={v} onClick={()=>setTab(v)} style={{position:'relative',height:34,padding:'0 12px',border:'none',background:'transparent',cursor:'pointer',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',color:on?'var(--fg-1)':'var(--fg-3)'}}>{l}<span style={{position:'absolute',left:0,right:0,bottom:-1,height:2,background:on?'var(--accent)':'transparent',borderRadius:'2px 2px 0 0'}}/></button>;})}
+        {/* tabs — tablist semantics with roving tabindex + arrow-key navigation */}
+        <div role="tablist" aria-label="Time range" style={{display:'flex',gap:2,borderBottom:'1px solid var(--border-1)',marginBottom:16}}>
+          {tabs.map(([v,l],i)=>{const on=tab===v;return <button key={v} id={'range-tab-'+v} role="tab" aria-selected={on} tabIndex={on?0:-1} onClick={()=>setTab(v)} onKeyDown={(e)=>{const d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(!d)return;e.preventDefault();const n=(i+d+tabs.length)%tabs.length;setTab(tabs[n][0]);const el=document.getElementById('range-tab-'+tabs[n][0]);if(el)el.focus();}} style={{position:'relative',height:34,padding:'0 12px',border:'none',background:'transparent',cursor:'pointer',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)',color:on?'var(--fg-1)':'var(--fg-3)'}}>{l}<span style={{position:'absolute',left:0,right:0,bottom:-1,height:2,background:on?'var(--accent)':'transparent',borderRadius:'2px 2px 0 0'}}/></button>;})}
         </div>
 
         {/* stat row */}
-        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:16}}>
+        <div className="stat-grid" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:16}}>
           {/* lowerIsBetter: latency and error rate improve when they go down */}
-          {[['Requests / min',reqRate.toFixed(1),'K','8.1% wk','up',false],['P99 latency','142','ms','12% wk','down',true],['Error rate','0.04','%','0.01 wk','down',true],['Uptime','99.98','%','30d','flat',false]].map((s,i)=><Card key={i} style={{padding:'16px 20px'}}><Stat label={s[0]} value={s[1]} unit={s[2]} delta={s[3]} trend={s[4]} lowerIsBetter={s[5]}/></Card>)}
+          {stats.map((s,i)=><Card key={i} style={{padding:'16px 20px'}}><Stat label={s[0]} value={s[1]} unit={s[2]} delta={s[3]} trend={s[4]} lowerIsBetter={s[5]}/></Card>)}
         </div>
 
         {/* chart + side */}
-        <div style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:16,marginBottom:16}}>
+        <div className="chart-grid" style={{display:'grid',gridTemplateColumns:'2fr 1fr',gap:16,marginBottom:16}}>
           <Card style={{padding:'16px 20px'}}>
             <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
               <div style={{display:'flex',flexDirection:'column',gap:2}}><span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)'}}>Throughput</span><span style={{fontSize:15,fontWeight:600,fontFamily:'var(--font-display)',color:'var(--fg-1)'}}>Requests over time</span></div>
-              <Badge tone="success" dot>Live</Badge>
+              {tab==='live'?<Badge tone="success" dot>Live</Badge>:<Badge tone="neutral">{tab} window</Badge>}
             </div>
-            <BarChart data={chart} reducedMotion={reducedMotion}/>
+            <BarChart data={rangeData} reducedMotion={reducedMotion} label={chartLabel}/>
           </Card>
           <Card style={{padding:'16px 20px',display:'flex',flexDirection:'column',gap:12}}>
             <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)'}}>Incidents</span>
@@ -307,10 +350,13 @@ function Login({ onIn, dark, setTheme }) {
         <Button variant="primary" size="lg" style={{marginTop:4}} onClick={onIn}>Continue<Icon name="chevron" size={14}/></Button>
       </div>
     </div>
-    <div style={{background:'var(--bg-inverse)',display:'flex',flexDirection:'column',justifyContent:'center',padding:'0 6vw',position:'relative'}}>
-      <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',color:'var(--fg-inverse)',opacity:.5,marginBottom:16}}>// SYSTEM STATUS</span>
-      <div style={{fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.9,color:'var(--fg-inverse)',opacity:.85}}>
-        <div>uptime .......... 99.98%</div><div>regions ......... 3 active</div><div>services ........ 6 online</div><div>p99 ............. 142ms</div><div style={{color:'var(--accent)'}}>status .......... operational</div>
+    {/* Status panel stays dark in BOTH themes — --bg-inverse/--fg-inverse flip
+       in dark mode, so pin the dark-theme token values (tokens/colors.css)
+       instead. The sanctioned pinned-panel exception. */}
+    <div style={{background:'oklch(0.22 0.012 260)',display:'flex',flexDirection:'column',justifyContent:'center',padding:'0 6vw',position:'relative'}}>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.1em',textTransform:'uppercase',color:'oklch(0.655 0.010 260)',marginBottom:16}}>// SYSTEM STATUS</span>
+      <div style={{fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.9,color:'oklch(0.800 0.008 258)'}}>
+        <div>uptime .......... 99.98%</div><div>regions ......... 3 active</div><div>services ........ 6 online</div><div>p99 ............. 142ms</div><div style={{color:'oklch(0.800 0.170 159)'}}>status .......... operational</div>
       </div>
     </div>
   </div>;

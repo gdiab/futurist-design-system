@@ -17,7 +17,7 @@ export function Switch({ label, checked, defaultChecked, disabled, onChange, id,
   };
   const knob = {
     position: 'absolute', top: '2px', left: on ? '13px' : '2px', width: '13px', height: '13px',
-    borderRadius: 'var(--radius-full)', background: '#fff', boxShadow: '0 1px 2px rgba(0,0,0,0.25)',
+    borderRadius: 'var(--radius-full)', background: 'var(--control-knob)', border: '1px solid var(--border-2)',
     transition: 'left var(--dur-base) var(--ease-standard)',
   };
   return (

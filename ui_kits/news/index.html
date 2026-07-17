@@ -19,7 +19,18 @@
   /* Responsive layout: header wraps, sidebar stacks, cards go single-column below 900px. */
   .site-header{position:sticky;top:0;z-index:10;display:flex;align-items:center;flex-wrap:wrap;gap:8px 20px;min-height:54px;padding:8px 28px;border-bottom:1px solid var(--border-1);background:var(--surface-overlay);backdrop-filter:blur(10px);}
   .site-header nav{flex-wrap:wrap;}
-  .header-search{width:200px;}
+  /* Header search — real input, standard focus treatment */
+  .header-search-wrap{position:relative;display:flex;align-items:center;}
+  .header-search-wrap .search-ic{position:absolute;left:9px;display:flex;color:var(--fg-3);pointer-events:none;}
+  .header-search{
+    appearance:none;-webkit-appearance:none;
+    width:200px;height:30px;padding:0 10px 0 28px;
+    background:var(--bg-2);border:1px solid var(--border-1);border-radius:var(--radius-md);
+    font-family:var(--font-sans);font-size:12px;color:var(--fg-1);outline:none;
+    transition:border-color var(--dur-fast) var(--ease-standard),box-shadow var(--dur-fast) var(--ease-standard);
+  }
+  .header-search::placeholder{color:var(--fg-3);}
+  .header-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-ring);}
   .feed-layout{max-width:1080px;margin:0 auto;padding:24px 28px;display:grid;grid-template-columns:1fr 260px;gap:28px;align-items:start;}
   .feed-aside{position:sticky;top:78px;}
   .cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
@@ -31,7 +42,7 @@
     .cards-grid{grid-template-columns:1fr;}
   }
   @media (max-width:520px){
-    .header-search{display:none;}
+    .header-search{width:104px;}
   }
 </style>
 </head>
@@ -130,7 +141,7 @@ function StoryRow({s,i}) {
   const vote=()=>{setVoted(!voted);setPts(p=>voted?p-1:p+1);};
   return <article onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={{display:'grid',gridTemplateColumns:'28px 44px 1fr',gap:12,alignItems:'start',padding:'12px 16px',borderBottom:'1px solid var(--border-1)',background:hover?'var(--bg-1)':'transparent',transition:'background var(--dur-fast)'}}>
     <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-3)',textAlign:'right',paddingTop:3}}>{String(i+1).padStart(2,'0')}</span>
-    <button onClick={vote} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1,border:'none',borderRadius:'var(--radius-sm)',background:voted?'var(--accent-subtle)':'transparent',cursor:'pointer',padding:'2px 4px',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',transition:'background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)'}}>
+    <button onClick={vote} aria-pressed={voted} aria-label={`Upvote — ${pts} points`} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:1,border:'none',borderRadius:'var(--radius-sm)',background:voted?'var(--accent-subtle)':'transparent',cursor:'pointer',padding:'2px 4px',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',transition:'background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)'}}>
       <Icon name="up" size={16} sw={voted?2.4:1.8}/>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:600}}><RollScore value={pts}/></span>
     </button>
@@ -165,29 +176,69 @@ function RichCard({s}) {
     <a href="#" style={{fontSize:16,fontWeight:600,color:'var(--fg-1)',lineHeight:1.3,letterSpacing:'-.01em'}}>{s.t}</a>
     <p style={{fontSize:13,color:'var(--fg-2)',lineHeight:1.55,margin:0,display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',overflow:'hidden'}}>{s.dek}</p>
     <div style={{display:'flex',alignItems:'center',gap:8,paddingTop:2}}>
-      <div style={{width:20,height:20,borderRadius:'var(--radius-full)',background:'var(--accent)',color:'var(--accent-fg)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:9,fontWeight:600}}>{s.author.slice(0,1).toUpperCase()}</div>
+      <div style={{width:20,height:20,borderRadius:'var(--radius-full)',background:'var(--bg-3)',border:'1px solid var(--border-2)',color:'var(--fg-2)',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'var(--font-mono)',fontSize:9,fontWeight:600}}>{s.author.slice(0,1).toUpperCase()}</div>
       <span style={{fontSize:12,color:'var(--fg-2)',fontWeight:500}}>{s.author}</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>{s.src}</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginLeft:'auto'}}>{s.time} ago</span>
     </div>
     <div style={{display:'flex',alignItems:'center',gap:16,paddingTop:12,borderTop:'1px solid var(--border-1)'}}>
-      <button onClick={vote} style={{...foot,border:'none',borderRadius:'var(--radius-sm)',background:voted?'var(--accent-subtle)':'transparent',cursor:'pointer',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',fontWeight:600,padding:'3px 7px',margin:'-3px -7px',transition:'background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)'}}><Icon name="up" size={14} sw={voted?2.4:1.8}/><RollScore value={pts}/></button>
+      <button onClick={vote} aria-pressed={voted} aria-label={`Upvote — ${pts} points`} style={{...foot,border:'none',borderRadius:'var(--radius-sm)',background:voted?'var(--accent-subtle)':'transparent',cursor:'pointer',color:voted?'var(--accent-subtle-fg)':'var(--fg-3)',fontWeight:600,padding:'3px 7px',margin:'-3px -7px',transition:'background var(--dur-fast) var(--ease-standard),color var(--dur-fast) var(--ease-standard)'}}><Icon name="up" size={14} sw={voted?2.4:1.8}/><RollScore value={pts}/></button>
       <span style={foot}><Icon name="chat" size={13}/>{s.cm}</span>
-      <button onClick={()=>setSaved(!saved)} aria-label="save" style={{...foot,marginLeft:'auto',border:'none',background:'transparent',cursor:'pointer',color:saved?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name="bookmark" size={13} sw={saved?2.2:1.7}/></button>
+      <button onClick={()=>setSaved(!saved)} aria-pressed={saved} aria-label="Save story" style={{...foot,marginLeft:'auto',border:'none',background:'transparent',cursor:'pointer',color:saved?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name="bookmark" size={13} sw={saved?2.2:1.7}/></button>
     </div>
   </article>;
 }
 
+/* Second page for Load more — appended once, then the feed reports end. */
+const moreStories = [
+  {t:"io_uring in production: three gotchas and one genuine footgun",src:"lwn.net",author:"axboe_fan",pts:312,cm:96,tag:null,time:"15h",topic:"Systems",read:"8 min",
+   dek:"Registered buffers are not free, SQPOLL burns a core you forgot you had, and short reads on sockets will surprise you exactly once in production. Field notes from a year of io_uring at scale."},
+  {t:"Benchmarking OKLCH: does perceptual color cost paint time?",src:"web.dev",author:"s. ito",pts:198,cm:41,tag:"Data",time:"16h",topic:"Web",read:"6 min",
+   dek:"We rendered 10k gradient swatches in sRGB, display-p3, and OKLCH across three engines. The verdict: conversion cost is real but sub-millisecond, and banding improvements dwarf it."},
+  {t:"Show HN: Terminal-grade sparklines in 4KB of dependency-free JS",src:"github.com/spark",author:"deno_drift",pts:174,cm:52,tag:"Show HN",time:"18h",topic:"Web",read:"3 min",
+   dek:"No canvas, no SVG library — just divs, flexbox, and a resize observer. Built for dashboards that need a hundred sparklines without a hundred milliseconds of layout."},
+  {t:"Query planning in distributed Postgres: a gentle deep dive",src:"planetscale.com",author:"j. chen",pts:287,cm:73,tag:null,time:"21h",topic:"Databases",read:"12 min",
+   dek:"Where does the planner's cost model break when your table spans twelve shards? A guided tour through scatter-gather, partition pruning, and the EXPLAIN output nobody reads."},
+];
+
 const trending=[["WebGPU",38],["Postgres 18",31],["Zig",24],["flame graphs",19],["edge deploy",17],["scheduler",12]];
 const topics=[["Top",null],["Systems",412],["Infra",288],["Web",176],["Databases",134],["Perf",96],["Show HN",61]];
+
+/* Empty state — teaches the filters instead of leaving blank space. */
+function EmptyFeed({tab,topic,query,onReset}) {
+  return <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:8,padding:'56px 24px',textAlign:'center'}}>
+    <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)'}}>// no stories</span>
+    <span style={{fontSize:15,fontWeight:600,color:'var(--fg-1)'}}>Nothing matches this view</span>
+    <p style={{fontSize:13,color:'var(--fg-2)',lineHeight:1.5,maxWidth:340,margin:0}}>
+      {query.trim()?<>No results for <strong style={{color:'var(--fg-1)',fontWeight:600}}>“{query.trim()}”</strong> in {tab.toLowerCase()} stories.</>
+      :<>No {tab==='Top'?'':tab.toLowerCase()+' '}stories in {topic==='Top'?'the feed':topic} right now. New posts land every few minutes.</>}
+    </p>
+    <button onClick={onReset} style={{marginTop:8,height:32,padding:'0 14px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Reset filters</button>
+  </div>;
+}
 
 function App() {
   const [dark,setDark]=useState(false);
   const [tab,setTab]=useState("Top");
   const [topic,setTopic]=useState("Top");
   const [view,setView]=useState("compact");
+  const [query,setQuery]=useState("");
+  const [loaded,setLoaded]=useState(false);
   const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
   const tabs=["Top","New","Best","Ask","Show"];
+  /* Filter pipeline: tab (sort or tag) → topic → search. "Show HN" in the
+     topics list maps to the tag, not a topic. Ask has no seed stories, so
+     it exercises the empty state by design. */
+  const hours=(s)=>parseInt(s.time,10);
+  let list=loaded?stories.concat(moreStories):stories.slice();
+  if(tab==="New") list=[...list].sort((a,b)=>hours(a)-hours(b));
+  else if(tab==="Best") list=[...list].sort((a,b)=>b.pts-a.pts);
+  else if(tab==="Ask") list=list.filter(s=>s.tag==="Ask HN");
+  else if(tab==="Show") list=list.filter(s=>s.tag==="Show HN");
+  if(topic!=="Top") list=topic==="Show HN"?list.filter(s=>s.tag==="Show HN"):list.filter(s=>s.topic===topic);
+  const q=query.trim().toLowerCase();
+  if(q) list=list.filter(s=>[s.t,s.dek,s.author,s.src,s.topic].join(' ').toLowerCase().includes(q));
+  const reset=()=>{setTab("Top");setTopic("Top");setQuery("");};
   return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
     {/* nav */}
     <header className="site-header">
@@ -196,13 +247,13 @@ function App() {
         <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Dispatch</span>
       </div>
       <nav style={{display:'flex',gap:2,marginLeft:8}}>
-        {tabs.map(t=>{const on=tab===t;return <button key={t} onClick={()=>setTab(t)} style={{height:30,padding:'0 11px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}</button>;})}
+        {tabs.map(t=>{const on=tab===t;return <button key={t} onClick={()=>setTab(t)} aria-pressed={on} style={{height:30,padding:'0 11px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}</button>;})}
       </nav>
       <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:10}}>
         <div style={{display:'flex',gap:2,padding:2,background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)'}}>
           {[["compact","List"],["rich","Cards"]].map(([v,l])=>{const on=view===v;return <button key={v} onClick={()=>setView(v)} style={{height:24,padding:'0 9px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--bg-1)':'transparent',boxShadow:on?'var(--shadow-1)':'none',color:on?'var(--fg-1)':'var(--fg-3)',fontSize:12,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{l}</button>;})}
         </div>
-        <div className="header-search" style={{display:'flex',alignItems:'center',gap:7,height:30,padding:'0 10px',background:'var(--bg-2)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',color:'var(--fg-3)'}}><Icon name="search" size={13}/><span style={{fontSize:12}}>Search</span></div>
+        <div className="header-search-wrap"><span className="search-ic"><Icon name="search" size={13}/></span><input type="search" className="header-search" placeholder="Search stories" aria-label="Search stories" value={query} onChange={e=>setQuery(e.target.value)}/></div>
         <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{width:30,height:30,display:'inline-flex',alignItems:'center',justifyContent:'center',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-3)',cursor:'pointer'}}><Icon name={dark?'sun':'moon'} size={15}/></button>
       </div>
     </header>
@@ -212,19 +263,23 @@ function App() {
       <main>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:16}}>
           <div style={{display:'flex',flexDirection:'column',gap:3}}>
-            <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>// {tab} stories · {topic}</span>
+            <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>// {tab} stories · {topic} · {list.length}</span>
             <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Today on Dispatch</h1>
           </div>
           <LiveUpdated/>
         </div>
-        <div className={view==="rich"?"cards-grid":undefined} style={view==="rich"
-          ? undefined
-          : {border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}>
-          {stories.map((s,i)=> view==="rich" ? <RichCard key={i} s={s}/> : <StoryRow key={i} s={s} i={i}/>)}
-        </div>
-        <div style={{display:'flex',justifyContent:'center',padding:'16px 0'}}>
-          <button style={{height:34,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Load more</button>
-        </div>
+        {list.length===0
+          ? <div style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}><EmptyFeed tab={tab} topic={topic} query={query} onReset={reset}/></div>
+          : <div className={view==="rich"?"cards-grid":undefined} style={view==="rich"
+              ? undefined
+              : {border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',overflow:'hidden',background:'var(--bg-1)',boxShadow:'var(--shadow-1)'}}>
+              {list.map((s,i)=> view==="rich" ? <RichCard key={s.t} s={s}/> : <StoryRow key={s.t} s={s} i={i}/>)}
+            </div>}
+        {list.length>0 && <div style={{display:'flex',justifyContent:'center',padding:'16px 0'}}>
+          {!loaded
+            ? <button onClick={()=>setLoaded(true)} style={{height:34,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Load more</button>
+            : <span style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em',color:'var(--fg-3)'}}>end of feed ········ {list.length} stories</span>}
+        </div>}
       </main>
 
       {/* sidebar */}
@@ -232,7 +287,7 @@ function App() {
         <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
           <div style={{fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',marginBottom:12}}>Topics</div>
           <div style={{display:'flex',flexDirection:'column',gap:2}}>
-            {topics.map(([t,n])=>{const on=topic===t;return <button key={t} onClick={()=>setTopic(t)} style={{display:'flex',alignItems:'center',justifyContent:'space-between',height:28,padding:'0 8px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}{n!=null?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:on?'var(--accent-subtle-fg)':'var(--fg-3)'}}>{n}</span>:null}</button>;})}
+            {topics.map(([t,n])=>{const on=topic===t;return <button key={t} onClick={()=>setTopic(t)} aria-pressed={on} style={{display:'flex',alignItems:'center',justifyContent:'space-between',height:28,padding:'0 8px',border:'none',borderRadius:'var(--radius-sm)',cursor:'pointer',background:on?'var(--accent-subtle)':'transparent',color:on?'var(--accent-subtle-fg)':'var(--fg-2)',fontSize:13,fontWeight:on?600:500,fontFamily:'var(--font-sans)'}}>{t}{n!=null?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:on?'var(--accent-subtle-fg)':'var(--fg-3)'}}>{n}</span>:null}</button>;})}
           </div>
         </section>
         <section style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:16,boxShadow:'var(--shadow-1)'}}>
