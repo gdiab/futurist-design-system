@@ -59,9 +59,9 @@
   /* ── Data-viz categorical series (dashboards / charts) ── */
   --viz-1: oklch(0.575 0.168 258);
   --viz-2: oklch(0.640 0.150 175);
-  --viz-3: oklch(0.720 0.150 75);
+  --viz-3: oklch(0.660 0.150 115);
   --viz-4: oklch(0.600 0.190 320);
-  --viz-5: oklch(0.575 0.190 27);
+  --viz-5: oklch(0.575 0.190 355);
   --viz-6: oklch(0.650 0.120 210);
 
   /* ── Semantic aliases (consume these in components) ── */
@@ -127,8 +127,8 @@
 
   --viz-1: oklch(0.680 0.160 258);
   --viz-2: oklch(0.720 0.140 175);
-  --viz-3: oklch(0.780 0.150 78);
+  --viz-3: oklch(0.750 0.150 115);
   --viz-4: oklch(0.680 0.170 320);
-  --viz-5: oklch(0.660 0.180 27);
+  --viz-5: oklch(0.660 0.180 355);
   --viz-6: oklch(0.720 0.120 210);
 }
