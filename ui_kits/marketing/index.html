@@ -28,6 +28,10 @@
    via the global wildcard guard in styles.css. */
 @keyframes fz-pulse{0%,100%{opacity:1}50%{opacity:.25}}
 .fz-live{animation:fz-pulse 2s var(--ease-in-out) infinite;}
+/* Terminal cursor — mechanical 1s step blink. step-end keyframe, so the global
+   reduced-motion guard above freezes it to steady-on (0% state = visible). */
+@keyframes fz-blink{0%{opacity:1}50%{opacity:0}}
+.fz-cursor{animation:fz-blink 1s step-end infinite;}
 /* Responsive collapse — desktop specs live in inline styles, so the
    breakpoint overrides need !important to win. Spacing stays on the 4px grid. */
 @media (max-width:880px){
@@ -166,15 +170,35 @@ function Terminal() {
     ['','deployed to us-east-1, eu-west-1','',TERM_MUTED],
     ['$ ','','',''],
   ];
+  /* Replay-on-load: rows render visible by default; JS hides them only after
+     mount and only when motion is allowed, then reveals top-to-bottom at a
+     mechanical cadence (visibility swap — no slide, no typewriter). The ⚠ row
+     holds an extra beat. Runs once; reduced motion or JS failure = full static
+     transcript. */
+  const [shown,setShown]=useState(rows.length);
+  React.useEffect(()=>{
+    let allow=false;
+    try{allow=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
+    if(!allow)return;
+    setShown(0);
+    const timers=[];let t=180;
+    rows.forEach((r,i)=>{
+      if(r[1].charAt(0)==='⚠')t+=300;
+      timers.push(setTimeout(()=>setShown(i+1),t));
+      t+=160;
+    });
+    return ()=>timers.forEach(clearTimeout);
+  },[]);
   return <div style={{background:TERM_BG,borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden',border:'1px solid var(--border-2)'}}>
     <div style={{display:'flex',alignItems:'center',gap:6,padding:'11px 14px',borderBottom:'1px solid oklch(1 0 0 / 0.08)'}}>
       {['#ff5f57','#febc2e','#28c840'].map(c=><span key={c} style={{width:11,height:11,borderRadius:'50%',background:c,opacity:.9}}/>)}
       <span style={{marginLeft:8,fontFamily:'var(--font-mono)',fontSize:12,color:TERM_FG,opacity:.5}}>zsh — futurist</span>
     </div>
     <div style={{padding:'16px 18px',fontFamily:'var(--font-mono)',fontSize:13,lineHeight:1.85}}>
-      {rows.map((r,i)=><div key={i} style={{display:'flex',color:r[3]||TERM_FG}}>
+      {rows.map((r,i)=><div key={i} className="fz-term-row" style={{display:'flex',color:r[3]||TERM_FG,visibility:i<shown?'visible':'hidden'}}>
         <span style={{color:TERM_ACCENT}}>{r[0]}</span>
         <span style={{opacity:r[3]?1:.92}}>{r[1]}</span>
+        {i===rows.length-1?<span className="fz-cursor" aria-hidden="true" style={{width:8,height:15,background:TERM_FG,alignSelf:'center'}}/>:null}
         {r[2]?<span style={{marginLeft:'auto',color:TERM_MUTED}}>{r[2]}</span>:null}
       </div>)}
     </div>
@@ -292,6 +316,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
     var src = document.getElementById('app-src').textContent;
     var out = Babel.transform(src, { presets: [['react', { runtime: 'classic' }]] }).code;
     new Function('React', 'ReactDOM', out)(window.React, window.ReactDOM);
+    /* Console status block — dotted-leader grammar, mono, sentence case. */
+    try {
+      var mono = 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;';
+      var label = mono + 'color:#6b7280;';
+      console.log('%cfuturist ········ %coperational', label, mono + 'color:#0aa370;');
+      console.log('%cedge nodes ······ %c14 regions · p99 0.7ms', label, mono + 'color:#374151;');
+    } catch (e) {}
   })();
 </script>
 </body>
