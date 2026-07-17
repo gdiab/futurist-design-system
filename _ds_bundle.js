@@ -1,7 +1,7 @@
 /* Futurist design system — component bundle.
  * GENERATED from the .jsx sources in components/ (JSX compiled to React.createElement).
  * Load after React + ReactDOM UMD scripts. Exposes window.Futurist (alias window.DS).
- * Rebuild: strip 'import React'/'export' from each .jsx, compile JSX (classic runtime), wrap here.
+ * Rebuild: node scripts/build-bundle.js (needs @babel/core + @babel/preset-react; see script header).
  */
 (function (global) {
   'use strict';
