@@ -13,6 +13,11 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <style>
 #root{min-height:100vh;} a{ text-decoration:none; }
+/* Skip link — first focusable element; visually hidden until keyboard focus. */
+.fz-skip{position:absolute;left:-9999px;top:0;z-index:20;display:inline-flex;align-items:center;height:40px;padding:0 18px;font-family:var(--font-sans);font-size:14px;font-weight:500;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-fg);}
+.fz-skip:focus-visible{left:12px;top:10px;}
+/* Anchor targets sit below the 60px sticky nav. */
+#fz-features,#fz-pricing{scroll-margin-top:72px;}
 /* Blueprint hairline grid backdrop — tokenized, so it stays quiet in both themes. */
 .grid-bg{position:relative;}
 .grid-bg::before{
@@ -86,6 +91,7 @@
        styles.css is local, so tokens work without network. Keep copy in sync
        with the React components above when editing either. -->
   <div style="min-height:100vh;background:var(--bg-0)">
+    <a class="fz-skip" href="#fz-main">Skip to content</a>
     <nav class="fz-nav" style="display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 40px;border-bottom:1px solid var(--border-1);background:var(--bg-1)">
       <div style="display:flex;align-items:center;gap:8px">
         <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
@@ -94,6 +100,7 @@
       <a href="#" style="display:inline-flex;align-items:center;height:40px;padding:0 18px;font-size:14px;font-weight:500;font-family:var(--font-sans);border-radius:var(--radius-md);background:var(--accent);color:var(--accent-fg)">Start free</a>
     </nav>
     <!-- Pinned-dark hero (panel exception — literals match the React PANEL values). -->
+    <main id="fz-main">
     <section style="background:oklch(0.22 0.012 260)">
       <div class="fz-hero" style="max-width:1200px;margin:0 auto;padding:88px 40px 80px;display:flex;flex-direction:column;gap:20px">
         <span style="font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:oklch(0.800 0.170 159)">// telemetry platform</span>
@@ -112,6 +119,7 @@
         <span style="color:var(--fg-2)">Hobby $0/mo · Team $40/seat/mo · Enterprise custom</span>
       </div>
     </section>
+    </main>
     <footer style="border-top:1px solid var(--border-1);background:var(--bg-1)">
       <div class="fz-footer" style="max-width:1200px;margin:0 auto;padding:32px 40px;font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">© 2026 Futurist Labs</div>
     </footer>
@@ -138,7 +146,7 @@ const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 function Btn({variant='primary',children,style,...r}) {
   const [h,setH]=useState(false);
   const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
-  return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
+  return <button type="button" onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
 /* Mono number in running prose — the Mono Numbers Rule applies inside copy too. */
@@ -149,6 +157,10 @@ const M = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:'
 const Leader = ({dots}) => <span aria-hidden="true" style={{flex:1,borderBottom:`1px dotted ${dots||'var(--border-3)'}`,margin:'0 var(--space-2)',transform:'translateY(-3px)'}}/>;
 const StatRow = ({k,v,color,labelColor,dots}) => <div style={{display:'flex',alignItems:'baseline',fontFamily:'var(--font-mono)',fontSize:12,color:labelColor||'var(--fg-3)'}}><span>{k}</span><Leader dots={dots}/><span style={{color:color||'var(--fg-2)'}}>{v}</span></div>;
 const LiveDot = ({size=6}) => <span className="fz-live" style={{width:size,height:size,borderRadius:'50%',background:'var(--accent)',flex:'none'}}/>;
+
+/* Demo-only link targets: real in-page anchors where a section exists; the
+   rest keep href="#" but swallow the click so the page never yanks to top. */
+const dead = (e) => e.preventDefault();
 
 /* ── The instrument panel ────────────────────────────────────────────
    The hero pins the dark-theme palette in BOTH themes (the sanctioned
@@ -178,35 +190,51 @@ function ThemeButton() {
   const [dark,setDark]=useState(false);
   const [h,setH]=useState(false);
   const toggle=()=>{const d=!dark;setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
-  return <button aria-label="Theme" onClick={toggle} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:32,height:32,borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:h?'var(--bg-2)':'transparent',color:h?'var(--fg-1)':'var(--fg-3)',transition:'all var(--dur-fast)'}}><Icon name={dark?'sun':'moon'} size={16}/></button>;
+  return <button type="button" aria-label="Dark theme" aria-pressed={dark} onClick={toggle} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',width:32,height:32,borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:h?'var(--bg-2)':'transparent',color:h?'var(--fg-1)':'var(--fg-3)',transition:'all var(--dur-fast)'}}><Icon name={dark?'sun':'moon'} size={16}/></button>;
 }
 
 function Nav() {
   /* Mobile menu — below 880px the inline links hide, so a disclosure panel
      keeps Product/Docs/Pricing/Changelog reachable. Escape closes and
-     returns focus to the button. */
+     returns focus to the button; Tab is trapped inside button + panel
+     while open (the page behind the panel is obscured). */
   const [open,setOpen]=useState(false);
   React.useEffect(()=>{
     if(!open) return;
-    const onKey=(e)=>{if(e.key==='Escape'){setOpen(false);const b=document.getElementById('fz-menu-btn');if(b)b.focus();}};
+    const onKey=(e)=>{
+      if(e.key==='Escape'){setOpen(false);const b=document.getElementById('fz-menu-btn');if(b)b.focus();return;}
+      if(e.key!=='Tab') return;
+      const panel=document.getElementById('fz-mobile-menu');
+      const btn=document.getElementById('fz-menu-btn');
+      if(!panel||!btn) return;
+      const items=[btn,...panel.querySelectorAll('a,button')];
+      const first=items[0],last=items[items.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    };
     document.addEventListener('keydown',onKey);
     return ()=>document.removeEventListener('keydown',onKey);
   },[open]);
-  const links=['Product','Docs','Pricing','Changelog'];
+  const links=[
+    {label:'Product', href:'#fz-features'},
+    {label:'Docs', href:'#', onClick:dead},
+    {label:'Pricing', href:'#fz-pricing'},
+    {label:'Changelog', href:'#', onClick:dead},
+  ];
   return <nav className="fz-nav" style={{position:'sticky',top:0,zIndex:10,display:'flex',alignItems:'center',gap:28,height:60,padding:'0 40px',borderBottom:'1px solid var(--border-1)',background:'var(--surface-overlay)',backdropFilter:'blur(10px)'}}>
     <div style={{display:'flex',alignItems:'center',gap:8}}>
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:600,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
     </div>
-    <div className="fz-nav-links" style={{display:'flex',gap:24,marginLeft:12}}>{links.map(x=><a key={x} href="#" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x}</a>)}</div>
+    <div className="fz-nav-links" style={{display:'flex',gap:24,marginLeft:12}}>{links.map(x=><a key={x.label} href={x.href} onClick={x.onClick} style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>{x.label}</a>)}</div>
     <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
       <ThemeButton/>
-      <a href="#" className="fz-nav-signin" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
+      <a href="#" onClick={dead} className="fz-nav-signin" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
       <Btn variant="primary">Start free<Icon name="chevron" size={14}/></Btn>
-      <button id="fz-menu-btn" className="fz-menu-btn" aria-label="Menu" aria-expanded={open} aria-controls="fz-mobile-menu" onClick={()=>setOpen(!open)} style={{alignItems:'center',justifyContent:'center',width:40,height:40,margin:'0 -8px 0 -4px',borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:'transparent',color:'var(--fg-1)'}}><Icon name={open?'close':'menu'} size={18}/></button>
+      <button type="button" id="fz-menu-btn" className="fz-menu-btn" aria-label="Menu" aria-expanded={open} aria-controls="fz-mobile-menu" onClick={()=>setOpen(!open)} style={{alignItems:'center',justifyContent:'center',width:40,height:40,margin:'0 -8px 0 -4px',borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:'transparent',color:'var(--fg-1)'}}><Icon name={open?'close':'menu'} size={18}/></button>
     </div>
     {open&&<div id="fz-mobile-menu" className="fz-menu-panel" style={{position:'absolute',top:'100%',left:0,right:0,display:'flex',flexDirection:'column',padding:'var(--space-2) var(--space-4)',background:'var(--bg-1)',borderBottom:'1px solid var(--border-1)',boxShadow:'var(--shadow-2)'}}>
-      {links.concat(['Sign in']).map(x=><a key={x} href="#" onClick={()=>setOpen(false)} style={{display:'flex',alignItems:'center',minHeight:44,fontSize:15,color:'var(--fg-1)',fontWeight:500,borderBottom:'1px solid var(--border-1)'}}>{x}</a>)}
+      {links.concat([{label:'Sign in',href:'#',onClick:dead}]).map(x=><a key={x.label} href={x.href} onClick={(e)=>{if(x.onClick)x.onClick(e);setOpen(false);}} style={{display:'flex',alignItems:'center',minHeight:44,fontSize:15,color:'var(--fg-1)',fontWeight:500,borderBottom:'1px solid var(--border-1)'}}>{x.label}</a>)}
       <div style={{padding:'var(--space-3) 0 var(--space-2)'}}><Btn variant="primary" style={{width:'100%'}}>Start free<Icon name="chevron" size={14}/></Btn></div>
     </div>}
   </nav>;
@@ -356,7 +384,7 @@ function Features() {
     ['shield','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.','BYOK · SOC 2'],
     ['git','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.','sha ↔ span'],
   ];
-  return <section style={{borderTop:'1px solid var(--border-1)'}}><div className="fz-section fz-features" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px',display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:64,alignItems:'start'}}>
+  return <section id="fz-features" style={{borderTop:'1px solid var(--border-1)'}}><div className="fz-section fz-features" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px',display:'grid',gridTemplateColumns:'1fr 1.2fr',gap:64,alignItems:'start'}}>
     <div style={{display:'flex',flexDirection:'column',gap:16}}>
       <Eyebrow>// Why Futurist</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.15,color:'var(--fg-1)'}}>Built for precision, not dashboards-as-decoration.</h2>
@@ -418,7 +446,7 @@ function Pricing() {
     v===true ? <span style={{color:'var(--accent-subtle-fg)',display:'inline-flex'}} aria-label="included"><Icon name="check" size={15}/></span> :
     v===null ? <span style={{color:rec?'var(--fg-2)':'var(--fg-3)'}} aria-label="not included">—</span> :
     <span style={{fontFamily:'var(--font-mono)',fontSize:13,color:'var(--fg-1)'}}>{v}</span>;
-  return <section className="fz-section" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px'}}>
+  return <section id="fz-pricing" className="fz-section" style={{maxWidth:1200,margin:'0 auto',padding:'64px 40px'}}>
     <div style={{display:'flex',flexDirection:'column',gap:8,marginBottom:32,maxWidth:520}}>
       <Eyebrow>// Pricing</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Priced per seat, not per surprise.</h2>
@@ -495,11 +523,11 @@ function Footer() {
     <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}}>
       <LiveDot size={5}/><span>status</span><span aria-hidden="true" style={{color:'var(--fg-4)'}}>········</span><span style={{color:'var(--fg-2)'}}>operational</span>
     </div>
-    <div style={{display:'flex',gap:20}}>{['Status','Security','Terms','Privacy'].map(x=><a key={x} href="#" style={{fontSize:13,color:'var(--fg-3)'}}>{x}</a>)}</div>
+    <div style={{display:'flex',gap:20}}>{['Status','Security','Terms','Privacy'].map(x=><a key={x} href="#" onClick={dead} style={{fontSize:13,color:'var(--fg-3)'}}>{x}</a>)}</div>
   </div></footer>;
 }
 
-function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Features/><StatBand/><Pricing/><Footer/></div>;}
+function App(){return <div style={{background:'var(--bg-0)'}}><a className="fz-skip" href="#fz-main">Skip to content</a><Nav/><main id="fz-main"><Hero/><Features/><StatBand/><Pricing/></main><Footer/></div>;}
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 <script>
