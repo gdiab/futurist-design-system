@@ -49,7 +49,7 @@
 /* Mobile menu button + disclosure panel — desktop hides both */
 .fz-menu-btn{display:none;}
 /* Mobile pricing — the spec-sheet table swaps for stacked plan panels ≤560px
-   (recommended plan first); a 720px scroller would hide the Team column. */
+   (recommended plan first); a wide scroller would hide the Team column. */
 .fz-price-stack{display:none;}
 @media (min-width:881px){
   .fz-menu-panel{display:none !important;}
@@ -58,10 +58,10 @@
   .fz-nav-links{display:none !important;}
   .fz-menu-btn{display:inline-flex;}
   .fz-hero,.fz-features{grid-template-columns:1fr !important;}
-  .fz-hero{padding:var(--space-12) var(--space-10) 0 !important;gap:var(--space-8) !important;}
+  .fz-hero{padding:var(--space-12) var(--space-10) var(--space-12) !important;gap:var(--space-8) !important;}
   .fz-features{gap:var(--space-8) !important;}
-  .fz-panel-stats{grid-template-columns:1fr !important;}
-  .fz-panel-stats > div{border-left:none !important;padding-left:0 !important;}
+  .fz-stat-band{grid-template-columns:1fr !important;}
+  .fz-stat-band > div{border-left:none !important;padding-left:0 !important;}
   .fz-reg{display:none !important;}
   .fz-footer{flex-wrap:wrap;gap:var(--space-4) var(--space-6);}
 }
@@ -69,11 +69,12 @@
   .fz-nav{padding:0 var(--space-4) !important;gap:var(--space-4) !important;}
   .fz-nav-signin{display:none;} /* reachable via the menu panel */
   .fz-h1{font-size:2.25rem !important;}
-  .fz-hero{padding:var(--space-10) var(--space-4) var(--space-8) !important;}
+  .fz-hero{padding:var(--space-10) var(--space-4) var(--space-10) !important;}
   .fz-section{padding:var(--space-10) var(--space-4) !important;}
+  .fz-stat-band{padding:var(--space-5) var(--space-4) !important;}
+  .fz-footer{padding:var(--space-6) var(--space-4) !important;}
   .fz-spec-wrap{display:none !important;}
   .fz-price-stack{display:flex;flex-direction:column;gap:var(--space-4);}
-  .fz-footer{padding:var(--space-6) var(--space-4) !important;}
 }
 </style>
 </head>
@@ -112,7 +113,7 @@ const LiveDot = ({size=6}) => <span className="fz-live" style={{width:size,heigh
 
 /* ── The instrument panel ────────────────────────────────────────────
    The hero pins the dark-theme palette in BOTH themes (the sanctioned
-   pinned-panel exception, same as the deploy readout inside it):
+   pinned-panel exception, same as the readout and blueprint inside it):
    in light theme it reads as a committed dark drench; in dark theme it
    sits flush with the canvas. Every value below is its dark-theme token
    from tokens/colors.css — foregrounds included, so text clears AA
@@ -173,12 +174,16 @@ function Nav() {
 }
 
 function Hero() {
+  /* v2: the hero's primary object is the pipeline blueprint — the "what is
+     this" answer in the first viewport. The stat band moved to the light
+     canvas (StatBand) so the panel no longer carries the dark-stats-strip
+     silhouette. */
   return <section className="grid-bg-panel" style={{position:'relative',background:PANEL.bg}}>
     <div style={{maxWidth:1200,margin:'0 auto',position:'relative'}}>
       <RegMark style={{top:28,left:28}}/><RegMark style={{top:28,right:28}}/>
       <RegMark style={{bottom:28,left:28}}/><RegMark style={{bottom:28,right:28}}/>
-      <div className="fz-hero" style={{padding:'88px 40px 0',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'start'}}>
-        <div style={{display:'flex',flexDirection:'column',gap:20,paddingTop:16}}>
+      <div className="fz-hero" style={{padding:'88px 40px 80px',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:48,alignItems:'center'}}>
+        <div style={{display:'flex',flexDirection:'column',gap:20}}>
           <div style={{display:'flex',alignItems:'center',gap:8,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
             <LiveDot/>
             <span style={{color:PANEL.accent,fontWeight:500}}>// telemetry platform</span>
@@ -191,23 +196,63 @@ function Hero() {
             <Btn variant="secondary">Read the docs</Btn>
           </div>
         </div>
-        <DeployReadout/>
-      </div>
-      {/* Machined stat band — the panel's bottom edge, dotted-leader grammar. */}
-      <div style={{padding:'0 40px'}}>
-        <div className="fz-panel-stats" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px 0',borderTop:`1px solid ${PANEL.hair}`,marginTop:56,padding:'20px 0 32px'}}>
-          <div style={{paddingRight:32}}><StatRow k="ingest" v="4.2M spans/s" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
-          <div style={{borderLeft:`1px solid ${PANEL.hair}`,padding:'0 32px'}}><StatRow k="uptime" v="99.99%" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
-          <div style={{borderLeft:`1px solid ${PANEL.hair}`,paddingLeft:32}}><StatRow k="compliance" v="SOC 2 type II" labelColor={PANEL.muted} color={PANEL.fg2} dots={PANEL.dots}/></div>
-        </div>
+        <PipelinePanel/>
       </div>
     </div>
   </section>;
 }
 
+/* The hero blueprint — the pipeline as an engineering drawing, milled into
+   the panel: hairline strokes, registration marks, dimension line, mono
+   microlabels. All strokes are pinned dark-theme values (PANEL), because
+   theme-relative tokens would vanish against the pinned background. */
+function PipelinePanel() {
+  return <div style={{background:PANEL.inset,borderRadius:'var(--radius-lg)',border:`1px solid ${PANEL.hair}`,overflow:'hidden'}}>
+    <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 16px',borderBottom:`1px solid ${PANEL.hair}`,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
+      <LiveDot size={5}/>
+      <span style={{color:PANEL.muted}}>pipeline — agent to console</span>
+      <span style={{marginLeft:'auto',color:PANEL.muted}}>us-east-1</span>
+    </div>
+    <div style={{padding:'24px 22px 16px'}}><PipelineDiagram/></div>
+  </div>;
+}
+
+function PipelineDiagram() {
+  const mono={fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'.08em'};
+  const reg=(x,y)=><g stroke={PANEL.dots} strokeWidth="1"><line x1={x-5} y1={y} x2={x+5} y2={y}/><line x1={x} y1={y-5} x2={x} y2={y+5}/></g>;
+  const box=(x,label,w=84)=><g>
+    <rect x={x} y="52" width={w} height="44" rx="3" fill={PANEL.bg} stroke={PANEL.dots}/>
+    <text x={x+w/2} y="46" textAnchor="middle" fill={PANEL.muted} style={mono}>{label}</text>
+  </g>;
+  return <svg viewBox="0 0 400 150" role="img" aria-label="Pipeline diagram: agents to collector to console in under 800 milliseconds p99" style={{width:'100%',height:'auto',display:'block'}}>
+    {reg(12,12)}{reg(388,12)}{reg(12,138)}{reg(388,138)}
+    {box(28,'AGENTS')}{box(158,'COLLECTOR')}{box(288,'CONSOLE')}
+    {/* source lines inside agents */}
+    <g stroke={PANEL.bar} strokeWidth="1.5"><line x1="40" y1="66" x2="88" y2="66"/><line x1="40" y1="74" x2="76" y2="74"/><line x1="40" y1="82" x2="94" y2="82"/></g>
+    {/* collector internals: index marks */}
+    <g stroke={PANEL.bar} strokeWidth="1.5"><line x1="172" y1="66" x2="172" y2="82"/><line x1="182" y1="70" x2="182" y2="82"/><line x1="192" y1="62" x2="192" y2="82"/><line x1="202" y1="72" x2="202" y2="82"/><line x1="212" y1="66" x2="212" y2="82"/><line x1="222" y1="74" x2="222" y2="82"/></g>
+    {/* console: live signal */}
+    <circle className="fz-live" cx="304" cy="74" r="3.5" fill={PANEL.accent}/>
+    <text x="316" y="77.5" fill={PANEL.fg2} style={mono}>LIVE</text>
+    {/* connectors with arrowheads */}
+    <g stroke={PANEL.muted} strokeWidth="1" fill="none">
+      <line x1="112" y1="74" x2="152" y2="74"/><path d="M148 70l6 4-6 4"/>
+      <line x1="242" y1="74" x2="282" y2="74"/><path d="M278 70l6 4-6 4"/>
+    </g>
+    {/* dimension line: agent → console latency */}
+    <g stroke={PANEL.dots} strokeWidth="1">
+      <line x1="112" y1="112" x2="372" y2="112"/><line x1="112" y1="107" x2="112" y2="117"/><line x1="372" y1="107" x2="372" y2="117"/>
+    </g>
+    <rect x="200" y="104" width="84" height="16" fill={PANEL.inset}/>
+    <text x="242" y="115.5" textAnchor="middle" fill={PANEL.muted} style={mono}>&lt;800MS P99</text>
+  </svg>;
+}
+
 /* The deploy readout — no window chrome, no traffic lights: this is not a
    picture of a terminal, it is a readout milled into the instrument panel.
-   Colors come from PANEL (pinned dark-theme values; see PANEL above).
+   v2: demoted from the hero to the features column, where it illustrates
+   the deploy-aware story at reduced width. Colors stay pinned (PANEL) —
+   a dark instrument block recessed into the light canvas.
    Replay-on-load: rows render visible by default; JS hides them only after
    mount and only when motion is allowed, then reveals top-to-bottom at a
    mechanical cadence (visibility swap — no slide, no typewriter). The ⚠ row
@@ -265,39 +310,6 @@ function DeployReadout() {
   </div>;
 }
 
-/* Blueprint-style inline SVG — the pipeline as an engineering drawing:
-   hairline strokes, registration marks, dimension line, mono microlabels. */
-function PipelineDiagram() {
-  const mono={fontFamily:'var(--font-mono)',fontSize:9,letterSpacing:'.08em'};
-  const reg=(x,y)=><g stroke="var(--border-3)" strokeWidth="1"><line x1={x-5} y1={y} x2={x+5} y2={y}/><line x1={x} y1={y-5} x2={x} y2={y+5}/></g>;
-  const box=(x,label,w=84)=><g>
-    <rect x={x} y="52" width={w} height="44" rx="3" fill="var(--bg-1)" stroke="var(--border-3)"/>
-    <text x={x+w/2} y="46" textAnchor="middle" fill="var(--fg-3)" style={mono}>{label}</text>
-  </g>;
-  return <svg viewBox="0 0 400 150" role="img" aria-label="Pipeline diagram: agents to collector to console in under 800 milliseconds p99" style={{width:'100%',height:'auto',display:'block'}}>
-    {reg(12,12)}{reg(388,12)}{reg(12,138)}{reg(388,138)}
-    {box(28,'AGENTS')}{box(158,'COLLECTOR')}{box(288,'CONSOLE')}
-    {/* source lines inside agents */}
-    <g stroke="var(--border-2)" strokeWidth="1.5"><line x1="40" y1="66" x2="88" y2="66"/><line x1="40" y1="74" x2="76" y2="74"/><line x1="40" y1="82" x2="94" y2="82"/></g>
-    {/* collector internals: index marks */}
-    <g stroke="var(--border-2)" strokeWidth="1.5"><line x1="172" y1="66" x2="172" y2="82"/><line x1="182" y1="70" x2="182" y2="82"/><line x1="192" y1="62" x2="192" y2="82"/><line x1="202" y1="72" x2="202" y2="82"/><line x1="212" y1="66" x2="212" y2="82"/><line x1="222" y1="74" x2="222" y2="82"/></g>
-    {/* console: live signal */}
-    <circle className="fz-live" cx="304" cy="74" r="3.5" fill="var(--accent)"/>
-    <text x="316" y="77.5" fill="var(--fg-2)" style={mono}>LIVE</text>
-    {/* connectors with arrowheads */}
-    <g stroke="var(--fg-3)" strokeWidth="1" fill="none">
-      <line x1="112" y1="74" x2="152" y2="74"/><path d="M148 70l6 4-6 4"/>
-      <line x1="242" y1="74" x2="282" y2="74"/><path d="M278 70l6 4-6 4"/>
-    </g>
-    {/* dimension line: agent → console latency */}
-    <g stroke="var(--border-3)" strokeWidth="1">
-      <line x1="112" y1="112" x2="372" y2="112"/><line x1="112" y1="107" x2="112" y2="117"/><line x1="372" y1="107" x2="372" y2="117"/>
-    </g>
-    <rect x="200" y="104" width="84" height="16" fill="var(--bg-0)"/>
-    <text x="242" y="115.5" textAnchor="middle" fill="var(--fg-3)" style={mono}>&lt;800MS P99</text>
-  </svg>;
-}
-
 function Features() {
   const feats=[
     ['zap','Sub-second ingest','Spans land in your console in under 800ms p99, even at 4M events per second.','p99 · 780ms'],
@@ -310,8 +322,9 @@ function Features() {
       <Eyebrow>// Why Futurist</Eyebrow>
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.15,color:'var(--fg-1)'}}>Built for precision, not dashboards-as-decoration.</h2>
       <p style={{fontSize:14,color:'var(--fg-2)',lineHeight:1.55,maxWidth:400}}>One path from instrumented code to a readable console. No sampling roulette, no seventeen-tab treasure hunt.</p>
-      <div style={{marginTop:8,border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-0)',padding:16}}>
-        <PipelineDiagram/>
+      {/* v2: the readout lives here — the deploy-aware proof, at reduced width. */}
+      <div style={{marginTop:8}}>
+        <DeployReadout/>
       </div>
     </div>
     <div style={{display:'flex',flexDirection:'column'}}>
@@ -330,23 +343,35 @@ function Features() {
   </div></section>;
 }
 
+/* v2: the machined stat band, re-set on the light canvas — same dotted-leader
+   grammar, theme tokens instead of pinned panel values. Quiet, between the
+   argument (features) and the decision (pricing). */
+function StatBand() {
+  return <section style={{borderTop:'1px solid var(--border-1)'}}>
+    <div className="fz-stat-band" style={{maxWidth:1200,margin:'0 auto',padding:'24px 40px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'12px 0'}}>
+      <div style={{paddingRight:32}}><StatRow k="ingest" v="4.2M spans/s"/></div>
+      <div style={{borderLeft:'1px solid var(--border-1)',padding:'0 32px'}}><StatRow k="uptime" v="99.99%"/></div>
+      <div style={{borderLeft:'1px solid var(--border-1)',paddingLeft:32}}><StatRow k="compliance" v="SOC 2 Type II"/></div>
+    </div>
+  </section>;
+}
+
 /* Pricing as a spec sheet — data tables are the system's home turf, so the
    plans are presented as a machined specification table: mono values,
    hairline rows, uppercase mono row labels, — for absent, ✓ for included.
-   The recommended column carries an --accent-subtle tint (selection grammar). */
+   The recommended column carries an --accent-subtle tint (selection grammar).
+   v2: two plans in the table; Enterprise is a single hairline row beneath it,
+   so the sheet stops reading as the 3-tier template. */
 function Pricing() {
   const cols=[
-    {name:'Hobby', price:'$0',    per:'/mo', cta:'Get started',  primary:false, rec:false},
-    {name:'Team',  price:'$40',   per:'/mo', cta:'Get started',  primary:true,  rec:true},
-    {name:'Enterprise', price:'Custom', per:'', cta:'Contact sales', primary:false, rec:false},
+    {name:'Hobby', price:'$0',  per:'/mo', cta:'Get started', primary:false, rec:false},
+    {name:'Team',  price:'$40', per:'/mo', cta:'Get started', primary:true,  rec:true},
   ];
   const specs=[
-    ['projects',['1','Unlimited','Unlimited']],
-    ['retention',['7 days','90 days','Custom']],
-    ['deploy correlation',[null,true,true]],
-    ['SSO & SAML',[null,null,true]],
-    ['on-prem / BYOK',[null,null,true]],
-    ['support',['Community','Priority','Dedicated SLA']],
+    ['projects',['1','Unlimited']],
+    ['retention',['7 days','90 days']],
+    ['deploy correlation',[null,true]],
+    ['support',['Community','Priority']],
   ];
   const rowLabel={fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)',textAlign:'left',padding:'14px 24px',whiteSpace:'nowrap'};
   const cellStyle=(rec)=>({padding:'14px 24px',borderLeft:'1px solid var(--border-1)',background:rec?'var(--accent-subtle)':'transparent'});
@@ -360,7 +385,7 @@ function Pricing() {
       <h2 style={{fontSize:32,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Priced per seat, not per surprise.</h2>
     </div>
     <div className="fz-spec-wrap" style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',overflowX:'auto'}}>
-      <table style={{width:'100%',minWidth:720,borderCollapse:'collapse'}}>
+      <table style={{width:'100%',minWidth:520,borderCollapse:'collapse'}}>
         <thead>
           <tr>
             <td style={{padding:'20px 24px'}} aria-hidden="true"/>
@@ -395,7 +420,7 @@ function Pricing() {
     {/* Stacked mobile plans (≤560px) — recommended first, specs as dotted-leader
         status lines. The table above is display:none'd, so no AT duplication. */}
     <div className="fz-price-stack">
-      {[1,0,2].map(i=>{const c=cols[i];const ink=c.rec?'var(--fg-2)':'var(--fg-3)';
+      {[1,0].map(i=>{const c=cols[i];const ink=c.rec?'var(--fg-2)':'var(--fg-3)';
       return <div key={i} style={{border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:c.rec?'var(--accent-subtle)':'var(--bg-1)',padding:'var(--space-5)',display:'flex',flexDirection:'column',gap:'var(--space-4)'}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase'}}>
           <span style={{color:ink}}>{c.name}</span>
@@ -410,6 +435,14 @@ function Pricing() {
         </div>
         <Btn variant={c.primary?'primary':'secondary'} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
       </div>;})}
+    </div>
+    {/* Enterprise — a hairline row, not a third column: the needs are named,
+        the price is a conversation. Visible at every breakpoint. */}
+    <div style={{marginTop:'var(--space-3)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-lg)',background:'var(--bg-1)',padding:'var(--space-4) var(--space-5)',display:'flex',alignItems:'center',gap:'var(--space-4)',flexWrap:'wrap'}}>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)'}}>enterprise</span>
+      <span aria-hidden="true" style={{flex:1,minWidth:24,borderBottom:'1px dotted var(--border-3)',transform:'translateY(-3px)'}}/>
+      <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-2)'}}>everything in Team + SSO & SAML · on-prem / BYOK · custom retention · dedicated SLA</span>
+      <Btn variant="secondary">Contact sales</Btn>
     </div>
   </section>;
 }
@@ -427,7 +460,7 @@ function Footer() {
   </div></footer>;
 }
 
-function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Features/><Pricing/><Footer/></div>;}
+function App(){return <div style={{background:'var(--bg-0)'}}><Nav/><Hero/><Features/><StatBand/><Pricing/><Footer/></div>;}
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 <script>
