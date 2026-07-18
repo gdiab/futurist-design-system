@@ -143,10 +143,14 @@ const icons = {
 };
 const Icon = ({name,...p}) => <Ic d={icons[name]} {...p}/>;
 
-function Btn({variant='primary',children,style,...r}) {
+/* Btn renders an anchor when `href` is given (navigational CTAs — links, not
+   buttons; this recipe teaches semantics too) and a real button otherwise. */
+function Btn({variant='primary',href,children,style,...r}) {
   const [h,setH]=useState(false);
   const V={primary:{background:h?'var(--accent-hover)':'var(--accent)',color:'var(--accent-fg)',border:'1px solid transparent'},secondary:{background:h?'var(--bg-2)':'var(--bg-1)',color:'var(--fg-1)',border:'1px solid var(--border-3)'}}[variant];
-  return <button type="button" onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
+  const S={display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style};
+  if(href) return <a href={href} onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={S} {...r}>{children}</a>;
+  return <button type="button" onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={S} {...r}>{children}</button>;
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
 /* Mono number in running prose — the Mono Numbers Rule applies inside copy too. */
@@ -230,12 +234,12 @@ function Nav() {
     <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:12}}>
       <ThemeButton/>
       <a href="#" onClick={dead} className="fz-nav-signin" style={{fontSize:14,color:'var(--fg-2)',fontWeight:500}}>Sign in</a>
-      <Btn variant="primary">Start free<Icon name="chevron" size={14}/></Btn>
+      <Btn variant="primary" href="#" onClick={dead}>Start free<Icon name="chevron" size={14}/></Btn>
       <button type="button" id="fz-menu-btn" className="fz-menu-btn" aria-label="Menu" aria-expanded={open} aria-controls="fz-mobile-menu" onClick={()=>setOpen(!open)} style={{alignItems:'center',justifyContent:'center',width:40,height:40,margin:'0 -8px 0 -4px',borderRadius:'var(--radius-md)',cursor:'pointer',border:'1px solid transparent',background:'transparent',color:'var(--fg-1)'}}><Icon name={open?'close':'menu'} size={18}/></button>
     </div>
     {open&&<div id="fz-mobile-menu" className="fz-menu-panel" style={{position:'absolute',top:'100%',left:0,right:0,display:'flex',flexDirection:'column',padding:'var(--space-2) var(--space-4)',background:'var(--bg-1)',borderBottom:'1px solid var(--border-1)',boxShadow:'var(--shadow-2)'}}>
       {links.concat([{label:'Sign in',href:'#',onClick:dead}]).map(x=><a key={x.label} href={x.href} onClick={(e)=>{if(x.onClick)x.onClick(e);setOpen(false);}} style={{display:'flex',alignItems:'center',minHeight:44,fontSize:15,color:'var(--fg-1)',fontWeight:500,borderBottom:'1px solid var(--border-1)'}}>{x.label}</a>)}
-      <div style={{padding:'var(--space-3) 0 var(--space-2)'}}><Btn variant="primary" style={{width:'100%'}}>Start free<Icon name="chevron" size={14}/></Btn></div>
+      <div style={{padding:'var(--space-3) 0 var(--space-2)'}}><Btn variant="primary" href="#" onClick={(e)=>{dead(e);setOpen(false);}} style={{width:'100%'}}>Start free<Icon name="chevron" size={14}/></Btn></div>
     </div>}
   </nav>;
 }
@@ -259,8 +263,8 @@ function Hero() {
           <h1 className="fz-h1" style={{fontSize:62,fontWeight:600,letterSpacing:'-.02em',lineHeight:1.04,color:PANEL.fg1}}>Ship telemetry that keeps up with you.</h1>
           <p style={{fontSize:17,color:PANEL.fg2,lineHeight:1.55,maxWidth:460}}>A precise, low-overhead observability layer for teams that measure everything. Metrics, traces, and logs — one dense console, zero noise.</p>
           <div style={{display:'flex',gap:12,marginTop:4}}>
-            <Btn variant="primary">Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
-            <Btn variant="secondary">Read the docs</Btn>
+            <Btn variant="primary" href="#" onClick={dead}>Deploy in 2 minutes<Icon name="chevron" size={14}/></Btn>
+            <Btn variant="secondary" href="#" onClick={dead}>Read the docs</Btn>
           </div>
         </div>
         <PipelinePanel/>
@@ -320,10 +324,11 @@ function PipelineDiagram() {
    v2: demoted from the hero to the features column, where it illustrates
    the deploy-aware story at reduced width. Colors stay pinned (PANEL) —
    a dark instrument block recessed into the light canvas.
-   Replay-on-load: rows render visible by default; JS hides them only after
-   mount and only when motion is allowed, then reveals top-to-bottom at a
-   mechanical cadence (visibility swap — no slide, no typewriter). The ⚠ row
-   holds an extra beat. Runs once; reduced motion or JS failure = full static
+   Replay-on-view: rows render visible by default; when motion is allowed,
+   the replay waits for the readout to scroll ~40% into view, then hides the
+   rows and reveals them top-to-bottom at a mechanical cadence (visibility
+   swap — no slide, no typewriter). The ⚠ row holds an extra beat. Runs once;
+   reduced motion, no IntersectionObserver, or JS failure = full static
    transcript. */
 function DeployReadout() {
   const rows=[
@@ -338,20 +343,27 @@ function DeployReadout() {
   ];
   const bars=[34,46,40,58,52,66,60,72,64,55,61,70,78,68,74,82,71,63,69,77,85,79,88,92];
   const [shown,setShown]=useState(rows.length);
+  const boxRef=React.useRef(null);
   React.useEffect(()=>{
     let allow=false;
     try{allow=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){}
-    if(!allow)return;
-    setShown(0);
-    const timers=[];let t=180;
-    rows.forEach((r,i)=>{
-      if(r[1].charAt(0)==='⚠')t+=300;
-      timers.push(setTimeout(()=>setShown(i+1),t));
-      t+=160;
-    });
-    return ()=>timers.forEach(clearTimeout);
+    if(!allow||!boxRef.current||typeof IntersectionObserver==='undefined')return;
+    const timers=[];
+    const io=new IntersectionObserver((entries)=>{
+      if(!entries.some(en=>en.isIntersecting))return;
+      io.disconnect();
+      setShown(0);
+      let t=180;
+      rows.forEach((r,i)=>{
+        if(r[1].charAt(0)==='⚠')t+=300;
+        timers.push(setTimeout(()=>setShown(i+1),t));
+        t+=160;
+      });
+    },{threshold:0.4});
+    io.observe(boxRef.current);
+    return ()=>{io.disconnect();timers.forEach(clearTimeout);};
   },[]);
-  return <div style={{background:PANEL.inset,borderRadius:'var(--radius-lg)',border:`1px solid ${PANEL.hair}`,overflow:'hidden'}}>
+  return <div ref={boxRef} style={{background:PANEL.inset,borderRadius:'var(--radius-lg)',border:`1px solid ${PANEL.hair}`,overflow:'hidden'}}>
     <div style={{display:'flex',alignItems:'center',gap:8,padding:'10px 16px',borderBottom:`1px solid ${PANEL.hair}`,fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.08em',textTransform:'uppercase'}}>
       <LiveDot size={5}/>
       <span style={{color:PANEL.muted}}>deploy — rev 2.4.0</span>
@@ -478,7 +490,7 @@ function Pricing() {
           <tr style={{borderTop:'1px solid var(--border-1)'}}>
             <td style={{padding:'16px 24px'}} aria-hidden="true"/>
             {cols.map((c,i)=><td key={i} style={{...cellStyle(c.rec),padding:'16px 24px'}}>
-              <Btn variant={c.primary?'primary':'secondary'} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
+              <Btn variant={c.primary?'primary':'secondary'} href="#" onClick={dead} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
             </td>)}
           </tr>
         </tfoot>
@@ -500,7 +512,7 @@ function Pricing() {
         <div style={{display:'flex',flexDirection:'column',gap:'var(--space-2)'}}>
           {specs.map((s,k)=><StatRow key={k} k={s[0]} v={cell(s[1][i],c.rec)} labelColor={ink}/>)}
         </div>
-        <Btn variant={c.primary?'primary':'secondary'} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
+        <Btn variant={c.primary?'primary':'secondary'} href="#" onClick={dead} style={{width:'100%',justifyContent:'center'}}>{c.cta}</Btn>
       </div>;})}
     </div>
     {/* Enterprise — a hairline row, not a third column: the needs are named,
@@ -509,7 +521,7 @@ function Pricing() {
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--fg-3)'}}>enterprise</span>
       <span aria-hidden="true" style={{flex:1,minWidth:24,borderBottom:'1px dotted var(--border-3)',transform:'translateY(-3px)'}}/>
       <span style={{fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-2)'}}>everything in Team + SSO & SAML · on-prem / BYOK · custom retention · dedicated SLA</span>
-      <Btn variant="secondary">Contact sales</Btn>
+      <Btn variant="secondary" href="#" onClick={dead}>Contact sales</Btn>
     </div>
   </section>;
 }
