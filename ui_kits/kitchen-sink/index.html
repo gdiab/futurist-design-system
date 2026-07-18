@@ -13,7 +13,37 @@
 <style>#root{min-height:100vh;} a{text-decoration:none;}</style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div style="background:var(--bg-0);min-height:100vh">
+    <header style="display:flex;align-items:center;gap:12px;height:56px;padding:0 28px;border-bottom:1px solid var(--border-1);background:var(--bg-1)">
+      <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-.02em;color:var(--fg-1)">Futurist</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3);margin-left:2px">// kitchen sink</span>
+    </header>
+    <div style="padding:24px 28px;max-width:1240px;margin:0 auto">
+      <section style="display:flex;flex-direction:column;gap:16px;background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-1);max-width:816px">
+        <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">Buttons</div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-fg);border:1px solid transparent">Primary</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Secondary</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:transparent;color:var(--fg-2);border:1px solid transparent">Ghost</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--danger);color:var(--danger-fg);border:1px solid transparent">Danger</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-fg);border:1px solid transparent;opacity:.45">Disabled</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:26px;padding:0 8px;font-size:12px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Small</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Medium</span>
+          <span style="display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 16px;font-size:14px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Large</span>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;

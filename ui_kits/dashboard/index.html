@@ -55,7 +55,70 @@
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div class="console-grid" style="display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100vh;background:var(--bg-0)">
+    <aside class="console-sidebar" style="border-right:1px solid var(--border-1);background:var(--bg-1);display:flex;flex-direction:column;padding:12px">
+      <div class="console-logo" style="display:flex;align-items:center;gap:8px;padding:8px 8px 16px">
+        <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+        <span style="font-family:var(--font-display);font-weight:600;font-size:16px;letter-spacing:-.02em;color:var(--fg-1)">Futurist</span>
+      </div>
+      <nav style="display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:var(--radius-md);background:var(--accent-subtle);color:var(--accent-subtle-fg);font-size:13px;font-weight:600;font-family:var(--font-sans)">Overview</div>
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Metrics</div>
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Services</div>
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Deployments</div>
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Settings</div>
+      </nav>
+    </aside>
+    <main style="display:flex;flex-direction:column;min-width:0;overflow:hidden">
+      <header style="display:flex;align-items:center;gap:12px;height:52px;padding:0 20px;border-bottom:1px solid var(--border-1);background:var(--bg-1)">
+        <div style="display:flex;align-items:center;flex:1;max-width:340px;height:32px;padding:0 12px;background:var(--bg-2);border:1px solid var(--border-3);border-radius:var(--radius-md);font-family:var(--font-sans);font-size:0.8125rem;color:var(--fg-3)">Search services, logs…</div>
+        <div style="margin-left:auto;width:28px;height:28px;border-radius:var(--radius-full);background:var(--bg-3);border:1px solid var(--border-2);color:var(--fg-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:var(--font-mono)">GD</div>
+      </header>
+      <div style="flex:1;overflow:auto;padding:20px 24px">
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:16px">
+          <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3)">Production · us-east-1</span>
+          <h1 style="font-size:24px;font-weight:600;color:var(--fg-1)">Overview</h1>
+        </div>
+        <div class="stat-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px">
+          <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:16px 20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">Requests / min</span>
+            <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-mono);font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--fg-1);line-height:1">18.4</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3)">K</span></div>
+            <span style="font-family:var(--font-mono);font-size:12px;color:var(--success)">↑ 8.1% wk</span>
+          </div>
+          <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:16px 20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">P99 latency</span>
+            <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-mono);font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--fg-1);line-height:1">142</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3)">ms</span></div>
+            <span style="font-family:var(--font-mono);font-size:12px;color:var(--success)">↓ 12% wk</span>
+          </div>
+          <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:16px 20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">Error rate</span>
+            <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-mono);font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--fg-1);line-height:1">0.04</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3)">%</span></div>
+            <span style="font-family:var(--font-mono);font-size:12px;color:var(--success)">↓ 0.01pp wk</span>
+          </div>
+          <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:16px 20px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">Uptime</span>
+            <div style="display:flex;align-items:baseline;gap:4px"><span style="font-family:var(--font-mono);font-size:30px;font-weight:600;letter-spacing:-.02em;color:var(--fg-1);line-height:1">99.98</span><span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3)">%</span></div>
+            <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">30d window</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:15px;font-weight:600;font-family:var(--font-display);color:var(--fg-1)">Services</span>
+        </div>
+        <div style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);padding:12px;font-family:var(--font-mono);font-size:12px;color:var(--fg-2);display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--fg-1);font-family:var(--font-sans);font-weight:500">api-gateway</span><span>18,420 req/min · 42 ms</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--fg-1);font-family:var(--font-sans);font-weight:500">auth-service</span><span>9,310 req/min · 38 ms</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--fg-1);font-family:var(--font-sans);font-weight:500">billing-worker</span><span>2,140 req/min · 410 ms</span></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState, useEffect, useRef } = React;
 

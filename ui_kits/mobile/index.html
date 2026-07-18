@@ -13,7 +13,62 @@
 <style>#root{min-height:100vh;} *::-webkit-scrollbar{width:0;height:0;}</style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div style="min-height:100vh;background:var(--bg-2);display:flex;align-items:center;justify-content:center;gap:48px;padding:40px 20px;flex-wrap:wrap">
+    <!-- Device frame — bezel literal matches the React Phone frame (#0b0d12 hardware, not a theme surface). -->
+    <div style="width:375px;height:760px;background:var(--bg-0);border-radius:44px;border:10px solid #0b0d12;box-shadow:var(--shadow-3);overflow:hidden;display:flex;flex-direction:column;position:relative">
+      <div style="height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0">
+        <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--fg-1)">9:41</span>
+        <div style="width:110px;height:26px;background:#0b0d12;border-radius:999px;position:absolute;left:50%;transform:translateX(-50%);top:8px"></div>
+        <div style="display:flex;gap:4px;align-items:center;color:var(--fg-1)"><span style="font-family:var(--font-mono);font-size:11px">5G</span><div style="width:22px;height:11px;border:1.5px solid var(--fg-1);border-radius:3px;padding:1px"><div style="width:70%;height:100%;background:var(--fg-1);border-radius:1px"></div></div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 16px 12px;border-bottom:1px solid var(--border-1);flex-shrink:0">
+        <div style="width:20px;height:20px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.02em;color:var(--fg-1)">Dispatch</span>
+      </div>
+      <div style="flex:1;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;padding:16px;border-bottom:1px solid var(--border-1)">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px;color:var(--fg-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span style="font-family:var(--font-mono);font-size:11px;font-weight:600">842</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+            <span style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.3">Sub-millisecond time-series engine in Zig</span>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span style="display:inline-flex;height:16px;padding:0 8px;align-items:center;border-radius:var(--radius-sm);font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;background:var(--accent-subtle);color:var(--accent-subtle-fg)">Show HN</span><span>github.com</span><span style="opacity:.5">·</span><span>214</span><span style="opacity:.5">·</span><span>2h</span></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;padding:16px;border-bottom:1px solid var(--border-1)">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px;color:var(--fg-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span style="font-family:var(--font-mono);font-size:11px;font-weight:600">611</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+            <span style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.3">The hidden cost of observability at scale</span>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span>futurist.dev</span><span style="opacity:.5">·</span><span>158</span><span style="opacity:.5">·</span><span>4h</span></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;padding:16px;border-bottom:1px solid var(--border-1)">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px;color:var(--fg-3)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span style="font-family:var(--font-mono);font-size:11px;font-weight:600">497</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+            <span style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.3">WebGPU is becoming the default for compute</span>
+            <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span>chromium.org</span><span style="opacity:.5">·</span><span>302</span><span style="opacity:.5">·</span><span>5h</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;border-top:1px solid var(--border-1);background:var(--bg-1);flex-shrink:0;padding-bottom:8px">
+        <div style="flex:1;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--accent-subtle-fg)"><span style="font-size:10px;font-weight:600;font-family:var(--font-sans)">Top</span></div>
+        <div style="flex:1;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--fg-3)"><span style="font-size:10px;font-weight:500;font-family:var(--font-sans)">Hot</span></div>
+        <div style="flex:1;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--fg-3)"><span style="font-size:10px;font-weight:500;font-family:var(--font-sans)">Activity</span></div>
+        <div style="flex:1;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--fg-3)"><span style="font-size:10px;font-weight:500;font-family:var(--font-sans)">You</span></div>
+      </div>
+    </div>
+    <div style="max-width:280px">
+      <div style="width:26px;height:26px;border:2px solid var(--fg-1);border-radius:4px;position:relative;margin-bottom:16px"><div style="position:absolute;inset:5px;background:var(--accent);border-radius:2px"></div></div>
+      <h1 style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--fg-1);margin-bottom:12px">Dispatch for mobile</h1>
+      <p style="font-size:14px;color:var(--fg-2);line-height:1.6;margin-bottom:16px">The same system at 375px. Tap a story to open it, use the bottom tabs, and toggle the theme in the header — every hit target is at least 44px.</p>
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3);line-height:1.9"><div>· 44px minimum touch targets</div><div>· dynamic-island status bar</div><div>· shared tokens · light + dark</div></div>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 const Ic = ({d,size=22,sw=1.8,fill=false}) => <svg width={size} height={size} viewBox="0 0 24 24" fill={fill?'currentColor':'none'} stroke={fill?'none':'currentColor'} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;

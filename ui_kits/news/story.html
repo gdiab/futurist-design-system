@@ -26,7 +26,45 @@
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div style="background:var(--bg-0);min-height:100vh">
+    <header style="display:flex;align-items:center;gap:16px;height:54px;padding:0 28px;border-bottom:1px solid var(--border-1);background:var(--surface-overlay)">
+      <a href="index.html" style="display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:12px;color:var(--fg-2);font-weight:500">&#8249; Back to feed</a>
+      <div style="display:flex;align-items:center;gap:9px;margin-left:6px">
+        <div style="width:20px;height:20px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-.02em;color:var(--fg-1)">Dispatch</span>
+      </div>
+    </header>
+    <div class="story-layout" style="grid-template-columns:1fr">
+      <main style="min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <span style="display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:var(--radius-sm);font-family:var(--font-mono);font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;background:var(--accent-subtle);color:var(--accent-subtle-fg)">Show HN</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">Systems</span><span style="color:var(--fg-3)">·</span>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">6 min read</span>
+        </div>
+        <h1 style="font-size:34px;font-weight:700;letter-spacing:-.025em;line-height:1.15;color:var(--fg-1);margin-bottom:16px">A sub-millisecond time-series engine written in Zig</h1>
+        <div style="display:flex;align-items:center;gap:12px;padding-bottom:16px;margin-bottom:24px;border-bottom:1px solid var(--border-1)">
+          <div style="width:30px;height:30px;border-radius:var(--radius-full);background:var(--bg-3);border:1px solid var(--border-2);color:var(--fg-2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:12px;font-weight:600">K</div>
+          <div style="display:flex;flex-direction:column">
+            <span style="font-size:13px;font-weight:600;color:var(--fg-1)">kira_v</span>
+            <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">github.com/futurist</span>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg-3);margin-left:auto">posted 2h ago</span>
+        </div>
+        <div style="font-size:15.5px;color:var(--fg-2);line-height:1.72;max-width:68ch">
+          <p style="margin-bottom:16px">After two years fighting garbage-collection pauses in our Go-based metrics collector, we did the unthinkable and rewrote the ingest path in Zig. The result: median write latency dropped from <strong style="color:var(--fg-1);font-weight:600">4ms to 0.7ms</strong> at four million points per second. This is the architecture, the benchmarks, and an honest account of everything that broke along the way.</p>
+          <h2 style="font-size:20px;font-weight:600;letter-spacing:-.01em;color:var(--fg-1);margin:28px 0 12px">Why the GC had to go</h2>
+          <p style="margin-bottom:16px">Our old collector spent up to 18% of wall-clock time in stop-the-world pauses under load. For a system whose entire value proposition is "we never drop a sample," that was unacceptable. We profiled relentlessly, and the flame graphs kept pointing at the same wide, flat allocation frontier.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;

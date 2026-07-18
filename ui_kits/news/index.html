@@ -47,7 +47,73 @@
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div style="background:var(--bg-0);min-height:100vh">
+    <header class="site-header">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+        <span style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-.02em;color:var(--fg-1)">Dispatch</span>
+      </div>
+      <nav style="display:flex;gap:2px;margin-left:8px">
+        <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:var(--radius-md);background:var(--accent-subtle);color:var(--accent-subtle-fg);font-size:13px;font-weight:600;font-family:var(--font-sans)">Top</span>
+        <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">New</span>
+        <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Best</span>
+        <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Ask</span>
+        <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Show</span>
+      </nav>
+    </header>
+    <div class="feed-layout" style="grid-template-columns:1fr">
+      <main>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-subtle-fg)">// Top stories · Top · 8</span>
+            <h1 style="font-size:22px;font-weight:700;letter-spacing:-.02em;color:var(--fg-1)">Today on Dispatch</h1>
+          </div>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">updated 30s ago</span>
+        </div>
+        <div style="border:1px solid var(--border-1);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-1);box-shadow:var(--shadow-1)">
+          <article style="display:grid;grid-template-columns:28px 44px 1fr;gap:12px;align-items:start;padding:12px 16px;border-bottom:1px solid var(--border-1)">
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3);text-align:right;padding-top:3px">01</span>
+            <span style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fg-3);text-align:center;padding-top:4px">842</span>
+            <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+              <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><a href="story.html" style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.35">Show HN: A sub-millisecond time-series engine written in Zig</a><span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">github.com/futurist</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span style="display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--radius-sm);font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;background:var(--accent-subtle);color:var(--accent-subtle-fg)">Show HN</span><span>Systems</span><span style="opacity:.5">·</span><span>214</span><span style="opacity:.5">·</span><span>2h ago</span></div>
+            </div>
+          </article>
+          <article style="display:grid;grid-template-columns:28px 44px 1fr;gap:12px;align-items:start;padding:12px 16px;border-bottom:1px solid var(--border-1)">
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3);text-align:right;padding-top:3px">02</span>
+            <span style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fg-3);text-align:center;padding-top:4px">611</span>
+            <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+              <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><a href="#" style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.35">The hidden cost of observability at scale — and how we cut it 40%</a><span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">futurist.dev/blog</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span>Infra</span><span style="opacity:.5">·</span><span>158</span><span style="opacity:.5">·</span><span>4h ago</span></div>
+            </div>
+          </article>
+          <article style="display:grid;grid-template-columns:28px 44px 1fr;gap:12px;align-items:start;padding:12px 16px;border-bottom:1px solid var(--border-1)">
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3);text-align:right;padding-top:3px">03</span>
+            <span style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fg-3);text-align:center;padding-top:4px">497</span>
+            <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+              <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><a href="#" style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.35">WebGPU is quietly becoming the default for browser compute</a><span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">chromium.org</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span>Web</span><span style="opacity:.5">·</span><span>302</span><span style="opacity:.5">·</span><span>5h ago</span></div>
+            </div>
+          </article>
+          <article style="display:grid;grid-template-columns:28px 44px 1fr;gap:12px;align-items:start;padding:12px 16px">
+            <span style="font-family:var(--font-mono);font-size:13px;color:var(--fg-3);text-align:right;padding-top:3px">04</span>
+            <span style="font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--fg-3);text-align:center;padding-top:4px">1204</span>
+            <div style="display:flex;flex-direction:column;gap:5px;min-width:0">
+              <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><a href="#" style="font-size:15px;font-weight:600;color:var(--fg-1);line-height:1.35">Postgres 18 ships asynchronous I/O — early benchmarks inside</a><span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">postgresql.org</span></div>
+              <div style="display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)"><span style="display:inline-flex;align-items:center;height:17px;padding:0 6px;border-radius:var(--radius-sm);font-size:10px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;background:var(--warning-subtle);color:var(--warning-subtle-fg)">Hot</span><span>Databases</span><span style="opacity:.5">·</span><span>389</span><span style="opacity:.5">·</span><span>6h ago</span></div>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 

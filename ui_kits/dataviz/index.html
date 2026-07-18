@@ -13,7 +13,45 @@
 <style>#root{min-height:100vh;} text{font-family:var(--font-mono);}</style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components above when editing either. -->
+  <div style="background:var(--bg-0);min-height:100vh">
+    <header style="display:flex;align-items:center;gap:12px;height:56px;padding:0 28px;border-bottom:1px solid var(--border-1);background:var(--surface-overlay)">
+      <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-.02em;color:var(--fg-1)">Futurist</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">// data-viz</span>
+    </header>
+    <div style="padding:24px 28px;max-width:1240px;margin:0 auto">
+      <section style="max-width:824px;display:flex;flex-direction:column;background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border-1)">
+          <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3)">Requests over time</span>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">hover to inspect</span>
+        </div>
+        <div style="padding:16px">
+          <!-- Simplified static echo of the kit's area chart (same series data). -->
+          <svg viewBox="0 0 520 180" width="100%" height="180" role="img" aria-label="Area chart of requests and cache hits">
+            <defs><linearGradient id="ga-static" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="var(--viz-1)" stop-opacity="0.22"/><stop offset="100%" stop-color="var(--viz-1)" stop-opacity="0"/></linearGradient></defs>
+            <line x1="0" x2="520" y1="45" y2="45" stroke="var(--border-1)" stroke-width="1"/>
+            <line x1="0" x2="520" y1="90" y2="90" stroke="var(--border-1)" stroke-width="1"/>
+            <line x1="0" x2="520" y1="135" y2="135" stroke="var(--border-1)" stroke-width="1"/>
+            <path d="M6 174 L39.9 157.2 L73.7 165.6 L107.6 129.2 L141.5 140.4 L175.3 106.8 L209.2 118 L243.1 92.8 L276.9 101.2 L310.8 67.6 L344.7 78.8 L378.5 45.2 L412.4 56.4 L446.3 25.6 L480.1 39.6 L514 6 L514 174 L6 174 Z" fill="url(#ga-static)"/>
+            <path d="M6 174 L39.9 157.2 L73.7 165.6 L107.6 132 L141.5 140.4 L175.3 111 L209.2 123.6 L243.1 94.2 L276.9 102.6 L310.8 69 L344.7 81.6 L378.5 48 L412.4 56.4 L446.3 31.2 L480.1 39.6 L514 6" fill="none" stroke="var(--viz-2)" stroke-width="2" stroke-dasharray="3 3" stroke-linecap="round"/>
+            <path d="M6 174 L39.9 157.2 L73.7 165.6 L107.6 129.2 L141.5 140.4 L175.3 106.8 L209.2 118 L243.1 92.8 L276.9 101.2 L310.8 67.6 L344.7 78.8 L378.5 45.2 L412.4 56.4 L446.3 25.6 L480.1 39.6 L514 6" fill="none" stroke="var(--viz-1)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="514" cy="6" r="4" fill="var(--bg-1)" stroke="var(--viz-1)" stroke-width="2.4"/>
+          </svg>
+          <div style="display:flex;gap:16px;margin-top:12px;font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">
+            <span style="display:inline-flex;align-items:center;gap:8px"><span style="width:10px;height:3px;background:var(--viz-1);border-radius:2px"></span>requests 102k</span>
+            <span style="display:inline-flex;align-items:center;gap:8px"><span style="width:10px;height:3px;background:var(--viz-2);border-radius:2px"></span>cache hits 70k</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;

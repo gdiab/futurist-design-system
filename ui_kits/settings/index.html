@@ -13,7 +13,58 @@
 <style>#root{min-height:100vh;}</style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root">
+  <!-- Static fallback — replaced by React on mount. Two jobs: real content
+       during the Babel compile (instead of a blank page), and a functioning
+       page when the CDN runtime never arrives (offline / blocked unpkg).
+       styles.css is local, so tokens work without network. Keep copy in sync
+       with the React components below when editing either. -->
+  <div style="background:var(--bg-0);min-height:100vh">
+    <header style="display:flex;align-items:center;gap:12px;height:56px;padding:0 28px;border-bottom:1px solid var(--border-1);background:var(--bg-1)">
+      <div style="width:22px;height:22px;border:2px solid var(--fg-1);border-radius:3px;position:relative"><div style="position:absolute;inset:4px;background:var(--accent);border-radius:1px"></div></div>
+      <span style="font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:-.02em;color:var(--fg-1)">Futurist</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg-3)">// settings</span>
+      <span style="margin-left:auto;display:inline-flex;align-items:center;height:30px;padding:0 12px;border:1px solid var(--border-1);border-radius:var(--radius-md);color:var(--fg-2);font-family:var(--font-mono);font-size:11px;letter-spacing:.04em">LIGHT</span>
+    </header>
+    <div style="max-width:920px;margin:0 auto;padding:28px;display:grid;grid-template-columns:190px 1fr;gap:32px;align-items:start">
+      <aside style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);padding:0 8px 8px">Settings</div>
+        <div style="display:flex;align-items:center;height:34px;padding:0 8px;border-radius:var(--radius-md);background:var(--accent-subtle);color:var(--accent-subtle-fg);font-size:13px;font-weight:600;font-family:var(--font-sans)">Profile</div>
+        <div style="display:flex;align-items:center;height:34px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Notifications</div>
+        <div style="display:flex;align-items:center;height:34px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Security</div>
+        <div style="display:flex;align-items:center;height:34px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">API keys</div>
+        <div style="display:flex;align-items:center;height:34px;padding:0 8px;border-radius:var(--radius-md);color:var(--fg-2);font-size:13px;font-weight:500;font-family:var(--font-sans)">Billing</div>
+      </aside>
+      <main style="min-width:0">
+        <h1 style="font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--fg-1);margin-bottom:20px">Profile</h1>
+        <section style="background:var(--bg-1);border:1px solid var(--border-1);border-radius:var(--radius-lg);box-shadow:var(--shadow-1);overflow:hidden;margin-bottom:20px">
+          <div style="padding:20px">
+            <h3 style="font-size:15px;font-weight:600;color:var(--fg-1)">Public profile</h3>
+            <p style="font-size:13px;color:var(--fg-3);margin-top:4px;line-height:1.5">This information appears on your comments and activity.</p>
+            <div style="display:flex;gap:16px;align-items:center;margin-top:16px;margin-bottom:16px">
+              <div style="width:56px;height:56px;border-radius:var(--radius-full);background:var(--accent);color:var(--accent-fg);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:20px;font-weight:600;flex-shrink:0">GD</div>
+              <div style="display:flex;gap:8px">
+                <span style="display:inline-flex;align-items:center;height:28px;padding:0 8px;font-size:12px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Upload</span>
+                <span style="display:inline-flex;align-items:center;height:28px;padding:0 8px;font-size:12px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);color:var(--danger);border:1px solid var(--danger)">Remove</span>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+              <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;font-weight:500;color:var(--fg-2)">Display name</label><div style="display:flex;align-items:center;height:34px;padding:0 12px;background:var(--bg-1);border:1px solid var(--border-3);border-radius:var(--radius-md);color:var(--fg-1);font-size:13px;font-family:var(--font-sans)">George Diab</div></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;font-weight:500;color:var(--fg-2)">Username</label><div style="display:flex;align-items:center;gap:8px;height:34px;padding:0 12px;background:var(--bg-1);border:1px solid var(--border-3);border-radius:var(--radius-md);font-size:13px;font-family:var(--font-sans)"><span style="color:var(--fg-3)">@</span><span style="color:var(--fg-1)">georgediab</span></div></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;font-weight:500;color:var(--fg-2)">Email</label><div style="display:flex;align-items:center;height:34px;padding:0 12px;background:var(--bg-1);border:1px solid var(--border-3);border-radius:var(--radius-md);color:var(--fg-1);font-size:13px;font-family:var(--font-sans)">george@futurist.dev</div><span style="font-size:12px;color:var(--fg-3)">Used for account notifications.</span></div>
+              <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;font-weight:500;color:var(--fg-2)">Timezone</label><div style="display:flex;align-items:center;height:34px;padding:0 12px;background:var(--bg-1);border:1px solid var(--border-3);border-radius:var(--radius-md);color:var(--fg-1);font-size:13px;font-family:var(--font-sans)">America/New_York</div></div>
+            </div>
+            <div style="margin-top:16px;display:flex;flex-direction:column;gap:4px"><label style="font-size:12px;font-weight:500;color:var(--fg-2)">Bio</label><div style="padding:8px 12px;min-height:66px;background:var(--bg-1);border:1px solid var(--border-3);border-radius:var(--radius-md);color:var(--fg-1);font-family:var(--font-sans);font-size:13px;line-height:1.5">Building observability tooling. Ex-infra. Occasional writer at Asterisk.</div></div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--border-1);background:var(--bg-2)">
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--bg-1);color:var(--fg-1);border:1px solid var(--border-3)">Cancel</span>
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;font-size:13px;font-family:var(--font-sans);font-weight:500;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-fg)">Save changes</span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>
 <script type="text/plain" id="app-src">
 const { useState } = React;
 const Ic = ({d,size=16,sw=1.7}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round">{d}</svg>;

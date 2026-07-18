@@ -142,7 +142,10 @@ neutralizes any hard-coded animation/transition durations.
 
 **`ui_kits/`** — full-screen product recreations (self-contained, interactive). Kits are
 standalone copy-paste **recipes**: they deliberately re-implement primitives inline (no build step,
-no imports) so each page works as a single static file. `components/` is the **source of truth** —
+no imports) so each page works as a single static file. Every React kit page ships a static
+token-styled fallback inside `#root` — real first-viewport content while Babel compiles, and a
+working page if the unpkg CDN is unreachable (`styles.css` is local, so tokens work offline).
+**Copy edits must touch both the React components and the fallback block.** `components/` is the **source of truth** —
 when a primitive's spec changes there, kits showing that primitive should be re-checked; when in
 doubt, the component's `.jsx` / `.d.ts` wins over kit markup.
 - `dashboard/` — data-dense observability console (login → sidebar → metrics → services table; light/dark).
@@ -152,8 +155,6 @@ doubt, the component's `.jsx` / `.d.ts` wins over kit markup.
   Team-recommended) with a single hairline enterprise row — deliberately *not* the 3-tier template.
   ≤560px the pricing table swaps for stacked plan panels, recommended plan first. Signup CTA is
   "Start free" everywhere (the hero keeps "Deploy in 2 minutes"); Team is `$40/seat/mo`.
-  `#root` holds a static token-styled fallback that React replaces on mount — **copy edits must
-  touch both the React components and the fallback block**.
 - `news/` — **Dispatch** tech news aggregator:
   - `index.html` — ranked feed with a **List / Cards** layout toggle (compact rows vs. content-rich
     cards with thumbnail, dek, byline, read-time, engagement footer), topic + trending sidebar.
