@@ -10,7 +10,22 @@
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>#root{min-height:100vh;} *::-webkit-scrollbar{width:8px;} *::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;}</style>
+<style>
+#root{min-height:100vh;} *::-webkit-scrollbar{width:8px;} *::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:999px;}
+/* Mechanical entrance — the palette drops in like a switched instrument
+   (140ms, no bounce). Defined only under no-preference so reduced motion
+   gets an instant open with no delay artifacts. */
+@media (prefers-reduced-motion: no-preference){
+  .fz-scrim{animation:fz-fadein .12s ease-out;}
+  @keyframes fz-fadein{from{opacity:0}}
+  .fz-pop{animation:fz-pop .14s cubic-bezier(0.2,0,0,1);}
+  @keyframes fz-pop{from{opacity:0;transform:scale(.98) translateY(-4px)}}
+  .fz-fade{animation:fz-fadein .25s ease-out;}
+}
+/* The hero ⌘K keycap depresses when the real shortcut is pressed. */
+.fz-kbd{display:inline-block;transition:transform var(--dur-fast) var(--ease-standard),background var(--dur-fast) var(--ease-standard);}
+.fz-kbd-down{transform:translateY(1px);background:var(--bg-3) !important;}
+</style>
 </head>
 <body>
 <div id="root">
@@ -105,7 +120,7 @@ const commands = [
   ]},
 ];
 
-function Palette({onClose,onToggleTheme}) {
+function Palette({onClose,onToggleTheme,onRun}) {
   const [q,setQ]=useState('');
   const [sel,setSel]=useState(0);
   const inputRef=useRef(null);
@@ -120,13 +135,13 @@ function Palette({onClose,onToggleTheme}) {
       if(e.key==='Escape')onClose();
       if(e.key==='ArrowDown'){e.preventDefault();setSel(s=>Math.min(s+1,selectable.length-1));}
       if(e.key==='ArrowUp'){e.preventDefault();setSel(s=>Math.max(s-1,0));}
-      if(e.key==='Enter'){const it=selectable[sel]; if(it&&it.label==='Toggle theme')onToggleTheme();}
+      if(e.key==='Enter'){const it=selectable[sel]; if(!it)return; if(it.label==='Toggle theme')onToggleTheme(); else onRun(it);}
     };
     window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
   },[sel,selectable]);
   let si=-1;
-  return <div onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'12vh 16px',background:'var(--scrim)',backdropFilter:'blur(3px)'}}>
-    <div onMouseDown={e=>e.stopPropagation()} style={{width:'100%',maxWidth:560,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden'}}>
+  return <div className="fz-scrim" onMouseDown={onClose} style={{position:'fixed',inset:0,zIndex:1000,display:'flex',alignItems:'flex-start',justifyContent:'center',padding:'12vh 16px',background:'var(--scrim)',backdropFilter:'blur(3px)'}}>
+    <div className="fz-pop" onMouseDown={e=>e.stopPropagation()} style={{width:'100%',maxWidth:560,background:'var(--bg-1)',border:'1px solid var(--border-1)',borderRadius:'var(--radius-xl)',boxShadow:'var(--shadow-3)',overflow:'hidden'}}>
       <div style={{display:'flex',alignItems:'center',gap:8,padding:'0 16px',height:52,borderBottom:'1px solid var(--border-1)'}}>
         <span style={{color:'var(--fg-3)'}}><Icon name="search" size={18}/></span>
         <input ref={inputRef} value={q} onChange={e=>setQ(e.target.value)} placeholder="Type a command or search…" style={{flex:1,border:'none',outline:'none',background:'transparent',fontSize:15,fontFamily:'var(--font-sans)',color:'var(--fg-1)'}}/>
@@ -136,7 +151,7 @@ function Palette({onClose,onToggleTheme}) {
         {flat.length===0?<div style={{padding:'32px 16px',textAlign:'center',color:'var(--fg-3)',fontSize:13}}>No results for “{q}”</div>:flat.map((row,i)=>{
           if(row.header)return <div key={i} style={{fontFamily:'var(--font-mono)',fontSize:10,letterSpacing:'.07em',textTransform:'uppercase',color:'var(--fg-3)',padding:'12px 12px 4px'}}>{row.header}</div>;
           si++; const on=si===sel; const idx=si;
-          return <button key={i} onMouseEnter={()=>setSel(idx)} onClick={()=>{if(row.label==='Toggle theme')onToggleTheme();}} style={{display:'flex',alignItems:'center',gap:12,width:'100%',padding:'8px 12px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',textAlign:'left',background:on?'var(--accent-subtle)':'transparent',color:row.danger?'var(--danger)':on?'var(--accent-subtle-fg)':'var(--fg-1)',transition:'background var(--dur-fast)'}}>
+          return <button type="button" key={i} onMouseEnter={()=>setSel(idx)} onClick={()=>{if(row.label==='Toggle theme')onToggleTheme(); else onRun(row);}} style={{display:'flex',alignItems:'center',gap:12,width:'100%',padding:'8px 12px',border:'none',borderRadius:'var(--radius-md)',cursor:'pointer',textAlign:'left',background:on?'var(--accent-subtle)':'transparent',color:row.danger?'var(--danger)':on?'var(--accent-subtle-fg)':'var(--fg-1)',transition:'background var(--dur-fast)'}}>
             <span style={{display:'inline-flex',color:row.danger?'var(--danger)':on?'var(--accent-subtle-fg)':'var(--fg-3)'}}><Icon name={row.ic} size={17}/></span>
             <span style={{flex:1,fontSize:13.5,fontWeight:on?600:500,fontFamily:row.mono?'var(--font-mono)':'var(--font-sans)'}}>{row.label}</span>
             {row.hint?<span style={{fontFamily:'var(--font-mono)',fontSize:11,color:on?'var(--accent-subtle-fg)':'var(--fg-3)'}}>{row.hint}</span>:null}
@@ -154,9 +169,14 @@ function Palette({onClose,onToggleTheme}) {
 function App() {
   const [dark,setDark]=useState(false);
   const [open,setOpen]=useState(true);
+  /* last: the most recent command "run" from the palette — the demo loop's
+     receipt, shown as a dotted-leader status line under the hero. */
+  const [last,setLast]=useState(null);
+  const [kbdDown,setKbdDown]=useState(false);
   const setTheme=(d)=>{setDark(d);document.documentElement.setAttribute('data-theme',d?'dark':'light');};
+  const run=(it)=>{setLast(it);setOpen(false);};
   useEffect(()=>{
-    const k=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setOpen(true);}};
+    const k=(e)=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();setKbdDown(true);setTimeout(()=>setKbdDown(false),160);setOpen(true);}};
     window.addEventListener('keydown',k); return ()=>window.removeEventListener('keydown',k);
   },[]);
   return <div style={{background:'var(--bg-0)',minHeight:'100vh'}}>
@@ -164,15 +184,20 @@ function App() {
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// command palette</span>
-      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+      <button type="button" onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
     </header>
     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:16,padding:'80px 20px',textAlign:'center'}}>
       <div style={{width:44,height:44,borderRadius:'var(--radius-lg)',background:'var(--accent-subtle)',color:'var(--accent-subtle-fg)',display:'flex',alignItems:'center',justifyContent:'center'}}><Icon name="search" size={22}/></div>
       <h1 style={{fontSize:26,fontWeight:700,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Command palette</h1>
-      <p style={{fontSize:14,color:'var(--fg-2)',maxWidth:380,lineHeight:1.55}}>Press <kbd style={{fontFamily:'var(--font-mono)',fontSize:12,padding:'2px 8px',border:'1px solid var(--border-2)',borderRadius:'var(--radius-sm)',color:'var(--fg-1)',background:'var(--bg-2)'}}>⌘K</kbd> to open. Type to filter, arrow keys to move, enter to run.</p>
-      <button onClick={()=>setOpen(true)} style={{height:36,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Open palette</button>
+      <p style={{fontSize:14,color:'var(--fg-2)',maxWidth:380,lineHeight:1.55}}>Press <kbd className={'fz-kbd'+(kbdDown?' fz-kbd-down':'')} style={{fontFamily:'var(--font-mono)',fontSize:12,padding:'2px 8px',border:'1px solid var(--border-2)',borderRadius:'var(--radius-sm)',color:'var(--fg-1)',background:'var(--bg-2)'}}>⌘K</kbd> to open. Type to filter, arrow keys to move, enter to run.</p>
+      <button type="button" onClick={()=>setOpen(true)} style={{height:36,padding:'0 16px',border:'1px solid var(--border-3)',borderRadius:'var(--radius-md)',background:'var(--bg-1)',color:'var(--fg-1)',fontSize:13,fontWeight:500,fontFamily:'var(--font-sans)',cursor:'pointer'}}>Open palette</button>
+      {last?<div key={last.label} className="fz-fade" style={{display:'flex',alignItems:'baseline',width:280,marginTop:8,fontFamily:'var(--font-mono)',fontSize:12,color:'var(--fg-3)'}} role="status">
+        <span>last run</span>
+        <span aria-hidden="true" style={{flex:1,margin:'0 8px',borderBottom:'1px dotted var(--border-3)',transform:'translateY(-3px)'}}/>
+        <span style={{color:'var(--fg-2)',fontFamily:last.mono?'var(--font-mono)':'var(--font-sans)',fontSize:last.mono?12:13}}>{last.label}</span>
+      </div>:null}
     </div>
-    {open?<Palette onClose={()=>setOpen(false)} onToggleTheme={()=>setTheme(!dark)}/>:null}
+    {open?<Palette onClose={()=>setOpen(false)} onToggleTheme={()=>setTheme(!dark)} onRun={run}/>:null}
   </div>;
 }
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);

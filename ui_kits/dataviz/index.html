@@ -10,7 +10,24 @@
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<style>#root{min-height:100vh;} text{font-family:var(--font-mono);}</style>
+<style>
+#root{min-height:100vh;} text{font-family:var(--font-mono);}
+/* Warm-up: instruments draw in once on load — line strokes trace (pathLength
+   normalized to 1), arc segments sweep open, bars extend. Defined only under
+   no-preference: with reduced motion the classes are inert and every chart
+   sits at its final state (the global guard doesn't cover animation-delay,
+   so delayed keyframes must not exist at all in that mode). */
+@media (prefers-reduced-motion: no-preference){
+  .fz-draw{stroke-dasharray:1;stroke-dashoffset:1;animation:fz-draw .6s cubic-bezier(0.2,0,0,1) forwards;}
+  @keyframes fz-draw{to{stroke-dashoffset:0}}
+  .fz-fade{opacity:0;animation:fz-fade .4s ease-out forwards;}
+  @keyframes fz-fade{to{opacity:1}}
+  .fz-sweep{animation:fz-sweep .55s cubic-bezier(0.2,0,0,1) backwards;}
+  @keyframes fz-sweep{from{stroke-dasharray:0 999}}
+  .fz-grow{transform-origin:left;animation:fz-grow .5s cubic-bezier(0.2,0,0,1) backwards;}
+  @keyframes fz-grow{from{transform:scaleX(0)}}
+}
+</style>
 </head>
 <body>
 <div id="root">
@@ -83,9 +100,9 @@ function AreaChart() {
     <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} onMouseLeave={()=>setHi(pa.length-1)}>
       <defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor={G(1)} stopOpacity="0.22"/><stop offset="100%" stopColor={G(1)} stopOpacity="0"/></linearGradient></defs>
       {[0.25,0.5,0.75].map(g=><line key={g} x1="0" x2={w} y1={h*g} y2={h*g} stroke="var(--border-1)" strokeWidth="1"/>)}
-      <path d={line(pa)+`L ${w-6} ${h-6} L 6 ${h-6} Z`} fill="url(#ga)"/>
-      <path d={line(pb)} fill="none" stroke={G(2)} strokeWidth="2" strokeDasharray="3 3" strokeLinecap="round"/>
-      <path d={line(pa)} fill="none" stroke={G(1)} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path className="fz-fade" style={{animationDelay:'250ms'}} d={line(pa)+`L ${w-6} ${h-6} L 6 ${h-6} Z`} fill="url(#ga)"/>
+      <path className="fz-fade" style={{animationDelay:'350ms'}} d={line(pb)} fill="none" stroke={G(2)} strokeWidth="2" strokeDasharray="3 3" strokeLinecap="round"/>
+      <path className="fz-draw" pathLength="1" d={line(pa)} fill="none" stroke={G(1)} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"/>
       {pa.map((p,i)=><rect key={i} x={p[0]-14} y="0" width="28" height={h} fill="transparent" onMouseEnter={()=>setHi(i)}/>)}
       {hi!=null && <><line x1={pa[hi][0]} x2={pa[hi][0]} y1="0" y2={h} stroke="var(--border-2)" strokeWidth="1"/><circle cx={pa[hi][0]} cy={pa[hi][1]} r="4" fill="var(--bg-1)" stroke={G(1)} strokeWidth="2.4"/></>}
     </svg>
@@ -103,7 +120,7 @@ function Donut() {
   return <div style={{display:'flex',alignItems:'center',gap:16}}>
     <svg viewBox="0 0 140 140" width="140" height="140">
       <g transform="rotate(-90 70 70)">
-        {data.map((d,i)=>{ const frac=d[1]/total; const seg=<circle key={i} cx="70" cy="70" r={r} fill="none" stroke={G(d[2])} strokeWidth="16" strokeDasharray={`${frac*c} ${c}`} strokeDashoffset={-acc*c}/>; acc+=frac; return seg; })}
+        {data.map((d,i)=>{ const frac=d[1]/total; const seg=<circle key={i} className="fz-sweep" style={{animationDelay:`${i*90}ms`}} cx="70" cy="70" r={r} fill="none" stroke={G(d[2])} strokeWidth="16" strokeDasharray={`${frac*c} ${c}`} strokeDashoffset={-acc*c}/>; acc+=frac; return seg; })}
       </g>
       <text x="70" y="66" textAnchor="middle" fontSize="22" fontWeight="600" fill="var(--fg-1)" fontFamily="var(--font-display)">$18k</text>
       <text x="70" y="82" textAnchor="middle" fontSize="9" fill="var(--fg-3)" letterSpacing="1">MONTHLY</text>
@@ -120,14 +137,14 @@ function Gauge({v=73}) {
   return <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
     <svg viewBox="0 0 140 84" width="180" height="108">
       <path d="M16 74 A54 54 0 0 1 124 74" fill="none" stroke="var(--bg-3)" strokeWidth="12" strokeLinecap="round"/>
-      <path d="M16 74 A54 54 0 0 1 124 74" fill="none" stroke={col} strokeWidth="12" strokeLinecap="round" strokeDasharray={`${v/100*c} ${c}`}/>
+      <path className="fz-sweep" style={{animationDelay:'150ms'}} d="M16 74 A54 54 0 0 1 124 74" fill="none" stroke={col} strokeWidth="12" strokeLinecap="round" strokeDasharray={`${v/100*c} ${c}`}/>
       <text x="70" y="66" textAnchor="middle" fontSize="26" fontWeight="600" fill="var(--fg-1)" fontFamily="var(--font-display)">{v}<tspan fontSize="13" fill="var(--fg-3)">%</tspan></text>
     </svg>
     <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',marginTop:2}}>CPU utilization</span>
   </div>;
 }
 
-function Spark({vals,tone,label,value,delta,up}) {
+function Spark({vals,tone,label,value,delta,up,delay}) {
   const w=120,h=34; const p=series(vals,w,h,3);
   return <div style={{display:'flex',flexDirection:'column',gap:8,padding:'2px 0'}}>
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline'}}>
@@ -136,7 +153,7 @@ function Spark({vals,tone,label,value,delta,up}) {
     </div>
     <div style={{display:'flex',alignItems:'flex-end',justifyContent:'space-between',gap:8}}>
       <span style={{fontFamily:'var(--font-display)',fontSize:22,fontWeight:600,letterSpacing:'-.02em',color:'var(--fg-1)'}}>{value}</span>
-      <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h}><path d={line(p)} fill="none" stroke={tone} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx={p[p.length-1][0]} cy={p[p.length-1][1]} r="2.6" fill={tone}/></svg>
+      <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h}><path className="fz-draw" pathLength="1" style={{animationDelay:`${delay||0}ms`}} d={line(p)} fill="none" stroke={tone} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle className="fz-fade" style={{animationDelay:`${(delay||0)+450}ms`}} cx={p[p.length-1][0]} cy={p[p.length-1][1]} r="2.6" fill={tone}/></svg>
     </div>
   </div>;
 }
@@ -147,7 +164,7 @@ function Bars() {
   return <div style={{display:'flex',flexDirection:'column',gap:8}}>
     {cats.map((d,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)',width:60}}>{d[0]}</span>
-      <div style={{flex:1,height:14,background:'var(--bg-3)',borderRadius:3,overflow:'hidden'}}><div style={{height:'100%',width:`${d[1]/max*100}%`,background:G(d[2]),borderRadius:3}}/></div>
+      <div style={{flex:1,height:14,background:'var(--bg-3)',borderRadius:3,overflow:'hidden'}}><div className="fz-grow" style={{height:'100%',width:`${d[1]/max*100}%`,background:G(d[2]),borderRadius:3,animationDelay:`${i*70}ms`}}/></div>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-1)',width:36,textAlign:'right'}}>{d[1]}%</span>
     </div>)}
   </div>;
@@ -162,18 +179,18 @@ function App() {
       <div style={{width:22,height:22,border:'2px solid var(--fg-1)',borderRadius:3,position:'relative'}}><div style={{position:'absolute',inset:4,background:'var(--accent)',borderRadius:1}}/></div>
       <span style={{fontFamily:'var(--font-display)',fontWeight:700,fontSize:16,letterSpacing:'-.02em',color:'var(--fg-1)'}}>Futurist</span>
       <span style={{fontFamily:'var(--font-mono)',fontSize:11,color:'var(--fg-3)'}}>// data-viz</span>
-      <button onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
+      <button type="button" onClick={()=>setTheme(!dark)} aria-label="theme" style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:8,height:30,padding:'0 12px',border:'1px solid var(--border-1)',borderRadius:'var(--radius-md)',background:'transparent',color:'var(--fg-2)',cursor:'pointer',fontFamily:'var(--font-mono)',fontSize:11,letterSpacing:'.04em'}}><Icon name={dark?'sun':'moon'} size={14}/>{dark?'DARK':'LIGHT'}</button>
     </header>
     <div style={{padding:'24px 28px',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16,maxWidth:1240,margin:'0 auto',alignItems:'start'}}>
       <Panel title="Requests over time" note="hover to inspect" span={2}><AreaChart/></Panel>
       <Panel title="Cost breakdown"><Donut/></Panel>
       <Panel title="Sparklines">
         <div style={{display:'flex',flexDirection:'column',gap:16}}>
-          <Spark label="Throughput" value="23.1k" delta="8%" up tone={G(1)} vals={s1}/>
+          <Spark label="Throughput" value="23.1k" delta="8%" up tone={G(1)} vals={s1} delay={0}/>
           <div style={{height:1,background:'var(--border-1)'}}/>
-          <Spark label="P99 latency" value="142ms" delta="12%" tone={G(3)} vals={s2}/>
+          <Spark label="P99 latency" value="142ms" delta="12%" tone={G(3)} vals={s2} delay={120}/>
           <div style={{height:1,background:'var(--border-1)'}}/>
-          <Spark label="Uptime" value="99.98%" delta="0.01%" up tone={G(2)} vals={s3}/>
+          <Spark label="Uptime" value="99.98%" delta="0.01%" up tone={G(2)} vals={s3} delay={240}/>
         </div>
       </Panel>
       <Panel title="Utilization"><Gauge v={73}/></Panel>
