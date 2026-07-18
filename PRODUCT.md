@@ -32,4 +32,4 @@ Technical, direct, precise. State the fact, then stop; confidence without hype. 
 - Familiarity in product, distinctiveness in brand: consoles earn trust through convention; marketing surfaces must earn a second look.
 
 ## Accessibility & Inclusion
-WCAG 2.1 AA across the system: ≥4.5:1 for normal text in both themes, keyboard-complete interactive components, visible focus indicators, and `prefers-reduced-motion` support. The light theme currently fails AA in known places (tracked in the 2026-07-15 critique); AA is the gate for fixes.
+WCAG 2.1 AA across the system: ≥4.5:1 for normal text in both themes, keyboard-complete interactive components, visible focus indicators, and `prefers-reduced-motion` support. The known AA failures from the 2026-07-15 critique have been fixed and DOM-verified in both themes (latest: the 2026-07-18 marketing pricing-tint fix, measured 7.12:1 light / 6.30:1 dark); AA remains the gate for all new work.

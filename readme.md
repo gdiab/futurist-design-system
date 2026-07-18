@@ -72,7 +72,8 @@ and 52px top bars. Content max 1200px, prose max 680px.
 pills/avatars full. Never large playful rounding.
 
 **Backgrounds.** Flat, tinted solids — **no decorative gradients**. Dark inverse panels
-(`--bg-inverse`) are used for terminals, stat strips, and login side-panels. No photographic
+(`--bg-inverse`) are used for terminal/readout blocks, the marketing hero's blueprint panel, and
+login side-panels; stat bands sit on the light canvas in theme tokens. No photographic
 backgrounds by default; imagery, when present, would be cool-toned. Subtle `backdrop-filter: blur`
 on sticky nav and modal scrims only.
 
@@ -126,6 +127,8 @@ neutralizes any hard-coded animation/transition durations.
 **`tokens/`** — CSS custom properties + fonts (all reached from `styles.css`)
 - `fonts.css` (Google Fonts import) · `colors.css` (light + dark) · `typography.css` · `spacing.css`
   · `radius.css` · `elevation.css` · `base.css` (resets, link styling, `.mono-eyebrow`).
+- `colors.hex.json` — sRGB hex fallbacks for every oklch color token (both themes), for consumers
+  that can't use oklch (e.g. email HTML). Not imported by `styles.css`; data artifact only.
 
 **`components/`** — reusable React primitives (`.jsx` + `.d.ts` + `.prompt.md`, one card per group)
 - `actions/` — **Button**, **IconButton**
@@ -143,7 +146,14 @@ no imports) so each page works as a single static file. `components/` is the **s
 when a primitive's spec changes there, kits showing that primitive should be re-checked; when in
 doubt, the component's `.jsx` / `.d.ts` wins over kit markup.
 - `dashboard/` — data-dense observability console (login → sidebar → metrics → services table; light/dark).
-- `marketing/` — developer-tool landing page (nav, hero + terminal, stats, features, pricing, footer).
+- `marketing/` — developer-tool landing page: sticky nav, pinned-dark hero whose object is a
+  **pipeline blueprint** panel (not a terminal), features column carrying the deploy readout,
+  dotted-leader stat band on the light canvas, and **two-plan spec-sheet pricing** (Hobby +
+  Team-recommended) with a single hairline enterprise row — deliberately *not* the 3-tier template.
+  ≤560px the pricing table swaps for stacked plan panels, recommended plan first. Signup CTA is
+  "Start free" everywhere (the hero keeps "Deploy in 2 minutes"); Team is `$40/seat/mo`.
+  `#root` holds a static token-styled fallback that React replaces on mount — **copy edits must
+  touch both the React components and the fallback block**.
 - `news/` — **Dispatch** tech news aggregator:
   - `index.html` — ranked feed with a **List / Cards** layout toggle (compact rows vs. content-rich
     cards with thumbnail, dek, byline, read-time, engagement footer), topic + trending sidebar.

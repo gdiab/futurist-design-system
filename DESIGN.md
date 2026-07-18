@@ -133,7 +133,7 @@ Both themes are first-class: light is the default on `:root`, dark overrides liv
 A cool, low-chroma neutral field (hue ~255–262, chroma ≤0.012) with one saturated Signal Green voice and a functional semantic palette — the panel is grey; only signals carry color.
 
 ### Primary
-- **Signal Green** (`--accent`, oklch(0.775 0.165 159), ~#2CDE85): primary buttons, active/selected states, live indicators, focus rings (at 40% alpha as `--accent-ring`). Text on it is **Deep Pine** (`--accent-fg`, oklch(0.22 0.045 159)) — a dark green-black that holds ~9:1 contrast. Hover and active step darker (`--accent-hover`, `--accent-active`); tinted fills use `--accent-subtle` with `--accent-subtle-fg` (also the link color).
+- **Signal Green** (`--accent`, oklch(0.775 0.165 159), ~#2CDE85): primary buttons, active/selected states, live indicators, focus rings (at 40% alpha as `--accent-ring`). Text on it is **Deep Pine** (`--accent-fg`, oklch(0.22 0.045 159)) — a dark green-black that holds ~9:1 contrast. Hover and active step darker (`--accent-hover`, `--accent-active`); tinted fills use `--accent-subtle` with `--accent-subtle-fg` (also the link color). Ink on `--accent-subtle` fills is `--accent-subtle-fg` or `--fg-2`, never `--fg-3`/`--fg-4` — the muted ramp loses AA on the tint.
 
 ### Neutral
 - **Panel Greys** (`--bg-0` → `--bg-3`): a four-step tonal ladder — app canvas (oklch 0.985), white card surface, raised fill, inset/track. Depth is climbed one step at a time; hover means "step one level."
@@ -150,7 +150,7 @@ All values above are the light theme; every token has a dark-theme override unde
 ### Named Rules
 **The One Signal Rule.** Signal Green appears on ≤10% of any screen: primary action, current selection, live state. If green is decorating, it is lying — status uses the semantic palette, everything else stays grey.
 
-**The Token Contract Rule.** Tokens are the contract: kits and components consume tokens; hardcoded color values are drift, not convenience. If a value isn't a `var(--…)`, it's a bug (the deliberately pinned-dark terminal panels are the sole exception).
+**The Token Contract Rule.** Tokens are the contract: kits and components consume tokens; hardcoded color values are drift, not convenience. If a value isn't a `var(--…)`, it's a bug (the deliberately pinned-dark panels — terminal/readout blocks and the marketing hero's blueprint panel — are the sole exception).
 
 ## 3. Typography
 

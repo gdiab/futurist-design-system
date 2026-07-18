@@ -157,7 +157,7 @@
     ],
     "rules": [
       { "name": "The One Signal Rule", "body": "Signal Green appears on ≤10% of any screen: primary action, current selection, live state. If green is decorating, it is lying — status uses the semantic palette, everything else stays grey.", "section": "colors" },
-      { "name": "The Token Contract Rule", "body": "Tokens are the contract: kits and components consume tokens; hardcoded color values are drift, not convenience. If a value isn't a var(--…), it's a bug (the deliberately pinned-dark terminal panels are the sole exception).", "section": "colors" },
+      { "name": "The Token Contract Rule", "body": "Tokens are the contract: kits and components consume tokens; hardcoded color values are drift, not convenience. If a value isn't a var(--…), it's a bug (the deliberately pinned-dark panels — terminal/readout blocks and the marketing hero's blueprint panel — are the sole exception).", "section": "colors" },
       { "name": "The Mono Numbers Rule", "body": "Numeric values are always set in mono with their units (142ms, 99.98%, 4.2k). A proportional-face metric is a typo.", "section": "typography" },
       { "name": "The Sentence Case Rule", "body": "All copy is sentence case — buttons, headings, labels. The only uppercase in the system is the tracked mono eyebrow. No emoji, no exclamation-point marketing.", "section": "typography" },
       { "name": "The Hairline-First Rule", "body": "Surfaces are flat at rest and separated by hairlines, not shadows or zebra fills. A shadow is a statement that something floats — menus, popovers, dialogs — and nothing else earns one.", "section": "elevation" }
