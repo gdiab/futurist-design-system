@@ -109,7 +109,7 @@
       <div class="fz-section" style="max-width:1200px;margin:0 auto;padding:32px 40px;display:flex;align-items:baseline;gap:var(--space-2);flex-wrap:wrap;font-family:var(--font-mono);font-size:12px;color:var(--fg-3)">
         <span>plans</span>
         <span aria-hidden="true" style="flex:1;min-width:24px;border-bottom:1px dotted var(--border-3);transform:translateY(-3px)"></span>
-        <span style="color:var(--fg-2)">Hobby $0/mo · Team $40/mo · Enterprise custom</span>
+        <span style="color:var(--fg-2)">Hobby $0/mo · Team $40/seat/mo · Enterprise custom</span>
       </div>
     </section>
     <footer style="border-top:1px solid var(--border-1);background:var(--bg-1)">
@@ -141,6 +141,8 @@ function Btn({variant='primary',children,style,...r}) {
   return <button onMouseEnter={()=>setH(true)} onMouseLeave={()=>setH(false)} style={{display:'inline-flex',alignItems:'center',justifyContent:'center',gap:8,height:40,padding:'0 18px',fontSize:14,fontWeight:500,fontFamily:'var(--font-sans)',borderRadius:'var(--radius-md)',cursor:'pointer',transition:'all var(--dur-fast)',...V,...style}} {...r}>{children}</button>;
 }
 const Eyebrow = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:11,fontWeight:500,letterSpacing:'.08em',textTransform:'uppercase',color:'var(--accent-subtle-fg)'}}>{children}</span>;
+/* Mono number in running prose — the Mono Numbers Rule applies inside copy too. */
+const M = ({children}) => <span style={{fontFamily:'var(--font-mono)',fontSize:'0.92em'}}>{children}</span>;
 
 /* Dotted-leader status line — signature grammar (label ······ value).
    Color props exist so the same grammar can run on the pinned-dark panel. */
@@ -349,8 +351,8 @@ function DeployReadout() {
 
 function Features() {
   const feats=[
-    ['zap','Sub-second ingest','Spans land in your console in under 800ms p99, even at 4M events per second.','p99 · 780ms'],
-    ['gauge','Dense by default','Every pixel earns its place. High-density tables, sparklines, and no chrome.','13px base grid'],
+    ['zap','Sub-second ingest',<>Spans land in your console in under <M>800ms</M> p99, even at <M>4M</M> events per second.</>,'p99 · 780ms'],
+    ['gauge','Dense by default','Every pixel earns its place. High-density tables, sparklines, and no chrome.','1.2k rows/screen'],
     ['shield','Private by design','Bring your own keys. Data never leaves your region. SOC 2 Type II and HIPAA ready.','BYOK · SOC 2'],
     ['git','Deploy-aware','Correlate every metric spike with the commit and deploy that caused it.','sha ↔ span'],
   ];
@@ -401,8 +403,8 @@ function StatBand() {
    so the sheet stops reading as the 3-tier template. */
 function Pricing() {
   const cols=[
-    {name:'Hobby', price:'$0',  per:'/mo', cta:'Get started', primary:false, rec:false},
-    {name:'Team',  price:'$40', per:'/mo', cta:'Get started', primary:true,  rec:true},
+    {name:'Hobby', price:'$0',  per:'/mo', cta:'Start free', primary:false, rec:false},
+    {name:'Team',  price:'$40', per:'/seat/mo', cta:'Start free', primary:true,  rec:true},
   ];
   const specs=[
     ['projects',['1','Unlimited']],
