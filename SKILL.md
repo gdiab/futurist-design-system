@@ -4,7 +4,9 @@ description: Use this skill to generate well-branded interfaces and assets for F
 user-invocable: true
 ---
 
-Read the `readme.md` file within this skill, and explore the other available files.
+Read the `readme.md` file within this skill, and explore the other available files. Agents:
+start with `AGENTS.md` for navigation, the uncovered-case derivation protocol, and the
+decisions log.
 
 If creating visual artifacts (slides, mocks, throwaway prototypes, etc), copy assets out and create
 static HTML files for the user to view — link `styles.css` for tokens, and follow the CONTENT

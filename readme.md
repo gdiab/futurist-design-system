@@ -123,6 +123,8 @@ neutralizes any hard-coded animation/transition durations.
 - `styles.css` — single entry point (import-only). Consumers link this.
 - `readme.md` — this guide.
 - `SKILL.md` — Agent Skill front-matter for use in Claude Code.
+- `AGENTS.md` — agent guide: task-indexed lookup, derivation protocol for uncovered cases,
+  and the log-and-promote loop (provenance in `guidelines/decisions.log.md`).
 
 **`tokens/`** — CSS custom properties + fonts (all reached from `styles.css`)
 - `fonts.css` (Google Fonts import) · `colors.css` (light + dark) · `typography.css` · `spacing.css`
