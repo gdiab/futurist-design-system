@@ -49,7 +49,9 @@ a diff view…). Do not invent freely and do not stop to ask — derive:
    neighbors: file-ish inputs in `components/forms/`, empty states in `ui_kits/states/`, Card).
 3. **Decompose the neighbors into their token decisions** — surface level (`--bg-*`), border
    treatment, radius step, spacing rhythm, type roles (what's mono, what's sentence-case UI text),
-   state/semantic colors — and reuse those decisions for the new thing.
+   state/semantic colors — and reuse those decisions for the new thing. If the new thing is
+   composite (e.g. a trigger plus a floating panel), map each neighbor's decisions onto the
+   corresponding part rather than flattening them into one set.
    **Hard rule: no new raw values. Only existing tokens.**
 4. **Run the invariant checklist:** numbers/labels in mono with units · sentence case · base UI
    text 0.875rem · 4px grid · works in both themes · visible focus states · honors reduced motion ·
