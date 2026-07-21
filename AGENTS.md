@@ -14,7 +14,7 @@ when the system doesn't cover your case, and how new decisions get documented.
 | Type scale, weights, mono usage | `tokens/typography.css`, `guidelines/type-*.html`, `DESIGN.md` §3 Typography |
 | Spacing, radius, elevation | `tokens/spacing.css` / `radius.css` / `elevation.css`, matching `guidelines/*.html`, `DESIGN.md` §4 Elevation |
 | A primitive (button, input, table, dialog…) | `components/<category>/` — the `.d.ts` + `.prompt.md` pair is the spec; `.jsx` is the implementation. Inventory: actions (Button, IconButton) · forms (Input, Textarea, Select, Checkbox, Switch) · data (Card, Stat, Badge, Tag, Table) · navigation (Tabs) · overlays (Tooltip, Menu, Popover, Drawer) · feedback (Dialog, Toast) |
-| A full-page recipe (dashboard, marketing, news, dataviz, command palette, settings, mobile, deck, docs, overlays, states, kitchen-sink) | `ui_kits/<kit>/index.html` — self-contained, copy-paste; each kit's `README.md` documents its patterns |
+| A full-page recipe (dashboard, marketing, news, dataviz, command palette, settings, mobile, deck, docs, overlays, states, kitchen-sink) | `ui_kits/<kit>/index.html` — self-contained, copy-paste; the dashboard and marketing kits also document their patterns in a `README.md` |
 | Writing copy (voice, casing, numbers, eyebrows) | `readme.md` § CONTENT FUNDAMENTALS |
 | Visual rules in prose (color, type, motion, do's/don'ts) | `readme.md` § VISUAL FOUNDATIONS, `DESIGN.md` §6 Do's and Don'ts |
 | Icons | `readme.md` § ICONOGRAPHY (thin geometric line icons; Lucide in production) |
@@ -24,7 +24,7 @@ when the system doesn't cover your case, and how new decisions get documented.
 | Prior edge-case decisions | `guidelines/decisions.log.md` |
 
 **Precedence:** `components/` is the source of truth. `ui_kits/` pages deliberately re-implement
-primitives inline; when a kit and a component spec disagree, the component's `.d.ts`/`.jsx` wins.
+primitives inline; when a kit and a component spec disagree, the component's `.d.ts`/`.prompt.md` wins.
 
 ## Known traps
 
@@ -72,7 +72,7 @@ Every derivation from the protocol above gets recorded, in the same session that
    derived from, the decision, and where it was promoted to.
 2. **Promote immediately.** Write the pattern into its canonical home — whichever fits:
    a new component spec in `components/<category>/` (`.d.ts` + `.prompt.md` + `.jsx`), a named
-   rule in `DESIGN.md`, or an addition to `readme.md`. The log entry records which.
+   rule in `DESIGN.md`, or an addition to `readme.md`. Pick by kind: a reusable UI element goes to `components/<category>/`; a visual or behavioral rule to `DESIGN.md`; voice, copy, or process guidance to `readme.md`. The log entry records which.
 3. **Review the promotion.** Run an impeccable-style critique of the promoted addition
    (the `/impeccable` skill if available, otherwise a rigorous self-review against `DESIGN.md`
    §6 and the invariant checklist) before committing. A failed review means revise the
